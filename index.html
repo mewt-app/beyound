@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>beyound — Payments, simplified</title>
+  <meta name="description" content="beyound — a new way to pay. Coming soon.">
+  <meta name="theme-color" content="#059669">
+  <meta property="og:title" content="beyound — Payments, simplified">
+  <meta property="og:description" content="beyound — a new way to pay. Coming soon.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://beyound.in">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='50' fill='%23059669'/><text x='50' y='68' text-anchor='middle' font-size='52' font-weight='700' font-family='system-ui' fill='white'>b</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;800&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html, body {
+      height: 100%;
+    }
+
+    body {
+      font-family: 'Sora', sans-serif;
+      background: #ffffff;
+      color: #0F172A;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 24px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    body::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background:
+        radial-gradient(circle at 20% 80%, rgba(5, 150, 105, 0.04) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(4, 120, 87, 0.04) 0%, transparent 50%);
+      pointer-events: none;
+    }
+
+    .container {
+      position: relative;
+      z-index: 1;
+      text-align: center;
+      animation: rise 0.8s ease-out both;
+    }
+
+    @keyframes rise {
+      from {
+        opacity: 0;
+        transform: translateY(24px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .logo {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #059669, #047857);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 32px;
+      box-shadow: 0 4px 24px rgba(5, 150, 105, 0.2);
+      animation: glow 3s ease-in-out infinite alternate;
+    }
+
+    @keyframes glow {
+      from {
+        box-shadow: 0 4px 24px rgba(5, 150, 105, 0.2);
+      }
+      to {
+        box-shadow: 0 4px 32px rgba(5, 150, 105, 0.35);
+      }
+    }
+
+    .logo span {
+      color: #fff;
+      font-size: 36px;
+      font-weight: 700;
+    }
+
+    .brand {
+      font-size: clamp(42px, 8vw, 68px);
+      font-weight: 800;
+      letter-spacing: -2px;
+      margin-bottom: 16px;
+    }
+
+    .tagline {
+      font-size: 13px;
+      color: #059669;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      font-weight: 500;
+      margin-bottom: 48px;
+    }
+
+    .divider {
+      width: 48px;
+      height: 2px;
+      background: linear-gradient(90deg, #059669, #047857);
+      border-radius: 1px;
+      margin: 0 auto 48px;
+    }
+
+    .coming-soon {
+      font-size: 24px;
+      font-weight: 600;
+      color: #334155;
+      margin-bottom: 12px;
+    }
+
+    .subtext {
+      font-size: 15px;
+      color: #94A3B8;
+      max-width: 400px;
+      line-height: 1.6;
+      margin: 0 auto;
+    }
+
+    .footer {
+      position: absolute;
+      bottom: 24px;
+      left: 0;
+      right: 0;
+      text-align: center;
+      font-size: 12px;
+      color: #CBD5E1;
+      font-family: 'Sora', sans-serif;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="logo"><span>b</span></div>
+    <h1 class="brand">beyound</h1>
+    <p class="tagline">Payments, simplified</p>
+    <div class="divider"></div>
+    <p class="coming-soon">Coming Soon</p>
+    <p class="subtext">We're building something new for the way you pay.</p>
+  </div>
+  <footer class="footer">&copy; 2026 beyound. All rights reserved.</footer>
+</body>
+</html>
