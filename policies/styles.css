@@ -70,6 +70,11 @@ body {
 
 .back-link:hover { text-decoration: underline; }
 
+/* When the page is opened inside a native webview (?webView=true), hide
+   the "All policies" back-link so the host app's navigation stays in
+   control. The class is toggled by the inline boot script in <head>. */
+html.webview .back-link { display: none; }
+
 main.policy {
   max-width: 760px;
   margin: 0 auto;
