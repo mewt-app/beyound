@@ -1,0 +1,49 @@
+{
+  "parallelism": {
+    "max_agents": 10,
+    "min_agents_for_parallel": 2,
+    "notes": "Static HTML edits + policy generator scripts in beyound. Cross-repo work spans supermade (Next.js apps) and mewt-backend-v3 (FastAPI); each repo has its own CI, do not interleave commits across them."
+  },
+  "model_routing": {
+    "default_code": "opus",
+    "default_effort": "high",
+    "overrides": {
+      "*.md": "sonnet",
+      "*.css": "haiku",
+      "auth.ts": "opus",
+      "actions/index.tsx": "opus",
+      "notification_otp.py": "opus"
+    }
+  },
+  "commands": {
+    "test": "(this repo is static HTML — no test command. supermade: pnpm typecheck && pnpm test. mewt-backend-v3: pytest)",
+    "lint": "(static — n/a. supermade: pnpm lint)",
+    "build": "(static — n/a. supermade per-app: pnpm --filter @pay/wallet build with NEXT_PUBLIC_BRAND=beyound)",
+    "regen_policies": "python3 /tmp/gen_beyound_policies.py",
+    "deploy_beyound": "git push origin main (GitHub Pages, served at beyound.in via CNAME)",
+    "deploy_supermade": "git push origin main (CI builds per-brand Docker images, commits image tags to mewt-app/devops, ArgoCD rolls out)",
+    "deploy_backend_prod": "git tag v0.1.<next> && git push origin v0.1.<next> (workflow validates tag is from main)",
+    "deploy_backend_dev": "merge to develop (auto-deploys to dev cluster only — NOT prod)"
+  },
+  "governance": "hierarchical",
+  "avoid_dirs": [
+    "node_modules",
+    ".next",
+    "dist",
+    "vendor",
+    "__pycache__",
+    ".git",
+    "*.bak"
+  ],
+  "user_preferences": [
+    "caveman mode (full) active — drop articles/filler/hedging; fragments OK; code/commits/security in normal English",
+    "no emojis in code unless explicitly requested",
+    "no stubs/placeholders/TODOs — production-ready or say so",
+    "auto-commit after each completed task with real conventional-commit messages (feat/fix/chore/etc.)",
+    "stage specific files, not git add -A",
+    "About Us + policies live only on beyound.in; bills + wallet link out",
+    "wallet OTP via twilio notification-otp wrapper, 6-digit codes",
+    "Beyound entity name: BeyoundExtra Tech Private Limited (NOT Technologies)",
+    "brand-wide cutoff for wallet history: 2026-05-13T00:00:00+05:30"
+  ]
+}
