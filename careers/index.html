@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Careers — beyound</title>
+  <meta name="description" content="Work at Beyound — payments technology from BeyoundExtra Tech Private Limited. Open roles in engineering, ops, growth and design.">
+  <meta name="theme-color" content="#059669">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='50' fill='%23059669'/><text x='50' y='68' text-anchor='middle' font-size='52' font-weight='700' font-family='system-ui' fill='white'>b</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --brand: #059669;
+      --brand-dark: #047857;
+      --brand-soft: rgba(5, 150, 105, 0.08);
+      --brand-glow: rgba(5, 150, 105, 0.18);
+      --ink: #0F172A;
+      --ink-soft: #1F2937;
+      --muted: #475569;
+      --muted-soft: #94A3B8;
+      --line: #E2E8F0;
+      --bg: #ffffff;
+      --bg-soft: #F8FAFC;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { scrollbar-width: none; -ms-overflow-style: none; }
+    html::-webkit-scrollbar, body::-webkit-scrollbar { width: 0; height: 0; display: none; }
+    body {
+      font-family: 'Sora', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+      line-height: 1.65;
+      -webkit-font-smoothing: antialiased;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    a { color: var(--brand); }
+    .page-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 20px clamp(20px, 5vw, 48px);
+      border-bottom: 1px solid var(--line);
+      max-width: 1100px;
+      margin: 0 auto;
+      width: 100%;
+    }
+    .brand-link {
+      display: inline-flex; align-items: center; gap: 10px;
+      text-decoration: none; color: var(--ink);
+    }
+    .brand-mark {
+      width: 32px; height: 32px; border-radius: 50%;
+      background: linear-gradient(135deg, var(--brand), var(--brand-dark));
+      color: #fff; font-weight: 700; font-size: 18px;
+      display: inline-flex; align-items: center; justify-content: center;
+    }
+    .brand-name { font-weight: 800; font-size: 18px; letter-spacing: -0.5px; }
+    .back-link { font-size: 14px; color: var(--brand); text-decoration: none; font-weight: 500; }
+    .back-link:hover { text-decoration: underline; }
+
+    main {
+      flex: 1;
+      max-width: 880px;
+      margin: 0 auto;
+      padding: clamp(48px, 8vw, 80px) clamp(20px, 5vw, 32px) 80px;
+    }
+    .kicker {
+      display: inline-block;
+      padding: 6px 14px;
+      border-radius: 999px;
+      background: var(--brand-soft);
+      color: var(--brand);
+      font-size: 12px;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      font-weight: 600;
+      margin-bottom: 18px;
+    }
+    h1 {
+      font-size: clamp(34px, 5vw, 52px);
+      font-weight: 800;
+      letter-spacing: -1.4px;
+      line-height: 1.1;
+      margin-bottom: 18px;
+    }
+    .lede {
+      color: var(--muted);
+      font-size: 17px;
+      max-width: 620px;
+      margin-bottom: 40px;
+    }
+    .pillars {
+      display: grid;
+      gap: 16px;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      margin-bottom: 56px;
+    }
+    .pillar {
+      padding: 22px;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: linear-gradient(180deg, #fff, var(--bg-soft));
+    }
+    .pillar h3 {
+      font-size: 16px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+    .pillar p {
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    h2.section {
+      font-size: 22px;
+      font-weight: 700;
+      letter-spacing: -0.4px;
+      margin: 24px 0 16px;
+    }
+    .roles {
+      display: grid;
+      gap: 14px;
+    }
+    .role {
+      padding: 22px;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: #fff;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 16px;
+      align-items: center;
+      transition: border-color 120ms ease, transform 120ms ease;
+    }
+    .role:hover { border-color: var(--brand); transform: translateY(-2px); }
+    .role .title { font-weight: 600; font-size: 16px; margin-bottom: 4px; }
+    .role .meta { font-size: 13px; color: var(--muted); }
+    .role-cta {
+      padding: 10px 16px;
+      border-radius: 12px;
+      background: var(--ink);
+      color: #fff !important;
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+    .role-cta:hover { background: var(--brand-dark); }
+
+    .open-cta {
+      margin-top: 56px;
+      padding: 32px;
+      border-radius: 22px;
+      background: linear-gradient(135deg, var(--brand), var(--brand-dark));
+      color: #fff;
+      text-align: center;
+    }
+    .open-cta h3 {
+      font-size: 22px;
+      font-weight: 700;
+      margin-bottom: 8px;
+      letter-spacing: -0.4px;
+    }
+    .open-cta p {
+      opacity: 0.9;
+      margin-bottom: 18px;
+      font-size: 15px;
+    }
+    .open-cta a {
+      display: inline-block;
+      padding: 12px 20px;
+      background: #fff;
+      color: var(--ink);
+      border-radius: 12px;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 14px;
+    }
+    .open-cta a:hover { background: #ecfdf5; }
+
+    .page-footer {
+      border-top: 1px solid var(--line);
+      background: var(--bg-soft);
+      padding: 24px clamp(20px, 5vw, 32px);
+      text-align: center;
+      font-size: 12px;
+      color: var(--muted);
+    }
+  </style>
+</head>
+<body>
+  <header class="page-header">
+    <a class="brand-link" href="/" aria-label="beyound home">
+      <span class="brand-mark">b</span>
+      <span class="brand-name">beyound</span>
+    </a>
+    <a class="back-link" href="https://beyound.in">← Back to website</a>
+  </header>
+
+  <main>
+    <span class="kicker">Careers</span>
+    <h1>Build the rails that move India's money.</h1>
+    <p class="lede">
+      Beyound is operated by BeyoundExtra Tech Private Limited — a small,
+      compounding team building consumer wallet, BBPS bill payments and the
+      compliance backbone behind them. We hire for taste, ownership and
+      patience.
+    </p>
+
+    <div class="pillars">
+      <div class="pillar">
+        <h3>Ownership</h3>
+        <p>You ship to production on your first week and own that surface end-to-end. No throwing things over the wall.</p>
+      </div>
+      <div class="pillar">
+        <h3>Compounding work</h3>
+        <p>We pick problems where today's fix makes tomorrow's fix faster. The infra you build outlasts the feature it shipped.</p>
+      </div>
+      <div class="pillar">
+        <h3>Compliance native</h3>
+        <p>RBI, NPCI and BBPS aren't a tax — they're the product. We design with them, not around them.</p>
+      </div>
+    </div>
+
+    <h2 class="section">Open roles</h2>
+    <div class="roles">
+      <div class="role">
+        <div>
+          <div class="title">Senior Software Engineer — Wallet</div>
+          <div class="meta">Full-time · Bangalore / Remote · Python · FastAPI · React</div>
+        </div>
+        <a class="role-cta" href="mailto:careers@beyound.in?subject=Application — Senior SWE Wallet">Apply</a>
+      </div>
+      <div class="role">
+        <div>
+          <div class="title">Backend Engineer — BBPS</div>
+          <div class="meta">Full-time · Bangalore / Remote · Python · Postgres · payment rails</div>
+        </div>
+        <a class="role-cta" href="mailto:careers@beyound.in?subject=Application — Backend BBPS">Apply</a>
+      </div>
+      <div class="role">
+        <div>
+          <div class="title">Compliance &amp; Ops Lead</div>
+          <div class="meta">Full-time · Bangalore · RBI / NPCI / BBPCU experience</div>
+        </div>
+        <a class="role-cta" href="mailto:careers@beyound.in?subject=Application — Compliance &amp; Ops">Apply</a>
+      </div>
+      <div class="role">
+        <div>
+          <div class="title">Product Designer</div>
+          <div class="meta">Full-time · Bangalore / Remote · Mobile-first · Figma</div>
+        </div>
+        <a class="role-cta" href="mailto:careers@beyound.in?subject=Application — Product Designer">Apply</a>
+      </div>
+    </div>
+
+    <section class="open-cta">
+      <h3>Don't see your role?</h3>
+      <p>Send us your CV anyway. If we're not hiring for it now, we usually are in three months.</p>
+      <a href="mailto:careers@beyound.in?subject=Speculative — your name">careers@beyound.in</a>
+    </section>
+  </main>
+
+  <footer class="page-footer">
+    <p>&copy; 2026 BeyoundExtra Tech Private Limited. All rights reserved.</p>
+  </footer>
+</body>
+</html>
