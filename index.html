@@ -120,6 +120,38 @@
       .header-nav { display: none; }
     }
 
+    /* ---------- trust strip (compliance badges under the header) ---------- */
+    .trust-strip {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 8px clamp(20px, 5vw, 32px) 10px;
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    .trust-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: var(--brand-soft);
+      color: var(--brand-dark);
+      font-size: 11px;
+      letter-spacing: 0.6px;
+      text-transform: uppercase;
+      font-weight: 600;
+      border: 1px solid rgba(5, 150, 105, 0.12);
+    }
+    .trust-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--brand);
+      flex-shrink: 0;
+    }
+
     /* ---------- hero ---------- */
     .hero {
       position: relative;
@@ -527,6 +559,12 @@
         <a href="/policies/">Policies</a>
         <a class="header-cta" href="https://wallet.beyound.in">Open Wallet</a>
       </nav>
+    </div>
+    <div class="trust-strip" aria-label="Compliance and security">
+      <span class="trust-badge"><span class="trust-dot"></span>PCI DSS</span>
+      <span class="trust-badge"><span class="trust-dot"></span>ISO 27001</span>
+      <span class="trust-badge"><span class="trust-dot"></span>AES-256</span>
+      <span class="trust-badge"><span class="trust-dot"></span>Secure</span>
     </div>
   </header>
 
