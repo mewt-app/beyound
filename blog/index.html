@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Blog — beyound</title>
+  <meta name="description" content="Notes from the BeyoundExtra Tech team — product launches, engineering posts, payments writing.">
+  <meta name="theme-color" content="#059669">
+  <meta property="og:title" content="Blog — beyound">
+  <meta property="og:description" content="Notes from the BeyoundExtra Tech team — product launches, engineering posts, payments writing.">
+  <meta property="og:type" content="website">
+  <link rel="canonical" href="https://beyound.in/blog/">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='50' fill='%23059669'/><text x='50' y='68' text-anchor='middle' font-size='52' font-weight='700' font-family='system-ui' fill='white'>b</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700;9..144,800&family=Sora:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --brand: #059669;
+      --brand-dark: #047857;
+      --brand-soft: rgba(5, 150, 105, 0.08);
+      --ink: #0F172A;
+      --ink-soft: #1F2937;
+      --muted: #475569;
+      --muted-soft: #94A3B8;
+      --line: #E2E8F0;
+      --bg: #ffffff;
+      --bg-soft: #F8FAFC;
+      --paper: #FBF8F1;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { scrollbar-width: none; -ms-overflow-style: none; }
+    html::-webkit-scrollbar, body::-webkit-scrollbar { width: 0; height: 0; display: none; }
+    body {
+      font-family: 'Sora', system-ui, sans-serif;
+      background: var(--paper);
+      color: var(--ink);
+      line-height: 1.65;
+      -webkit-font-smoothing: antialiased;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    a { color: var(--brand); }
+    .page-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 20px clamp(20px, 5vw, 48px);
+      border-bottom: 1px solid var(--line);
+      max-width: 1100px; margin: 0 auto; width: 100%;
+    }
+    .brand-link { display: inline-flex; align-items: center; gap: 10px; text-decoration: none; color: var(--ink); }
+    .brand-mark { width: 32px; height: 32px; border-radius: 50%; background: linear-gradient(135deg, var(--brand), var(--brand-dark)); color: #fff; font-weight: 700; font-size: 18px; display: inline-flex; align-items: center; justify-content: center; }
+    .brand-name { font-weight: 800; font-size: 18px; letter-spacing: -0.5px; }
+    .back-link { font-size: 14px; color: var(--brand); text-decoration: none; font-weight: 500; }
+    .back-link:hover { text-decoration: underline; }
+
+    main {
+      flex: 1;
+      max-width: 920px;
+      margin: 0 auto;
+      padding: clamp(48px, 8vw, 80px) clamp(20px, 5vw, 32px) 80px;
+      width: 100%;
+    }
+    .kicker {
+      display: inline-block;
+      padding: 6px 14px;
+      border-radius: 999px;
+      background: var(--brand-soft);
+      color: var(--brand);
+      font-size: 12px;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      font-weight: 600;
+      margin-bottom: 20px;
+    }
+    h1 {
+      font-family: 'Fraunces', 'Times New Roman', serif;
+      font-size: clamp(40px, 6vw, 64px);
+      font-weight: 700;
+      letter-spacing: -1.6px;
+      line-height: 1.05;
+      margin-bottom: 18px;
+    }
+    .lede {
+      color: var(--muted);
+      font-size: 18px;
+      max-width: 620px;
+      margin-bottom: 48px;
+      line-height: 1.6;
+    }
+
+    .post-list { display: grid; gap: 24px; }
+    .post-card {
+      display: grid;
+      grid-template-columns: 220px 1fr;
+      gap: 24px;
+      padding: 24px;
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      text-decoration: none;
+      color: var(--ink);
+      transition: border-color 160ms ease, transform 160ms ease, box-shadow 160ms ease;
+    }
+    .post-card:hover {
+      border-color: var(--brand);
+      transform: translateY(-2px);
+      box-shadow: 0 18px 36px rgba(5, 150, 105, 0.10);
+    }
+    @media (max-width: 720px) {
+      .post-card { grid-template-columns: 1fr; }
+    }
+    .post-thumb {
+      border-radius: 14px;
+      overflow: hidden;
+      aspect-ratio: 4 / 3;
+      background:
+        radial-gradient(at 30% 30%, rgba(110, 231, 183, 0.55), transparent 55%),
+        radial-gradient(at 75% 70%, rgba(5, 150, 105, 0.45), transparent 60%),
+        linear-gradient(135deg, #064e3b 0%, #047857 100%);
+      position: relative;
+    }
+    .post-thumb::after {
+      content: 'b';
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: rgba(255,255,255,0.85);
+      font-family: 'Fraunces', serif;
+      font-size: 72px;
+      font-weight: 700;
+      letter-spacing: -3px;
+    }
+    .post-meta {
+      font-size: 12px;
+      color: var(--muted-soft);
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      font-weight: 600;
+      margin-bottom: 10px;
+    }
+    .post-title {
+      font-family: 'Fraunces', 'Times New Roman', serif;
+      font-weight: 700;
+      font-size: 26px;
+      letter-spacing: -0.7px;
+      line-height: 1.15;
+      margin-bottom: 8px;
+    }
+    .post-summary {
+      color: var(--muted);
+      font-size: 15px;
+      line-height: 1.6;
+      margin-bottom: 14px;
+    }
+    .post-author { font-size: 13px; color: var(--ink-soft); font-weight: 500; }
+    .post-author strong { color: var(--ink); font-weight: 700; }
+
+    .page-footer {
+      border-top: 1px solid var(--line);
+      background: var(--bg-soft);
+      padding: 24px clamp(20px, 5vw, 32px);
+      text-align: center;
+      font-size: 12px;
+      color: var(--muted);
+    }
+  </style>
+</head>
+<body>
+  <header class="page-header">
+    <a class="brand-link" href="/" aria-label="beyound home">
+      <span class="brand-mark">b</span>
+      <span class="brand-name">beyound</span>
+    </a>
+    <a class="back-link" href="https://beyound.in">← Back to website</a>
+  </header>
+
+  <main>
+    <span class="kicker">Blog</span>
+    <h1>Notes from the team.</h1>
+    <p class="lede">
+      Launch notes, product writing, the occasional engineering deep-dive.
+      Published when we have something to say.
+    </p>
+
+    <div class="post-list">
+      <a class="post-card" href="/blog/the-beyound-app-is-coming/">
+        <div class="post-thumb" aria-hidden="true"></div>
+        <div>
+          <p class="post-meta">May 20, 2026 · 6 min read · Product</p>
+          <h2 class="post-title">The Beyound app is coming. Here's what we're keeping, what we're cutting, and why.</h2>
+          <p class="post-summary">
+            Six months of building the wallet on the web taught us which
+            flows belong in your thumb and which were never going to make
+            it past a desktop browser. A note on the trade-offs.
+          </p>
+          <p class="post-author">By <strong>Ambalika Roy</strong>, Head of Product</p>
+        </div>
+      </a>
+    </div>
+  </main>
+
+  <footer class="page-footer">
+    <p>&copy; 2026 BeyoundExtra Tech Private Limited. All rights reserved.</p>
+  </footer>
+</body>
+</html>

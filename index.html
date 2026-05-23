@@ -582,6 +582,192 @@
       font-size: 14px;
     }
 
+    /* ---------- app coming soon band ---------- */
+    .app-soon {
+      position: relative;
+      overflow: hidden;
+      background: linear-gradient(180deg, #f0fdf4 0%, var(--bg) 100%);
+      border-top: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+    }
+    .app-soon-inner {
+      position: relative;
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: clamp(64px, 8vw, 110px) clamp(20px, 5vw, 32px);
+      display: grid;
+      grid-template-columns: 1.05fr 1fr;
+      gap: 56px;
+      align-items: center;
+    }
+    @media (max-width: 800px) {
+      .app-soon-inner { grid-template-columns: 1fr; gap: 32px; }
+    }
+    .app-soon-copy .eyebrow {
+      display: inline-block;
+      padding: 6px 14px;
+      border-radius: 999px;
+      background: var(--brand-soft);
+      color: var(--brand);
+      font-size: 11px;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      font-weight: 600;
+      margin-bottom: 18px;
+    }
+    .app-soon-copy h2 {
+      font-size: clamp(32px, 5vw, 52px);
+      font-weight: 800;
+      letter-spacing: -1.3px;
+      line-height: 1.05;
+      margin-bottom: 18px;
+    }
+    .app-soon-copy h2 .accent {
+      background: linear-gradient(135deg, var(--brand), var(--brand-dark));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+    .app-soon-copy p {
+      color: var(--muted);
+      font-size: 16px;
+      max-width: 520px;
+      line-height: 1.65;
+      margin-bottom: 24px;
+    }
+    .app-soon-cta {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    .store-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 18px;
+      border-radius: 14px;
+      background: var(--ink);
+      color: #fff;
+      font-weight: 600;
+      font-size: 14px;
+      text-decoration: none;
+      opacity: 0.55;
+      cursor: not-allowed;
+    }
+    .store-chip svg { width: 22px; height: 22px; }
+    .store-chip small { display: block; font-size: 10px; font-weight: 500; opacity: 0.8; letter-spacing: 0.4px; text-transform: uppercase; }
+    .store-chip strong { font-size: 15px; font-weight: 700; letter-spacing: -0.3px; }
+
+    .app-soon-visual {
+      position: relative;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 380px;
+    }
+    .phone-mock {
+      position: relative;
+      width: 240px;
+      height: 480px;
+      background: linear-gradient(180deg, #0F172A 0%, #1E293B 100%);
+      border-radius: 38px;
+      box-shadow:
+        0 30px 60px rgba(15, 23, 42, 0.25),
+        0 0 0 2px rgba(15, 23, 42, 0.6),
+        inset 0 0 0 3px rgba(255,255,255,0.06);
+      padding: 14px;
+      animation: phone-float 6s ease-in-out infinite;
+    }
+    .phone-mock::before {
+      content: '';
+      position: absolute;
+      top: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100px;
+      height: 22px;
+      background: #000;
+      border-radius: 0 0 14px 14px;
+      z-index: 2;
+    }
+    .phone-screen {
+      width: 100%;
+      height: 100%;
+      border-radius: 28px;
+      background: linear-gradient(180deg, var(--brand) 0%, var(--brand-dark) 60%, #064e3b 100%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      position: relative;
+      overflow: hidden;
+    }
+    .phone-screen::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(at 30% 20%, rgba(255,255,255,0.18), transparent 50%),
+        radial-gradient(at 70% 80%, rgba(110,231,183,0.18), transparent 60%);
+    }
+    .phone-mark {
+      position: relative;
+      z-index: 1;
+      width: 84px;
+      height: 84px;
+      border-radius: 50%;
+      background: #fff;
+      color: var(--brand);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 44px;
+      font-weight: 800;
+      box-shadow: 0 14px 28px rgba(0,0,0,0.30);
+    }
+    .phone-title {
+      position: relative;
+      z-index: 1;
+      color: #fff;
+      font-size: 22px;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+    }
+    .phone-pill {
+      position: relative;
+      z-index: 1;
+      padding: 6px 14px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.16);
+      backdrop-filter: blur(8px);
+      color: #d1fae5;
+      font-size: 11px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      font-weight: 600;
+      border: 1px solid rgba(255,255,255,0.25);
+    }
+    .phone-glow {
+      position: absolute;
+      width: 360px;
+      height: 360px;
+      border-radius: 50%;
+      background: radial-gradient(circle, var(--brand-soft), transparent 60%);
+      filter: blur(40px);
+      z-index: -1;
+      animation: phone-glow 5s ease-in-out infinite alternate;
+    }
+    @keyframes phone-float {
+      0%, 100% { transform: translateY(0) rotate(-1deg); }
+      50%      { transform: translateY(-12px) rotate(1deg); }
+    }
+    @keyframes phone-glow {
+      0%   { opacity: 0.6; transform: scale(0.95); }
+      100% { opacity: 1;   transform: scale(1.10); }
+    }
+
     /* ---------- campaign band ---------- */
     .campaign {
       position: relative;
@@ -1006,6 +1192,7 @@
       <nav class="header-nav">
         <a href="#services">Services</a>
         <a href="#about">About</a>
+        <a href="/blog/">Blog</a>
         <a href="/policies/">Policies</a>
         <a class="header-cta" href="https://wallet.beyound.in">Open Wallet</a>
       </nav>
@@ -1044,6 +1231,49 @@
     <div class="hero-actions">
       <a class="btn btn-primary" href="https://wallet.beyound.in">Try Beyound Wallet →</a>
       <a class="btn btn-ghost" href="https://bills.beyound.in">Pay a bill</a>
+    </div>
+  </section>
+
+  <section class="app-soon" aria-label="Beyound app coming soon">
+    <div class="app-soon-inner">
+      <div class="app-soon-copy">
+        <span class="eyebrow">Coming soon</span>
+        <h2>The Beyound app.<br><span class="accent">Bills + Wallet in your pocket.</span></h2>
+        <p>
+          Same rails, same compliance, all the rough edges smoothed out
+          for thumb-only use. iOS and Android. Sign-in with the same phone
+          you use on the web; your beneficiaries, payment history and KYC
+          come with you.
+        </p>
+        <p>
+          <strong>Ambalika Roy</strong> wrote about why we're building the
+          app the way we are — what stays in the web flow, what gets
+          rewritten for mobile, and what we're cutting on purpose.
+        </p>
+        <div class="app-soon-cta">
+          <a class="btn btn-primary" href="/blog/the-beyound-app-is-coming/">
+            Read the blog →
+          </a>
+          <span class="store-chip" aria-disabled="true" title="Coming soon">
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M16.5 12.5c0-2.34 1.91-3.46 2-3.5-1.09-1.6-2.79-1.82-3.4-1.84-1.45-.15-2.83.86-3.57.86-.73 0-1.87-.84-3.07-.82-1.58.02-3.04.92-3.86 2.34-1.64 2.84-.42 7.04 1.18 9.34.78 1.13 1.7 2.39 2.91 2.35 1.17-.05 1.61-.76 3.03-.76s1.81.76 3.05.74c1.26-.02 2.06-1.15 2.83-2.28.9-1.31 1.27-2.59 1.29-2.66-.03-.01-2.47-.95-2.49-3.77zM14.1 5.3c.65-.79 1.09-1.88.97-2.97-.94.04-2.07.62-2.74 1.41-.6.69-1.13 1.81-.99 2.88 1.04.08 2.11-.53 2.76-1.32z"/></svg>
+            <span><small>Download on</small><strong>App Store</strong></span>
+          </span>
+          <span class="store-chip" aria-disabled="true" title="Coming soon">
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M3.61 1.81c-.31.32-.49.81-.49 1.45v17.46c0 .64.18 1.13.49 1.45l.06.06L13.4 12v-.01L3.67 1.75l-.06.06zM17.46 15.57l-3.25-3.25v-.01l3.25-3.25.07.04 3.85 2.19c1.1.62 1.1 1.65 0 2.27l-3.85 2.19-.07.04zM3.67 22.25l9.73-9.73L17.46 16.6l-12.3 6.99c-.42.24-.83.27-1.18.06l-.31-1.4zM3.67 1.75l13.79 7.84-4.06 4.06L3.67 3.92V1.75z"/></svg>
+            <span><small>Get it on</small><strong>Google Play</strong></span>
+          </span>
+        </div>
+      </div>
+      <div class="app-soon-visual" aria-hidden="true">
+        <span class="phone-glow"></span>
+        <div class="phone-mock">
+          <div class="phone-screen">
+            <span class="phone-mark">b</span>
+            <span class="phone-title">beyound</span>
+            <span class="phone-pill">Coming soon</span>
+          </div>
+        </div>
+      </div>
     </div>
   </section>
 
@@ -1278,6 +1508,7 @@
         <ul>
           <li><a href="/policies/about.html">About Beyound</a></li>
           <li><a href="/careers/">Careers</a></li>
+          <li><a href="/blog/">Blog</a></li>
           <li><a href="/faq/">FAQ</a></li>
           <li><a href="mailto:support@beyound.in">support@beyound.in</a></li>
           <li>Bangalore, India</li>

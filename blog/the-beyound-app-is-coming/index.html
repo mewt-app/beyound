@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>The Beyound app is coming — by Ambalika Roy · beyound</title>
+  <meta name="description" content="Six months of building the wallet on the web taught us which flows belong in your thumb and which were never going to make it past a desktop browser. A note from Ambalika Roy, Head of Product at BeyoundExtra Tech.">
+  <meta name="theme-color" content="#059669">
+  <meta property="og:title" content="The Beyound app is coming">
+  <meta property="og:description" content="A note from Ambalika Roy on why we're building the Beyound app the way we are.">
+  <meta property="og:type" content="article">
+  <meta property="article:published_time" content="2026-05-20T08:30:00+05:30">
+  <meta property="article:author" content="Ambalika Roy">
+  <link rel="canonical" href="https://beyound.in/blog/the-beyound-app-is-coming/">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='50' fill='%23059669'/><text x='50' y='68' text-anchor='middle' font-size='52' font-weight='700' font-family='system-ui' fill='white'>b</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700;9..144,800;9..144,900&family=Sora:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --brand: #059669;
+      --brand-dark: #047857;
+      --brand-soft: rgba(5, 150, 105, 0.08);
+      --ink: #0F172A;
+      --ink-soft: #1F2937;
+      --muted: #475569;
+      --muted-soft: #94A3B8;
+      --line: #E2E8F0;
+      --bg: #ffffff;
+      --bg-soft: #F8FAFC;
+      --paper: #FBF8F1;
+      --serif: 'Fraunces', 'Times New Roman', Georgia, serif;
+      --sans: 'Sora', system-ui, -apple-system, sans-serif;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { scrollbar-width: none; -ms-overflow-style: none; }
+    html::-webkit-scrollbar, body::-webkit-scrollbar { width: 0; height: 0; display: none; }
+    body {
+      font-family: var(--sans);
+      background: var(--paper);
+      color: var(--ink);
+      line-height: 1.7;
+      -webkit-font-smoothing: antialiased;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    a { color: var(--brand); }
+
+    /* ── header ── */
+    .page-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 20px clamp(20px, 5vw, 48px);
+      border-bottom: 1px solid var(--line);
+      max-width: 1100px; margin: 0 auto; width: 100%;
+      background: var(--paper);
+    }
+    .brand-link { display: inline-flex; align-items: center; gap: 10px; text-decoration: none; color: var(--ink); }
+    .brand-mark { width: 32px; height: 32px; border-radius: 50%; background: linear-gradient(135deg, var(--brand), var(--brand-dark)); color: #fff; font-weight: 700; font-size: 18px; display: inline-flex; align-items: center; justify-content: center; }
+    .brand-name { font-weight: 800; font-size: 18px; letter-spacing: -0.5px; }
+    .back-link { font-size: 14px; color: var(--brand); text-decoration: none; font-weight: 500; }
+    .back-link:hover { text-decoration: underline; }
+
+    /* ── hero ── */
+    .article-hero {
+      max-width: 920px;
+      margin: 0 auto;
+      padding: clamp(48px, 7vw, 88px) clamp(20px, 5vw, 32px) clamp(24px, 4vw, 40px);
+      text-align: center;
+    }
+    .kicker {
+      display: inline-block;
+      padding: 6px 14px;
+      border-radius: 999px;
+      background: var(--brand-soft);
+      color: var(--brand);
+      font-size: 11px;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      font-weight: 600;
+      margin-bottom: 22px;
+    }
+    h1 {
+      font-family: var(--serif);
+      font-weight: 700;
+      font-size: clamp(36px, 6vw, 64px);
+      letter-spacing: -1.4px;
+      line-height: 1.05;
+      margin-bottom: 22px;
+      color: var(--ink);
+    }
+    .deck {
+      font-family: var(--serif);
+      font-weight: 400;
+      font-style: italic;
+      font-size: clamp(18px, 2vw, 22px);
+      color: var(--muted);
+      max-width: 640px;
+      margin: 0 auto 32px;
+      line-height: 1.45;
+    }
+    .byline {
+      display: inline-flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 12px;
+      align-items: center;
+      font-size: 13px;
+      color: var(--muted);
+      letter-spacing: 0.3px;
+      padding-top: 16px;
+      border-top: 1px solid var(--line);
+    }
+    .byline .author { color: var(--ink); font-weight: 600; }
+    .byline .dot { width: 4px; height: 4px; border-radius: 50%; background: var(--muted-soft); display: inline-block; }
+
+    /* ── hero image ── */
+    .hero-figure {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 clamp(20px, 5vw, 32px) clamp(40px, 6vw, 64px);
+    }
+    .hero-image {
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      border-radius: 28px;
+      position: relative;
+      overflow: hidden;
+      background:
+        radial-gradient(at 22% 30%, rgba(110, 231, 183, 0.55), transparent 55%),
+        radial-gradient(at 80% 70%, rgba(5, 150, 105, 0.55), transparent 55%),
+        linear-gradient(135deg, #052e1f 0%, #0b4a32 50%, #064e3b 100%);
+      box-shadow: 0 30px 70px rgba(5, 56, 36, 0.18);
+    }
+    .hero-image::after {
+      content: 'b';
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: rgba(255,255,255,0.92);
+      font-family: var(--serif);
+      font-size: clamp(120px, 22vw, 240px);
+      font-weight: 700;
+      letter-spacing: -8px;
+      text-shadow: 0 12px 36px rgba(0,0,0,0.20);
+    }
+    .hero-caption {
+      max-width: 720px;
+      margin: 16px auto 0;
+      font-size: 13px;
+      text-align: center;
+      color: var(--muted);
+      font-style: italic;
+    }
+
+    /* ── body ── */
+    article.body {
+      max-width: 680px;
+      margin: 0 auto;
+      padding: 0 clamp(20px, 5vw, 32px) clamp(64px, 8vw, 96px);
+    }
+    article.body p {
+      font-size: 18px;
+      line-height: 1.78;
+      margin-bottom: 22px;
+      color: var(--ink-soft);
+    }
+    article.body p strong { color: var(--ink); font-weight: 600; }
+    article.body p em { color: var(--ink); font-style: italic; }
+    article.body p:first-of-type::first-letter {
+      font-family: var(--serif);
+      font-weight: 700;
+      float: left;
+      font-size: 78px;
+      line-height: 0.85;
+      padding: 6px 12px 0 0;
+      color: var(--brand);
+    }
+    article.body h2 {
+      font-family: var(--serif);
+      font-weight: 700;
+      font-size: clamp(26px, 3vw, 32px);
+      letter-spacing: -0.8px;
+      line-height: 1.15;
+      margin: 56px 0 18px;
+      color: var(--ink);
+    }
+    article.body h2::before {
+      content: '';
+      display: block;
+      width: 48px;
+      height: 3px;
+      background: var(--brand);
+      border-radius: 2px;
+      margin-bottom: 16px;
+    }
+    article.body figure {
+      margin: 40px -40px;
+      border-radius: 18px;
+      overflow: hidden;
+    }
+    @media (max-width: 760px) {
+      article.body figure { margin: 32px 0; }
+    }
+    article.body figure .img {
+      width: 100%;
+      aspect-ratio: 16 / 10;
+      position: relative;
+      overflow: hidden;
+    }
+    article.body figure .img.a {
+      background:
+        radial-gradient(at 25% 30%, rgba(110, 231, 183, 0.45), transparent 55%),
+        radial-gradient(at 75% 70%, rgba(5, 150, 105, 0.35), transparent 60%),
+        linear-gradient(135deg, #f0fdf4 0%, #d1fae5 100%);
+    }
+    article.body figure .img.b {
+      background:
+        radial-gradient(at 50% 30%, rgba(5, 150, 105, 0.55), transparent 60%),
+        linear-gradient(135deg, #064e3b 0%, #047857 100%);
+    }
+    article.body figure .img.c {
+      background:
+        radial-gradient(at 70% 50%, rgba(110, 231, 183, 0.45), transparent 55%),
+        linear-gradient(135deg, #FBF8F1 0%, #ECFDF5 100%);
+    }
+    article.body figure .img-tag {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: rgba(255,255,255,0.85);
+      font-family: var(--serif);
+      font-size: 96px;
+      font-weight: 600;
+      letter-spacing: -3px;
+    }
+    article.body figure .img.a .img-tag,
+    article.body figure .img.c .img-tag { color: rgba(5, 150, 105, 0.55); }
+    article.body figure figcaption {
+      padding: 14px 18px;
+      background: #fff;
+      border-top: 1px solid var(--line);
+      font-size: 13px;
+      color: var(--muted);
+      font-style: italic;
+    }
+    article.body blockquote {
+      margin: 40px 0;
+      padding: 24px 0 24px 28px;
+      border-left: 3px solid var(--brand);
+      font-family: var(--serif);
+      font-weight: 500;
+      font-style: italic;
+      font-size: 24px;
+      color: var(--ink);
+      line-height: 1.4;
+      letter-spacing: -0.5px;
+    }
+    article.body blockquote cite {
+      display: block;
+      margin-top: 10px;
+      font-family: var(--sans);
+      font-weight: 500;
+      font-style: normal;
+      font-size: 13px;
+      color: var(--muted);
+      letter-spacing: 0.3px;
+    }
+    article.body ul {
+      margin: 0 0 24px 22px;
+      color: var(--ink-soft);
+      font-size: 18px;
+    }
+    article.body ul li { margin-bottom: 8px; line-height: 1.7; }
+
+    .article-footer {
+      max-width: 680px;
+      margin: 0 auto;
+      padding: 0 clamp(20px, 5vw, 32px) clamp(40px, 6vw, 64px);
+      border-top: 1px solid var(--line);
+      padding-top: 32px;
+    }
+    .author-card {
+      display: grid;
+      grid-template-columns: 56px 1fr;
+      gap: 16px;
+      align-items: center;
+    }
+    .author-avatar {
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--brand), var(--brand-dark));
+      color: #fff;
+      font-family: var(--serif);
+      font-weight: 700;
+      font-size: 22px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 8px 18px rgba(5, 150, 105, 0.20);
+    }
+    .author-meta strong { display: block; font-weight: 700; font-size: 15px; }
+    .author-meta span { font-size: 13px; color: var(--muted); }
+    .article-cta {
+      margin-top: 32px;
+      padding: 28px;
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      text-align: center;
+    }
+    .article-cta h3 {
+      font-family: var(--serif);
+      font-weight: 700;
+      font-size: 22px;
+      letter-spacing: -0.4px;
+      margin-bottom: 6px;
+    }
+    .article-cta p { color: var(--muted); font-size: 14px; margin-bottom: 16px; }
+    .article-cta a {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 20px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, var(--brand), var(--brand-dark));
+      color: #fff;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 14px;
+      box-shadow: 0 10px 24px rgba(5, 150, 105, 0.20);
+    }
+
+    .page-footer {
+      border-top: 1px solid var(--line);
+      background: var(--bg-soft);
+      padding: 24px clamp(20px, 5vw, 32px);
+      text-align: center;
+      font-size: 12px;
+      color: var(--muted);
+    }
+  </style>
+</head>
+<body>
+  <header class="page-header">
+    <a class="brand-link" href="/" aria-label="beyound home">
+      <span class="brand-mark">b</span>
+      <span class="brand-name">beyound</span>
+    </a>
+    <a class="back-link" href="/blog/">← All posts</a>
+  </header>
+
+  <section class="article-hero">
+    <span class="kicker">Product · launch notes</span>
+    <h1>The Beyound app is coming. Here's what we're keeping, what we're cutting, and why.</h1>
+    <p class="deck">
+      Six months of building the wallet on the web taught us which flows
+      belong in your thumb and which were never going to make it past a
+      desktop browser. A note on the trade-offs.
+    </p>
+    <div class="byline">
+      <span>By <span class="author">Ambalika Roy</span></span>
+      <span class="dot" aria-hidden="true"></span>
+      <span>Head of Product, BeyoundExtra Tech</span>
+      <span class="dot" aria-hidden="true"></span>
+      <time datetime="2026-05-20">20 May 2026</time>
+      <span class="dot" aria-hidden="true"></span>
+      <span>6 min read</span>
+    </div>
+  </section>
+
+  <figure class="hero-figure">
+    <div class="hero-image" role="img" aria-label="Beyound brand mark — a green circle with a serif 'b'."></div>
+    <figcaption class="hero-caption">
+      Concept render — the Beyound app icon. The same mark you've seen on
+      every receipt, now lit up on a home screen.
+    </figcaption>
+  </figure>
+
+  <article class="body">
+    <p>
+      The web flow is the brief. When we launched the Beyound wallet on
+      the web at the start of the year, we made a deliberate choice: ship
+      where the rails were strongest, see what people did, and only then
+      build the mobile experience the data asked for. Six months in, the
+      data has opinions.
+    </p>
+
+    <p>
+      What it told us: bill payments — the BBPS half of Beyound — happen
+      almost entirely on phones. <strong>83% of bill-pay sessions on
+      bills.beyound.in this year came from a mobile browser.</strong>
+      Wallet load and onward transfer split the other way: roughly 60%
+      desktop, 40% mobile, with a long tail of users who load on desktop
+      and then transfer on mobile a day later.
+    </p>
+
+    <p>
+      So we're not building <em>one app to replace the website.</em>
+      We're building an app that picks up the half of the product the
+      phone is already winning, and leaves the desktop browser to keep
+      doing the half it's better at. That's the headline. Here are the
+      trade-offs underneath it.
+    </p>
+
+    <h2>What we're keeping</h2>
+
+    <p>
+      The non-negotiables came out of looking at session recordings, not
+      a roadmap. Three patterns showed up over and over.
+    </p>
+
+    <p>
+      <strong>One — the OTP-only login.</strong> No password, no
+      magic-link email, no "sign in with Google." A phone number, an OTP,
+      and you're in. The Beyound twilio integration delivers a 6-digit
+      code; verifying it mints a session that the same merchant ID
+      carries across web and app. If you've used the wallet once on the
+      web, your beneficiaries, KYC tier, payment history and pinned
+      billers all show up on the app the moment you sign in. Nothing to
+      re-do.
+    </p>
+
+    <figure>
+      <div class="img a"><span class="img-tag">·</span></div>
+      <figcaption>
+        Sign-in stays one screen. One field, one button, one OTP — the
+        same six-digit code you get on the web. The app reads the SMS
+        automatically on Android; on iOS you tap the suggestion above
+        the keyboard.
+      </figcaption>
+    </figure>
+
+    <p>
+      <strong>Two — the categorisation we already ship.</strong> The 30
+      BBPS categories — Electricity, Mobile, Broadband, Gas, Insurance,
+      Credit Card and the long tail — render on the home screen the
+      same way they render on bills.beyound.in: grouped, scrollable,
+      searchable. We tried two redesigns of this grid early on, ran
+      both past users, and both lost to the existing layout. So we kept
+      it.
+    </p>
+
+    <p>
+      <strong>Three — the receipt.</strong> Every payment ends with the
+      Bharat Connect receipt: B-Connect Txn ID, B Assured stamp,
+      CGST/SGST split for the convenience fee, an exact-match copy of
+      what we send to your inbox. People print these. People email them
+      to landlords. People send them to their CA. The receipt is the
+      product surface that earns the most trust per pixel; we're not
+      touching it.
+    </p>
+
+    <blockquote>
+      The job isn't to pack the website into a phone-shaped box. It's
+      to ask, screen by screen, what the phone changes about that
+      screen — and only then redraw the ones where the answer is
+      "something."
+      <cite>— A note we taped above the design Jira board, March 2026</cite>
+    </blockquote>
+
+    <h2>What we're cutting</h2>
+
+    <p>
+      Cuts are harder than additions, mostly because everyone who
+      shipped the feature you're cutting is still in the room. Here's
+      what didn't make the app and why.
+    </p>
+
+    <p>
+      <strong>The desktop dashboard.</strong> The web wallet has a
+      KPI-style dashboard above the fold — balance, monthly spend,
+      pending KYC, three "pinned" transfers. On a phone, all of that
+      moves into the navigation, not the surface. The first screen
+      after login on the app is the action you came to take, not a
+      summary of actions you've already taken.
+    </p>
+
+    <p>
+      <strong>Multi-tab beneficiary management.</strong> On the web
+      you can have your beneficiary list open while you fill the
+      transfer form; you can compare two beneficiaries side by side
+      before deciding. The phone doesn't do that. So the app drops
+      the management list as a destination and instead promotes
+      beneficiaries to <em>selection chips</em> inside the transfer
+      flow itself. The full list still exists, but you don't visit
+      it — you just pick from your last five at the top of the
+      payment screen.
+    </p>
+
+    <p>
+      <strong>The "deep links every screen has its own URL" model.</strong>
+      The web has 84 routed pages. The app has 12 screens. The
+      collapse is on purpose. If a feature on the web is only one
+      level deep — a settings toggle, a single-field edit — it
+      becomes a sheet in the app, not a screen. We bought back about
+      40% of our screen-count budget by being strict about this.
+    </p>
+
+    <figure>
+      <div class="img b"><span class="img-tag">b</span></div>
+      <figcaption>
+        Screen-count audit, April 2026. Each tile is one screen on the
+        web. The shaded tiles became sheets in the app.
+      </figcaption>
+    </figure>
+
+    <h2>What changes because the device changes</h2>
+
+    <p>
+      A few features only exist because the phone gives us hardware
+      the web doesn't.
+    </p>
+
+    <ul>
+      <li>
+        <strong>Biometrics gating the wallet transfer.</strong> Face ID
+        or fingerprint instead of a re-entered MPIN for any transfer
+        over a configurable threshold. The web equivalent (WebAuthn)
+        works, but adoption is roughly 1.5% — on the app it'll be
+        closer to default.
+      </li>
+      <li>
+        <strong>Camera-first add-money.</strong> If your card is in
+        hand, point at it. We don't store the image; we OCR it on
+        device, prefill the four fields, then discard. The card never
+        leaves the phone.
+      </li>
+      <li>
+        <strong>Bill auto-detect from SMS.</strong> Same idea, applied
+        to the standard Indian telecom and electricity bill SMS
+        formats. The app reads the next-due amount and one-taps you
+        into the payment flow. (Opt-in. Off by default.)
+      </li>
+      <li>
+        <strong>Offline receipt.</strong> Every successful payment
+        gets cached locally so you can pull up a receipt without
+        reception. Useful at toll plazas, useful at petrol pumps,
+        useful basically anywhere "no network" hits at the wrong
+        time.
+      </li>
+    </ul>
+
+    <h2>What stays exactly as it was</h2>
+
+    <p>
+      The backend doesn't move. <strong>Every API the app hits is the
+      same API the web hits.</strong> Same auth, same wallet, same
+      Zokudo wrapper for KYC, same Bharat Connect rails for BBPS. If
+      the app is a window onto the same product the web is — and
+      conceptually that's what we want it to be — then there's only one
+      definition of "your account" and one definition of "your
+      transactions." Anything else is a maintenance trap.
+    </p>
+
+    <p>
+      The compliance footprint also doesn't move. RBI prepaid wallet
+      rules, NPCI BBPS rules, KYC tier limits, the grievance redressal
+      matrix — all of it is enforced server-side. The app just renders
+      what the server says is allowed. We didn't want a world where the
+      app and the web disagreed about whether a user could top up; the
+      simplest way to avoid it is to never let the app be the source of
+      truth for those answers.
+    </p>
+
+    <figure>
+      <div class="img c"><span class="img-tag">b</span></div>
+      <figcaption>
+        Compliance map, May 2026. The dotted line is the API boundary —
+        everything on the right is server-owned; everything on the left
+        is just rendering.
+      </figcaption>
+    </figure>
+
+    <h2>When you'll see it</h2>
+
+    <p>
+      We're in beta with about 400 users — friends-of-the-team, a
+      handful of early customers, and the BBPS ops folks who basically
+      live in the product anyway. Public launch on iOS and Android is
+      targeted for <strong>end of June 2026</strong>. If you'd like
+      to be on the early-access list, write to{' '}
+      <a href="mailto:beta@beyound.in">beta@beyound.in</a> with a
+      sentence about how you'd use the app — that helps us prioritise
+      which platform tester to onboard next.
+    </p>
+
+    <p>
+      We'll be writing more about the app between now and the launch —
+      a piece on the OCR pipeline, one on how we keep the offline
+      receipts honest, and a small one on why we picked the green-circle
+      "b" as the app icon when the team was split four-ways on
+      alternates. Subscribe to{' '}
+      <a href="/blog/">the blog</a> if you want to catch those.
+    </p>
+
+    <p>
+      Until then — thanks for using the web product. The app is built
+      on what you taught us.
+    </p>
+  </article>
+
+  <section class="article-footer">
+    <div class="author-card">
+      <div class="author-avatar" aria-hidden="true">A</div>
+      <div class="author-meta">
+        <strong>Ambalika Roy</strong>
+        <span>Head of Product, BeyoundExtra Tech Private Limited.</span>
+      </div>
+    </div>
+    <div class="article-cta">
+      <h3>Be the first to try the app</h3>
+      <p>Beta opens through the end of June. Send a one-line note and we'll wave you in.</p>
+      <a href="mailto:beta@beyound.in?subject=Beyound%20app%20beta%20%E2%80%94%20early%20access">beta@beyound.in</a>
+    </div>
+  </section>
+
+  <footer class="page-footer">
+    <p>&copy; 2026 BeyoundExtra Tech Private Limited. All rights reserved.</p>
+  </footer>
+</body>
+</html>
