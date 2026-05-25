@@ -206,13 +206,21 @@
       background-size: cover;
       background-position: center;
     }
-    /* Reserved slot for the production background video. When the
-       brand video is ready, replace `.hero-cinematic-media` with a
-       <video autoplay muted loop playsinline> and reuse this rule. */
+    /* Brand reel layered on top of the gradient inside
+       `.hero-cinematic-media`. object-fit: cover keeps the framing
+       intact across viewport aspect ratios. The element is marked
+       aria-hidden + tabindex=-1 since the video is decorative — all
+       hero copy lives in `.hero-cinematic-content`. */
     .hero-cinematic-media video {
+      position: absolute;
+      inset: 0;
       width: 100%;
       height: 100%;
       object-fit: cover;
+      pointer-events: none;
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .hero-cinematic-media video { display: none; }
     }
     .hero-cinematic-scrim {
       position: absolute;
@@ -1043,10 +1051,22 @@
   </header>
 
   <section class="hero-cinematic" aria-label="Beyound platform">
-    <!-- Background media slot. Today: gradient placeholder. Swap to a
-         <video autoplay muted loop playsinline> with the brand reel
-         when ready. The gradient stays as a poster fallback. -->
-    <div class="hero-cinematic-media" role="presentation"></div>
+    <!-- Brand background reel. The gradient on `.hero-cinematic-media`
+         doubles as the poster fallback while the video downloads (or
+         on browsers / data-saver modes that refuse autoplay). -->
+    <div class="hero-cinematic-media" role="presentation">
+      <video
+        autoplay
+        muted
+        loop
+        playsinline
+        preload="auto"
+        aria-hidden="true"
+        tabindex="-1"
+      >
+        <source src="beyound-hero.mp4" type="video/mp4" />
+      </video>
+    </div>
     <div class="hero-cinematic-scrim" role="presentation"></div>
     <div class="hero-cinematic-content">
       <span class="eyebrow">Payments, simplified</span>
