@@ -14,7 +14,8 @@
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='50' fill='%23059669'/><text x='50' y='68' text-anchor='middle' font-size='52' font-weight='700' font-family='system-ui' fill='white'>b</text></svg>">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&display=swap" media="print" onload="this.media='all'">
+  <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&display=swap"></noscript>
   <style>
     :root {
       --brand: #059669;
@@ -1056,16 +1057,14 @@
          on browsers / data-saver modes that refuse autoplay). -->
     <div class="hero-cinematic-media" role="presentation">
       <video
-        autoplay
         muted
         loop
         playsinline
-        preload="auto"
+        preload="none"
         aria-hidden="true"
         tabindex="-1"
-      >
-        <source src="beyound-hero.mp4" type="video/mp4" />
-      </video>
+        data-hero-src="beyound-hero.mp4"
+      ></video>
     </div>
     <div class="hero-cinematic-scrim" role="presentation"></div>
     <div class="hero-cinematic-content">
@@ -1097,7 +1096,7 @@
           <path d="M124.915 0C118.792 0 113.828 3.5067 113.828 10.2722C113.828 17.0376 118.792 20.5443 124.915 20.5443C131.038 20.5443 136.002 17.0376 136.002 10.2722C136.002 3.5067 131.038 0 124.915 0ZM124.915 18.9282C121.094 18.9282 117.999 16.3558 117.999 10.2722C117.999 4.18856 121.098 1.6161 124.915 1.6161C128.736 1.6161 131.831 4.18856 131.831 10.2722C131.831 16.3558 128.736 18.9282 124.915 18.9282Z" fill="#0B3A2C"/>
           <path d="M16.7188 15.8424H14.3545L14.2969 16.5066L14.2571 17.7286C14.2571 17.7286 14.3058 18.1847 13.7302 18.2378C13.1546 18.2909 11.7731 18.3264 11.0957 18.3264C10.9363 18.3264 10.4935 18.3175 9.90467 18.3175H4.73317L16.6259 1.65179V0.354492H16.6303H0.535747V4.84856H2.90012L2.95767 4.18441L2.99752 2.64802C2.99752 2.64802 2.94882 2.19197 3.52441 2.13884C4.10001 2.08571 5.48144 2.05029 6.15887 2.05029C6.81416 2.05029 11.6802 2.05029 11.9502 2.05029L0 18.7116V20.186H16.7144L16.71 20.1815L16.7188 20.186V15.8424Z" fill="#0B3A2C"/>
         </svg>
-        <img src="payu-logo.svg" alt="PayU" height="34" style="height:34px;width:auto;display:block;" />
+        <img src="payu-logo.svg" alt="PayU" width="62" height="34" loading="lazy" decoding="async" style="height:34px;width:auto;display:block;" />
       </div>
     </div>
   </section>
@@ -1393,6 +1392,36 @@
         update();
       });
       update();
+    })();
+  </script>
+  <script>
+    /* Connection-aware, deferred hero video loader. Keeps the 16MB reel off
+       the critical path: the CSS gradient on `.hero-cinematic-media` is the
+       instant LCP paint. Video attaches only on capable, non-data-saver
+       connections, after the page is idle. Respects reduced-motion. */
+    (function () {
+      var v = document.querySelector('.hero-cinematic-media video[data-hero-src]');
+      if (!v) return;
+      var rm = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)');
+      if (rm && rm.matches) return;
+      var c = navigator.connection;
+      if (c && (c.saveData || /(^|-)2g/.test(c.effectiveType || ''))) return;
+      function load() {
+        var s = document.createElement('source');
+        s.src = v.getAttribute('data-hero-src');
+        s.type = 'video/mp4';
+        v.appendChild(s);
+        v.load();
+        var p = v.play();
+        if (p && typeof p.catch === 'function') {
+          p.catch(function (err) { void err; });
+        }
+      }
+      if ('requestIdleCallback' in window) {
+        requestIdleCallback(load, { timeout: 3000 });
+      } else {
+        window.addEventListener('load', function () { setTimeout(load, 1200); });
+      }
     })();
   </script>
 </body>
