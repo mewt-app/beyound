@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>FAQ &amp; Definitions — beyound</title>
+  <meta name="description" content="Definitions, common questions and answers about the Beyound Wallet and Beyound Bills (BBPS) services.">
+  <meta name="theme-color" content="#059669">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='50' fill='%23059669'/><text x='50' y='68' text-anchor='middle' font-size='52' font-weight='700' font-family='system-ui' fill='white'>b</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --brand: #059669;
+      --brand-dark: #047857;
+      --brand-soft: rgba(5, 150, 105, 0.08);
+      --ink: #0F172A;
+      --ink-soft: #1F2937;
+      --muted: #475569;
+      --line: #E2E8F0;
+      --bg: #ffffff;
+      --bg-soft: #F8FAFC;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { scrollbar-width: none; -ms-overflow-style: none; }
+    html::-webkit-scrollbar, body::-webkit-scrollbar { width: 0; height: 0; display: none; }
+    body {
+      font-family: 'Sora', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+      line-height: 1.65;
+      -webkit-font-smoothing: antialiased;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    a { color: var(--brand); }
+    .page-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 20px clamp(20px, 5vw, 48px);
+      border-bottom: 1px solid var(--line);
+      max-width: 1100px;
+      margin: 0 auto;
+      width: 100%;
+    }
+    .brand-link {
+      display: inline-flex; align-items: center; gap: 10px;
+      text-decoration: none; color: var(--ink);
+    }
+    .brand-mark {
+      width: 32px; height: 32px; border-radius: 50%;
+      background: linear-gradient(135deg, var(--brand), var(--brand-dark));
+      color: #fff; font-weight: 700; font-size: 18px;
+      display: inline-flex; align-items: center; justify-content: center;
+    }
+    .brand-name { font-weight: 800; font-size: 18px; letter-spacing: -0.5px; }
+    .back-link { font-size: 14px; color: var(--brand); text-decoration: none; font-weight: 500; }
+    .back-link:hover { text-decoration: underline; }
+
+    main {
+      flex: 1;
+      max-width: 820px;
+      margin: 0 auto;
+      padding: clamp(48px, 8vw, 80px) clamp(20px, 5vw, 32px) 80px;
+      width: 100%;
+    }
+    .kicker {
+      display: inline-block;
+      padding: 6px 14px;
+      border-radius: 999px;
+      background: var(--brand-soft);
+      color: var(--brand);
+      font-size: 12px;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      font-weight: 600;
+      margin-bottom: 18px;
+    }
+    h1 {
+      font-size: clamp(34px, 5vw, 48px);
+      font-weight: 800;
+      letter-spacing: -1.2px;
+      line-height: 1.1;
+      margin-bottom: 18px;
+    }
+    .lede { color: var(--muted); font-size: 16px; max-width: 620px; margin-bottom: 36px; }
+
+    h2 {
+      font-size: 22px;
+      font-weight: 700;
+      letter-spacing: -0.4px;
+      margin: 40px 0 14px;
+      scroll-margin-top: 32px;
+    }
+    .toc {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 32px;
+      padding: 14px 16px;
+      background: var(--bg-soft);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+    }
+    .toc a {
+      font-size: 13px;
+      padding: 6px 12px;
+      border-radius: 999px;
+      background: #fff;
+      border: 1px solid var(--line);
+      text-decoration: none;
+      color: var(--ink-soft);
+      font-weight: 500;
+    }
+    .toc a:hover { color: var(--brand); border-color: var(--brand); }
+
+    dl.def {
+      display: grid;
+      gap: 16px;
+    }
+    dl.def > div {
+      padding: 18px 20px;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: #fff;
+    }
+    dl.def dt {
+      font-weight: 700;
+      font-size: 15px;
+      margin-bottom: 4px;
+      color: var(--ink);
+    }
+    dl.def dd {
+      font-size: 14px;
+      color: var(--ink-soft);
+      line-height: 1.65;
+    }
+
+    details.faq {
+      padding: 18px 20px;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: #fff;
+      transition: border-color 120ms ease;
+    }
+    details.faq + details.faq { margin-top: 12px; }
+    details.faq[open] { border-color: var(--brand); }
+    details.faq summary {
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 15px;
+      list-style: none;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+    }
+    details.faq summary::-webkit-details-marker { display: none; }
+    details.faq summary::after {
+      content: '+';
+      font-size: 22px;
+      color: var(--brand);
+      transition: transform 200ms ease;
+    }
+    details.faq[open] summary::after { transform: rotate(45deg); }
+    details.faq .answer {
+      margin-top: 12px;
+      color: var(--ink-soft);
+      font-size: 14px;
+      line-height: 1.7;
+    }
+
+    .page-footer {
+      border-top: 1px solid var(--line);
+      background: var(--bg-soft);
+      padding: 24px clamp(20px, 5vw, 32px);
+      text-align: center;
+      font-size: 12px;
+      color: var(--muted);
+    }
+  </style>
+</head>
+<body>
+  <header class="page-header">
+    <a class="brand-link" href="/" aria-label="beyound home">
+      <span class="brand-mark">b</span>
+      <span class="brand-name">beyound</span>
+    </a>
+    <a class="back-link" href="https://beyound.in">← Back to website</a>
+  </header>
+
+  <main>
+    <span class="kicker">FAQ &amp; Definitions</span>
+    <h1>Common questions, defined terms.</h1>
+    <p class="lede">
+      Most of the words that show up across the Beyound Wallet and Beyound
+      Bills policies. The questions at the bottom answer what users ask us
+      most often.
+    </p>
+
+    <div class="toc" aria-label="Sections">
+      <a href="#definitions">Definitions</a>
+      <a href="#wallet">Wallet</a>
+      <a href="#bills">Bills · BBPS</a>
+      <a href="#kyc">KYC</a>
+      <a href="#refunds">Refunds</a>
+      <a href="#support">Support</a>
+    </div>
+
+    <h2 id="definitions">Definitions</h2>
+    <dl class="def">
+      <div>
+        <dt>Platform</dt>
+        <dd>The Beyound app, website, APIs and associated systems that enable digital payments.</dd>
+      </div>
+      <div>
+        <dt>User / You / Payer</dt>
+        <dd>Any individual who uses the Platform to initiate payments, top-ups or transfers.</dd>
+      </div>
+      <div>
+        <dt>Beneficiary</dt>
+        <dd>The individual or entity receiving the payment (e.g. a biller, a bank account holder, an educational institution).</dd>
+      </div>
+      <div>
+        <dt>Transaction</dt>
+        <dd>Any payment instruction initiated through the Platform — bill payment via BBPS or transfer from the Beyound Wallet.</dd>
+      </div>
+      <div>
+        <dt>Wallet Service</dt>
+        <dd>The prepaid digital wallet that lets you load money via any supported payment mode (credit card, debit card, net banking, UPI) and transfer it onward to any bank account beneficiary.</dd>
+      </div>
+      <div>
+        <dt>BBPS Payments</dt>
+        <dd>Credit-card-backed bill payments routed through the Bharat Bill Payment System (BBPS) for electricity, water, gas, DTH, broadband, postpaid mobile, insurance, education and other registered billers.</dd>
+      </div>
+      <div>
+        <dt>KYC</dt>
+        <dd>"Know Your Customer" — the regulatory identity-verification process required by RBI for wallet activation and higher transaction limits. Beyound runs KYC via HyperVerge.</dd>
+      </div>
+      <div>
+        <dt>Third-Party Service Providers</dt>
+        <dd>External entities engaged to facilitate payments, verification, authentication or compliance — payment gateways, banks, card networks, KYC partners.</dd>
+      </div>
+    </dl>
+
+    <h2 id="wallet">Wallet</h2>
+    <details class="faq">
+      <summary>How do I load money into the Beyound Wallet?</summary>
+      <div class="answer">Credit card, debit card, net banking or UPI — pick whichever is convenient. Funds are credited automatically after successful payin.</div>
+    </details>
+    <details class="faq">
+      <summary>Can I withdraw money from the wallet to my own bank account?</summary>
+      <div class="answer">Wallet funds are intended for onward transfers to third-party beneficiaries (e.g. rent, vendor payments). Self-withdrawals to the funding account are restricted under the wallet's Permitted Use clause.</div>
+    </details>
+    <details class="faq">
+      <summary>What are the per-day / per-month limits?</summary>
+      <div class="answer">Limits are KYC-tier driven and surfaced inside the app after wallet activation. Min-KYC has lower caps; full KYC unlocks higher caps within RBI's prepaid instrument limits.</div>
+    </details>
+
+    <h2 id="bills">Bills · BBPS</h2>
+    <details class="faq">
+      <summary>Which bills can I pay?</summary>
+      <div class="answer">Anything available on the Bharat Bill Payment System — electricity, water, gas, DTH, broadband, postpaid mobile, insurance, education, FASTag, municipal taxes, etc.</div>
+    </details>
+    <details class="faq">
+      <summary>Why do I need credit-card to pay a bill?</summary>
+      <div class="answer">You don't have to use a credit card — but Bills via BBPS on Beyound is designed so any utility can be paid via credit card, even when the biller itself doesn't accept cards directly. That's the value Beyound adds.</div>
+    </details>
+
+    <h2 id="kyc">KYC</h2>
+    <details class="faq">
+      <summary>Why is KYC needed?</summary>
+      <div class="answer">RBI mandates KYC for prepaid wallets. Min KYC happens automatically on registration; full KYC (Aadhaar / DigiLocker / PAN) is required to unlock the higher-limit Wallet and unrestricted beneficiary transfers.</div>
+    </details>
+    <details class="faq">
+      <summary>How long does the KYC flow take?</summary>
+      <div class="answer">~2 minutes if your Aadhaar is linked to your mobile number and you have decent lighting for the live-selfie step.</div>
+    </details>
+
+    <h2 id="refunds">Refunds</h2>
+    <details class="faq">
+      <summary>A bill payment failed — when will I get the money back?</summary>
+      <div class="answer">Failed BBPS transactions auto-reverse to the source account within 5–7 working days, in line with NPCI's BBPCU rules. If a transaction shows as "successful" but the biller didn't credit, raise a grievance and we'll trace it.</div>
+    </details>
+    <details class="faq">
+      <summary>How do I raise a refund or dispute?</summary>
+      <div class="answer">Email <a href="mailto:support@beyound.in">support@beyound.in</a> with the transaction ID and reason. See the <a href="/policies/refund-cancellation.html">Cancellation &amp; Refund Policy</a> for SLAs.</div>
+    </details>
+
+    <h2 id="support">Support</h2>
+    <details class="faq">
+      <summary>How do I escalate a grievance?</summary>
+      <div class="answer">Start at <a href="mailto:support@beyound.in">support@beyound.in</a>. If the L1 response doesn't resolve it, the <a href="/policies/grievance.html">Grievance Redressal Policy</a> lists the L2 / L3 escalation matrix with response timelines.</div>
+    </details>
+    <details class="faq">
+      <summary>I think my account is being misused. What do I do?</summary>
+      <div class="answer">Email <a href="mailto:support@beyound.in">support@beyound.in</a> immediately with subject "URGENT — account compromise" — we'll lock the wallet and the BBPS profile while we investigate.</div>
+    </details>
+  </main>
+
+  <footer class="page-footer">
+    <p>&copy; 2026 BeyoundExtra Tech Private Limited. All rights reserved.</p>
+  </footer>
+</body>
+</html>

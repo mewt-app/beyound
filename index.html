@@ -14,7 +14,8 @@
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='50' fill='%23059669'/><text x='50' y='68' text-anchor='middle' font-size='52' font-weight='700' font-family='system-ui' fill='white'>b</text></svg>">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&display=swap" media="print" onload="this.media='all'">
+  <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&display=swap"></noscript>
   <style>
     :root {
       --brand: #059669;
@@ -55,20 +56,50 @@
 
     /* ---------- header ---------- */
     .site-header {
-      position: sticky;
+      position: fixed;
       top: 0;
+      left: 0;
+      right: 0;
       z-index: 20;
-      background: rgba(255,255,255,0.85);
+      background: transparent;
+      border-bottom: 1px solid transparent;
+      transition: background 200ms ease, border-color 200ms ease, backdrop-filter 200ms ease;
+    }
+    /* Once scrolled past the cinematic hero, settle into the original
+       translucent-white sticky behaviour so the page's body sections
+       stay readable. The class is toggled by the inline scroll
+       listener at the bottom of <body>. */
+    .site-header.is-scrolled {
+      background: rgba(255,255,255,0.92);
       backdrop-filter: blur(12px);
-      border-bottom: 1px solid var(--line);
+      border-bottom-color: var(--line);
     }
     .site-header-inner {
       max-width: 1100px;
       margin: 0 auto;
       padding: 16px clamp(20px, 5vw, 32px);
-      display: flex;
+      display: grid;
+      grid-template-columns: auto 1fr auto;
       align-items: center;
-      justify-content: space-between;
+      gap: 24px;
+    }
+    .site-header-inner > .header-nav {
+      justify-self: center;
+    }
+    /* White text + glow on top of the cinematic hero before scroll. */
+    .site-header:not(.is-scrolled) .brand-lockup,
+    .site-header:not(.is-scrolled) .header-nav a {
+      color: #fff;
+    }
+    .site-header:not(.is-scrolled) .brand-name { color: #fff; }
+    .site-header:not(.is-scrolled) .header-nav a:hover { color: #d1fae5; }
+    .site-header:not(.is-scrolled) .header-cta {
+      background: rgba(255,255,255,0.16);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(255,255,255,0.30);
+    }
+    .site-header:not(.is-scrolled) .header-cta:hover {
+      background: rgba(255,255,255,0.28);
     }
     .brand-lockup {
       display: inline-flex;
@@ -120,7 +151,160 @@
       .header-nav { display: none; }
     }
 
-    /* ---------- hero ---------- */
+    /* ---------- trust strip (compliance badges in the footer-brand block) ---------- */
+    .trust-strip {
+      margin-top: 16px;
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    .trust-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: rgba(5, 150, 105, 0.10);
+      color: #6EE7B7;
+      font-size: 10px;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+      font-weight: 600;
+      border: 1px solid rgba(5, 150, 105, 0.20);
+    }
+    .trust-dot {
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: var(--brand);
+      flex-shrink: 0;
+    }
+
+    /* ---------- cinematic full-screen hero (first section) ---------- */
+    .hero-cinematic {
+      position: relative;
+      height: 100vh;
+      min-height: 560px;
+      width: 100%;
+      overflow: hidden;
+      color: #fff;
+      isolation: isolate;
+    }
+    .hero-cinematic-media {
+      position: absolute;
+      inset: 0;
+      z-index: -2;
+      background:
+        linear-gradient(135deg, #052e1f 0%, #0b4a32 35%, #047857 75%, #064e3b 100%);
+      /* Drop-in a real photo (or swap the <div> for a <video>) by
+         overriding `background-image` on this element. The gradient
+         below is the placeholder used until that lands. */
+      background-image:
+        radial-gradient(at 20% 30%, rgba(16, 185, 129, 0.35), transparent 55%),
+        radial-gradient(at 80% 70%, rgba(5, 150, 105, 0.40), transparent 55%),
+        linear-gradient(135deg, #052e1f 0%, #064e3b 100%);
+      background-size: cover;
+      background-position: center;
+    }
+    /* Brand reel layered on top of the gradient inside
+       `.hero-cinematic-media`. object-fit: cover keeps the framing
+       intact across viewport aspect ratios. The element is marked
+       aria-hidden + tabindex=-1 since the video is decorative — all
+       hero copy lives in `.hero-cinematic-content`. */
+    .hero-cinematic-media video {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      pointer-events: none;
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .hero-cinematic-media video { display: none; }
+    }
+    .hero-cinematic-scrim {
+      position: absolute;
+      inset: 0;
+      z-index: -1;
+      background:
+        linear-gradient(180deg, rgba(0,0,0,0.10) 0%, rgba(0,0,0,0.55) 100%),
+        radial-gradient(at 25% 90%, rgba(0,0,0,0.40), transparent 60%);
+    }
+    .hero-cinematic-content {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: clamp(48px, 8vw, 96px);
+      padding: 0 clamp(20px, 5vw, 56px);
+      max-width: 720px;
+      animation: hero-rise 800ms ease-out both;
+    }
+    @keyframes hero-rise {
+      from { opacity: 0; transform: translateY(24px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .hero-cinematic-content .eyebrow {
+      display: inline-block;
+      padding: 6px 14px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.12);
+      backdrop-filter: blur(8px);
+      color: #d1fae5;
+      font-size: 11px;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      font-weight: 600;
+      margin-bottom: 20px;
+      border: 1px solid rgba(255,255,255,0.20);
+    }
+    .hero-cinematic-content h1 {
+      font-size: clamp(40px, 7vw, 80px);
+      font-weight: 800;
+      letter-spacing: -2px;
+      line-height: 1.02;
+      margin-bottom: 18px;
+      color: #fff;
+    }
+    .hero-cinematic-content h1 .accent {
+      color: #6EE7B7;
+    }
+    .hero-cinematic-content .lede {
+      font-size: clamp(15px, 1.5vw, 18px);
+      max-width: 560px;
+      color: rgba(255,255,255,0.85);
+      line-height: 1.6;
+      margin-bottom: 32px;
+    }
+    .hero-cinematic-content .hero-actions {
+      display: flex;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+    .hero-cinematic-content .btn-primary {
+      background: #fff;
+      color: var(--ink);
+      box-shadow: 0 14px 36px rgba(0,0,0,0.35);
+    }
+    .hero-cinematic-content .btn-primary:hover {
+      transform: translateY(-1px);
+      background: #ecfdf5;
+    }
+    .hero-cinematic-content .btn-ghost {
+      color: #fff;
+      border: 1px solid rgba(255,255,255,0.45);
+    }
+    .hero-cinematic-content .btn-ghost:hover {
+      border-color: #fff;
+      background: rgba(255,255,255,0.08);
+    }
+
+    @media (max-width: 640px) {
+      .site-header-inner { grid-template-columns: auto 1fr; }
+      .site-header-inner > .header-nav { display: none; }
+    }
+
+    /* ---------- secondary hero (formerly the only hero) ---------- */
     .hero {
       position: relative;
       max-width: 1100px;
@@ -407,49 +591,385 @@
       font-size: 14px;
     }
 
-    /* ---------- policies CTA ---------- */
-    .legal {
+    /* ---------- app coming soon band ---------- */
+    .app-soon {
+      position: relative;
+      overflow: hidden;
+      background: linear-gradient(180deg, #f0fdf4 0%, var(--bg) 100%);
+      border-top: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+    }
+    .app-soon-inner {
+      position: relative;
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: clamp(64px, 8vw, 110px) clamp(20px, 5vw, 32px);
+      display: grid;
+      grid-template-columns: 1.05fr 1fr;
+      gap: 56px;
+      align-items: center;
+    }
+    @media (max-width: 800px) {
+      .app-soon-inner { grid-template-columns: 1fr; gap: 32px; }
+    }
+    .app-soon-copy .eyebrow {
+      display: inline-block;
+      padding: 6px 14px;
+      border-radius: 999px;
+      background: var(--brand-soft);
+      color: var(--brand);
+      font-size: 11px;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      font-weight: 600;
+      margin-bottom: 18px;
+    }
+    .app-soon-copy h2 {
+      font-size: clamp(32px, 5vw, 52px);
+      font-weight: 800;
+      letter-spacing: -1.3px;
+      line-height: 1.05;
+      margin-bottom: 18px;
+    }
+    .app-soon-copy h2 .accent {
+      background: linear-gradient(135deg, var(--brand), var(--brand-dark));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+    .app-soon-copy p {
+      color: var(--muted);
+      font-size: 16px;
+      max-width: 520px;
+      line-height: 1.65;
+      margin-bottom: 24px;
+    }
+    .app-soon-cta {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    .store-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 18px;
+      border-radius: 14px;
+      background: var(--ink);
+      color: #fff;
+      font-weight: 600;
+      font-size: 14px;
+      text-decoration: none;
+      opacity: 0.55;
+      cursor: not-allowed;
+    }
+    .store-chip svg { width: 22px; height: 22px; }
+    .store-chip small { display: block; font-size: 10px; font-weight: 500; opacity: 0.8; letter-spacing: 0.4px; text-transform: uppercase; }
+    .store-chip strong { font-size: 15px; font-weight: 700; letter-spacing: -0.3px; }
+
+    .app-soon-visual {
+      position: relative;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 380px;
+    }
+    .phone-mock {
+      position: relative;
+      width: 240px;
+      height: 480px;
+      background: linear-gradient(180deg, #0F172A 0%, #1E293B 100%);
+      border-radius: 38px;
+      box-shadow:
+        0 30px 60px rgba(15, 23, 42, 0.25),
+        0 0 0 2px rgba(15, 23, 42, 0.6),
+        inset 0 0 0 3px rgba(255,255,255,0.06);
+      padding: 14px;
+      animation: phone-float 6s ease-in-out infinite;
+    }
+    .phone-mock::before {
+      content: '';
+      position: absolute;
+      top: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100px;
+      height: 22px;
+      background: #000;
+      border-radius: 0 0 14px 14px;
+      z-index: 2;
+    }
+    .phone-screen {
+      width: 100%;
+      height: 100%;
+      border-radius: 28px;
+      background: linear-gradient(180deg, var(--brand) 0%, var(--brand-dark) 60%, #064e3b 100%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      position: relative;
+      overflow: hidden;
+    }
+    .phone-screen::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(at 30% 20%, rgba(255,255,255,0.18), transparent 50%),
+        radial-gradient(at 70% 80%, rgba(110,231,183,0.18), transparent 60%);
+    }
+    .phone-mark {
+      position: relative;
+      z-index: 1;
+      width: 84px;
+      height: 84px;
+      border-radius: 50%;
+      background: #fff;
+      color: var(--brand);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 44px;
+      font-weight: 800;
+      box-shadow: 0 14px 28px rgba(0,0,0,0.30);
+    }
+    .phone-title {
+      position: relative;
+      z-index: 1;
+      color: #fff;
+      font-size: 22px;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+    }
+    .phone-pill {
+      position: relative;
+      z-index: 1;
+      padding: 6px 14px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.16);
+      backdrop-filter: blur(8px);
+      color: #d1fae5;
+      font-size: 11px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      font-weight: 600;
+      border: 1px solid rgba(255,255,255,0.25);
+    }
+    .phone-glow {
+      position: absolute;
+      width: 360px;
+      height: 360px;
+      border-radius: 50%;
+      background: radial-gradient(circle, var(--brand-soft), transparent 60%);
+      filter: blur(40px);
+      z-index: -1;
+      animation: phone-glow 5s ease-in-out infinite alternate;
+    }
+    @keyframes phone-float {
+      0%, 100% { transform: translateY(0) rotate(-1deg); }
+      50%      { transform: translateY(-12px) rotate(1deg); }
+    }
+    @keyframes phone-glow {
+      0%   { opacity: 0.6; transform: scale(0.95); }
+      100% { opacity: 1;   transform: scale(1.10); }
+    }
+
+
+    /* ---------- stats band ---------- */
+    .stats {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: clamp(48px, 7vw, 80px) clamp(20px, 5vw, 32px);
+    }
+    .stats-grid {
+      display: grid;
+      gap: 16px;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    }
+    .stat-card {
+      padding: 28px 24px;
+      border-radius: 22px;
+      border: 1px solid var(--line);
+      background: linear-gradient(180deg, #ffffff 0%, var(--bg-soft) 100%);
+      position: relative;
+      overflow: hidden;
+    }
+    .stat-card::after {
+      content: '';
+      position: absolute;
+      width: 140px;
+      height: 140px;
+      right: -40px;
+      top: -40px;
+      border-radius: 50%;
+      background: var(--brand-soft);
+      opacity: 0.7;
+      pointer-events: none;
+    }
+    .stat-card .icon {
+      position: relative;
+      z-index: 1;
+      width: 44px;
+      height: 44px;
+      border-radius: 14px;
+      background: var(--brand-soft);
+      color: var(--brand);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 16px;
+    }
+    .stat-card .value {
+      position: relative;
+      z-index: 1;
+      font-size: 32px;
+      font-weight: 800;
+      letter-spacing: -1px;
+      color: var(--ink);
+      line-height: 1;
+      margin-bottom: 8px;
+    }
+    .stat-card .label {
+      position: relative;
+      z-index: 1;
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.55;
+    }
+
+    /* ---------- payment modes strip ---------- */
+    .modes {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: clamp(32px, 4vw, 48px) clamp(20px, 5vw, 32px) clamp(48px, 6vw, 64px);
+      text-align: center;
+    }
+    .modes-row {
+      margin-top: 24px;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 12px;
+    }
+    .mode-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 18px;
+      border-radius: 999px;
+      background: #fff;
+      border: 1px solid var(--line);
+      color: var(--ink-soft);
+      font-weight: 600;
+      font-size: 14px;
+      box-shadow: 0 4px 14px rgba(15, 23, 42, 0.04);
+    }
+    .mode-chip svg {
+      width: 22px;
+      height: 22px;
+      flex-shrink: 0;
+    }
+
+    /* ---------- how it works ---------- */
+    .how {
+      background: linear-gradient(180deg, var(--bg) 0%, var(--bg-soft) 100%);
+      border-top: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+    }
+    .how-inner {
       max-width: 1100px;
       margin: 0 auto;
       padding: clamp(64px, 8vw, 96px) clamp(20px, 5vw, 32px);
       text-align: center;
     }
-    .legal-grid {
-      margin-top: 36px;
+    .how-steps {
+      margin-top: 48px;
       display: grid;
-      gap: 16px;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+      position: relative;
     }
-    .legal-card {
-      padding: 22px;
-      border-radius: 18px;
-      border: 1px solid var(--line);
-      text-align: left;
-      text-decoration: none;
-      color: var(--ink);
+    .how-steps::before {
+      content: '';
+      position: absolute;
+      top: 36px;
+      left: 18%;
+      right: 18%;
+      height: 2px;
+      background: repeating-linear-gradient(
+        to right,
+        var(--line-strong) 0 8px,
+        transparent 8px 16px
+      );
+      z-index: 0;
+    }
+    @media (max-width: 700px) {
+      .how-steps { grid-template-columns: 1fr; }
+      .how-steps::before { display: none; }
+    }
+    .how-step {
+      position: relative;
+      z-index: 1;
+      padding: 32px 24px;
       background: #fff;
-      transition: border-color 120ms ease, transform 120ms ease;
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      text-align: left;
     }
-    .legal-card:hover {
-      border-color: var(--brand);
-      transform: translateY(-2px);
+    .how-step .step-num {
+      width: 72px;
+      height: 72px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--brand), var(--brand-dark));
+      color: #fff;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 26px;
+      margin: -68px auto 18px;
+      box-shadow: 0 12px 28px var(--brand-glow);
+      letter-spacing: -1px;
+      display: flex;
     }
-    .legal-card .label {
-      font-size: 11px;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      color: var(--muted-soft);
+    .how-step h3 {
+      font-size: 19px;
+      font-weight: 700;
+      letter-spacing: -0.4px;
       margin-bottom: 8px;
-      font-weight: 600;
+      text-align: center;
     }
-    .legal-card .title {
-      font-weight: 600;
-      margin-bottom: 4px;
-    }
-    .legal-card .desc {
-      font-size: 13px;
+    .how-step p {
+      font-size: 14px;
       color: var(--muted);
-      line-height: 1.5;
+      line-height: 1.65;
+      text-align: center;
+    }
+    .how-step .step-icon {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 16px;
+      color: var(--brand);
+    }
+    .how-step .step-icon svg { width: 40px; height: 40px; }
+
+    /* ---------- decorative pattern ---------- */
+    .pattern-bg {
+      position: relative;
+    }
+    .pattern-bg::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image:
+        radial-gradient(circle at 1px 1px, rgba(5, 150, 105, 0.08) 1px, transparent 0);
+      background-size: 24px 24px;
+      mask-image: radial-gradient(ellipse at center, #000 0%, transparent 70%);
+      pointer-events: none;
+      z-index: -1;
     }
 
     /* ---------- footer ---------- */
@@ -524,11 +1044,62 @@
       <nav class="header-nav">
         <a href="#services">Services</a>
         <a href="#about">About</a>
+        <a href="/blog/">Blog</a>
         <a href="/policies/">Policies</a>
         <a class="header-cta" href="https://wallet.beyound.in">Open Wallet</a>
       </nav>
     </div>
   </header>
+
+  <section class="hero-cinematic" aria-label="Beyound platform">
+    <!-- Brand background reel. The gradient on `.hero-cinematic-media`
+         doubles as the poster fallback while the video downloads (or
+         on browsers / data-saver modes that refuse autoplay). -->
+    <div class="hero-cinematic-media" role="presentation">
+      <video
+        muted
+        loop
+        playsinline
+        preload="none"
+        aria-hidden="true"
+        tabindex="-1"
+        data-hero-src="beyound-hero.mp4"
+      ></video>
+    </div>
+    <div class="hero-cinematic-scrim" role="presentation"></div>
+    <div class="hero-cinematic-content">
+      <span class="eyebrow">Payments, simplified</span>
+      <h1>One platform.<br><span class="accent">Two ways to pay.</span></h1>
+      <p class="lede">
+        BeyoundExtra Tech Private Limited builds the rails. You pay your
+        bills via BBPS or load the Beyound Wallet — credit card, debit
+        card, net banking, UPI — and we move the money.
+      </p>
+      <div class="hero-actions">
+        <a class="btn btn-primary" href="https://wallet.beyound.in">Try Beyound Wallet →</a>
+        <a class="btn btn-ghost" href="https://bills.beyound.in">Pay a bill</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="partners" aria-label="Our partners" style="background:#FBF9F2;border-bottom:1px solid rgba(11,58,44,0.08);padding:40px 20px;">
+    <div style="max-width:980px;margin:0 auto;text-align:center;">
+      <div style="font-size:12px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:#059669;font-family:'Sora',system-ui,sans-serif;">
+        Powered by
+      </div>
+      <div style="margin-top:24px;display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:48px;">
+        <svg width="150" height="23" viewBox="0 0 136 21" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Zokudo">
+          <path d="M29.5869 0C23.4634 0 18.5 3.5067 18.5 10.2722C18.5 17.0376 23.4634 20.5443 29.5869 20.5443C35.7103 20.5443 40.6737 17.0376 40.6737 10.2722C40.6781 3.5067 35.7147 0 29.5869 0ZM29.5869 18.9282C25.7658 18.9282 22.6709 16.3558 22.6709 10.2722C22.6709 4.18856 25.7702 1.6161 29.5869 1.6161C33.4079 1.6161 36.5029 4.18856 36.5029 10.2722C36.5073 16.3558 33.4079 18.9282 29.5869 18.9282Z" fill="#0B3A2C"/>
+          <path d="M64.2131 18.5029L64.2043 18.5074L64.222 18.4852C64.222 18.4852 63.7836 18.6269 62.9291 18.5605C61.6495 18.4587 61.0119 17.9008 61.0119 17.9008L51.1914 9.04547L59.0593 2.46154C59.0593 2.46154 59.4534 1.97007 60.6577 1.9435C61.8576 1.91693 62.2738 1.91251 62.2738 1.91251L62.2782 0.371681H54.3881L54.3926 1.91251L54.397 1.90808L54.3793 1.92579H56.7127L48.3267 9.30226C48.34 6.05679 48.3621 3.11683 48.3621 3.11683C48.3621 3.11683 48.3222 2.33314 48.8801 2.12061C49.5797 1.85052 51.1958 1.87709 51.1958 1.87709L51.2002 0.358398H41.4062V1.87709L41.4151 1.87266L41.4107 1.87709C41.4107 1.87709 43.0223 1.85052 43.7219 2.12061C44.2798 2.33314 44.2399 3.11683 44.2399 3.11683C44.2399 3.11683 44.2887 17.1348 44.2399 17.7281C44.1957 18.2329 43.9831 18.3524 43.5758 18.4542C43.2127 18.5472 41.4195 18.6712 41.4195 18.6712L41.4151 20.181H50.877L50.8726 18.6446C50.8726 18.6446 49.3893 18.5649 49.0307 18.4587C48.6676 18.3524 48.4639 18.317 48.3665 17.7325C48.3222 17.4669 48.3178 14.4162 48.3267 11.1752L56.1902 18.5738H56.1946H53.9631H53.9587V20.1722L53.9365 20.2032H64.2087L64.2043 20.1987L64.2175 20.2032L64.2131 18.5029Z" fill="#0B3A2C"/>
+          <path d="M86.6847 0.354035H78.7415L78.7371 0.349609V1.85058L80.7295 2.01441C80.7295 2.01441 81.5575 2.16494 81.5575 3.01505V14.5358C81.5575 16.298 80.4373 17.7901 78.861 18.3126C78.0242 18.5827 77.1343 18.7288 76.1823 18.7288C76.1735 18.7288 76.169 18.7288 76.1602 18.7288C75.2171 18.7244 74.3315 18.5827 73.5036 18.3126C71.9273 17.7901 70.8071 16.298 70.8071 14.5358C70.8071 14.5358 70.7939 3.59508 70.8071 2.82467C70.8248 2.06754 71.2588 2.06754 71.6395 2.00555C72.0203 1.94356 73.6364 1.84173 73.6364 1.84173V0.35846H63.9531V1.84173C63.9531 1.84173 65.6711 1.94356 65.9721 2.01883C66.2732 2.08967 66.716 2.06311 66.747 2.84238C66.7824 3.62164 66.7691 3.68806 66.7691 3.68806L66.8931 13.5883C66.8931 16.36 68.6597 18.7111 71.1436 19.5346C72.4587 19.9597 73.8667 20.1899 75.3632 20.1899C76.8597 20.1899 78.2633 19.9597 79.5828 19.5346C82.0667 18.7067 83.8333 16.36 83.8333 13.5883C83.8333 13.5883 83.8864 4.18839 83.882 3.10804C83.8732 2.02769 84.4 2.03655 84.7985 1.98784C85.197 1.93914 86.6936 1.85501 86.6936 1.85501V0.354035H86.6847Z" fill="#0B3A2C"/>
+          <path d="M108.791 2.73658C106.803 1.11163 103.93 0.288086 100.242 0.288086L99.1125 0.301368L96.6994 0.354498H88.9688V1.88646C89.3053 1.88646 91.2756 1.95288 91.5855 2.24068C91.8954 2.52848 91.8334 3.54241 91.8334 3.54241V16.48C91.8334 16.48 91.8423 16.6483 91.7892 17.4851C91.7316 18.3264 91.3376 18.3529 91.063 18.4193C90.7885 18.4858 88.9688 18.5964 88.9688 18.5964V20.1284H100.37C103.859 20.1284 106.666 19.1986 108.707 17.3656C110.757 15.5237 111.802 12.9866 111.802 9.82968C111.798 6.76574 110.788 4.37924 108.791 2.73658ZM107.596 10.1662C107.596 12.9822 106.887 15.1119 105.497 16.5022C104.102 17.8924 101.964 18.5964 99.1391 18.5964C97.2086 18.5964 96.3895 18.3618 96.0442 18.1625C96.0353 18.1537 95.7873 17.9766 95.7873 16.4579V1.87761H97.9126C101.344 1.87761 103.85 2.53291 105.356 3.83021C106.839 5.10538 107.596 7.23951 107.596 10.1662Z" fill="#0B3A2C"/>
+          <path d="M124.915 0C118.792 0 113.828 3.5067 113.828 10.2722C113.828 17.0376 118.792 20.5443 124.915 20.5443C131.038 20.5443 136.002 17.0376 136.002 10.2722C136.002 3.5067 131.038 0 124.915 0ZM124.915 18.9282C121.094 18.9282 117.999 16.3558 117.999 10.2722C117.999 4.18856 121.098 1.6161 124.915 1.6161C128.736 1.6161 131.831 4.18856 131.831 10.2722C131.831 16.3558 128.736 18.9282 124.915 18.9282Z" fill="#0B3A2C"/>
+          <path d="M16.7188 15.8424H14.3545L14.2969 16.5066L14.2571 17.7286C14.2571 17.7286 14.3058 18.1847 13.7302 18.2378C13.1546 18.2909 11.7731 18.3264 11.0957 18.3264C10.9363 18.3264 10.4935 18.3175 9.90467 18.3175H4.73317L16.6259 1.65179V0.354492H16.6303H0.535747V4.84856H2.90012L2.95767 4.18441L2.99752 2.64802C2.99752 2.64802 2.94882 2.19197 3.52441 2.13884C4.10001 2.08571 5.48144 2.05029 6.15887 2.05029C6.81416 2.05029 11.6802 2.05029 11.9502 2.05029L0 18.7116V20.186H16.7144L16.71 20.1815L16.7188 20.186V15.8424Z" fill="#0B3A2C"/>
+        </svg>
+        <img src="payu-logo.svg" alt="PayU" width="62" height="34" loading="lazy" decoding="async" style="height:34px;width:auto;display:block;" />
+      </div>
+    </div>
+  </section>
 
   <section class="hero">
     <span class="eyebrow">Payments, simplified</span>
@@ -544,6 +1115,82 @@
     </div>
   </section>
 
+  <section class="app-soon" aria-label="Beyound app coming soon">
+    <div class="app-soon-inner">
+      <div class="app-soon-copy">
+        <span class="eyebrow">Coming soon</span>
+        <h2>The Beyound app.<br><span class="accent">Bills + Wallet in your pocket.</span></h2>
+        <p>
+          Same rails, same compliance, all the rough edges smoothed out
+          for thumb-only use. iOS and Android. Sign-in with the same phone
+          you use on the web; your beneficiaries, payment history and KYC
+          come with you.
+        </p>
+        <p>
+          <strong>Ambalika Roy</strong> wrote about why we're building the
+          app the way we are — what stays in the web flow, what gets
+          rewritten for mobile, and what we're cutting on purpose.
+        </p>
+        <div class="app-soon-cta">
+          <a class="btn btn-primary" href="/blog/the-beyound-app-is-coming/">
+            Read the blog →
+          </a>
+          <span class="store-chip" aria-disabled="true" title="Coming soon">
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M16.5 12.5c0-2.34 1.91-3.46 2-3.5-1.09-1.6-2.79-1.82-3.4-1.84-1.45-.15-2.83.86-3.57.86-.73 0-1.87-.84-3.07-.82-1.58.02-3.04.92-3.86 2.34-1.64 2.84-.42 7.04 1.18 9.34.78 1.13 1.7 2.39 2.91 2.35 1.17-.05 1.61-.76 3.03-.76s1.81.76 3.05.74c1.26-.02 2.06-1.15 2.83-2.28.9-1.31 1.27-2.59 1.29-2.66-.03-.01-2.47-.95-2.49-3.77zM14.1 5.3c.65-.79 1.09-1.88.97-2.97-.94.04-2.07.62-2.74 1.41-.6.69-1.13 1.81-.99 2.88 1.04.08 2.11-.53 2.76-1.32z"/></svg>
+            <span><small>Download on</small><strong>App Store</strong></span>
+          </span>
+          <span class="store-chip" aria-disabled="true" title="Coming soon">
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M3.61 1.81c-.31.32-.49.81-.49 1.45v17.46c0 .64.18 1.13.49 1.45l.06.06L13.4 12v-.01L3.67 1.75l-.06.06zM17.46 15.57l-3.25-3.25v-.01l3.25-3.25.07.04 3.85 2.19c1.1.62 1.1 1.65 0 2.27l-3.85 2.19-.07.04zM3.67 22.25l9.73-9.73L17.46 16.6l-12.3 6.99c-.42.24-.83.27-1.18.06l-.31-1.4zM3.67 1.75l13.79 7.84-4.06 4.06L3.67 3.92V1.75z"/></svg>
+            <span><small>Get it on</small><strong>Google Play</strong></span>
+          </span>
+        </div>
+      </div>
+      <div class="app-soon-visual" aria-hidden="true">
+        <span class="phone-glow"></span>
+        <div class="phone-mock">
+          <div class="phone-screen">
+            <span class="phone-mark">b</span>
+            <span class="phone-title">beyound</span>
+            <span class="phone-pill">Coming soon</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="stats pattern-bg" aria-label="Platform stats">
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="icon" aria-hidden="true">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 4 6v6c0 5 3.5 9 8 10 4.5-1 8-5 8-10V6l-8-4z"/><path d="m9 12 2 2 4-4"/></svg>
+        </div>
+        <div class="value">RBI · NPCI</div>
+        <div class="label">Compliant payment rails end to end</div>
+      </div>
+      <div class="stat-card">
+        <div class="icon" aria-hidden="true">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+        </div>
+        <div class="value">AES-256</div>
+        <div class="label">Encryption at rest and in transit</div>
+      </div>
+      <div class="stat-card">
+        <div class="icon" aria-hidden="true">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        </div>
+        <div class="value">PCI DSS</div>
+        <div class="label">Card data handled to industry standard</div>
+      </div>
+      <div class="stat-card">
+        <div class="icon" aria-hidden="true">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+        </div>
+        <div class="value">24×7</div>
+        <div class="label">Settlement &amp; support always on</div>
+      </div>
+    </div>
+  </section>
+
   <section class="services" id="services">
     <p class="section-eyebrow">Our services</p>
     <h2 class="section-title">Built for how you actually pay</h2>
@@ -555,7 +1202,7 @@
       <a class="service-card wallet" href="https://wallet.beyound.in">
         <span class="icon" aria-hidden="true">💳</span>
         <h3>Beyound Wallet</h3>
-        <p>Load funds into a prepaid digital wallet via any supported payment mode — credit card, debit card, net banking or UPI — then transfer onward to any beneficiary's bank account. Settled through authorised banking partners.</p>
+        <p>Load funds into a prepaid digital wallet via any supported payment mode — credit card, debit card, net banking or UPI.</p>
         <ul>
           <li>Any payment mode → wallet → any bank account</li>
           <li>Credit card, debit card, net banking, UPI supported</li>
@@ -577,6 +1224,37 @@
     </div>
   </section>
 
+  <section class="modes" aria-label="Supported payment modes">
+    <p class="section-eyebrow">Pay with whatever you have</p>
+    <h2 class="section-title">Every payment mode, supported.</h2>
+    <div class="modes-row">
+      <span class="mode-chip">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg>
+        Credit Card
+      </span>
+      <span class="mode-chip">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/><path d="M6 15h4"/></svg>
+        Debit Card
+      </span>
+      <span class="mode-chip">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="6" width="18" height="12" rx="1"/><path d="M3 10h18"/><path d="M7 14h2"/><path d="M12 14h5"/></svg>
+        Net Banking
+      </span>
+      <span class="mode-chip">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="3"/><path d="M11 18h2"/></svg>
+        UPI
+      </span>
+      <span class="mode-chip">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12V7a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h11"/><path d="M16 16h5v5"/><path d="m21 16-5 5"/></svg>
+        BBPS
+      </span>
+      <span class="mode-chip">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7h18M3 12h18M3 17h18"/></svg>
+        IMPS · NEFT
+      </span>
+    </div>
+  </section>
+
   <section class="about" id="about">
     <div class="about-inner">
       <div>
@@ -593,61 +1271,51 @@
           plumbing behind it is exactly what we obsess over. Read the
           <a href="/policies/about.html">full About Us</a>.
         </p>
-        <p class="meta">Bangalore, India · Founded 2025</p>
+        <p class="meta">Bangalore, India · Founded 2026</p>
       </div>
       <ul class="about-points">
         <li><span><strong>Security is the product.</strong> Built around KYC, fraud controls, and the network rules of RBI, NPCI and BBPCU — not bolted on after the fact.</span></li>
-        <li><span><strong>Money should be portable.</strong> Credit-card rails, bank rails and bill-payment rails should all just work, without you needing to know which one you're on.</span></li>
+        <li><span><strong>Money should be accessible.</strong> Credit-card rails, bank rails and bill-payment rails should all just work, without you needing to know which one you're on.</span></li>
         <li><span><strong>We are a facilitator.</strong> Beyound does not provide banking, lending or deposit-taking services. Transactions are settled through authorised banking and payment-system partners.</span></li>
         <li><span><strong>Grievance, in writing.</strong> Every escalation route, timeline and contact is published in our <a href="/policies/grievance.html">Grievance Redressal Policy</a>.</span></li>
       </ul>
     </div>
   </section>
 
-  <section class="legal" id="legal">
-    <p class="section-eyebrow">Legal</p>
-    <h2 class="section-title">All policies in one place</h2>
-    <p class="section-sub">
-      Terms, privacy, refunds and grievance routes for both the Beyound Wallet
-      and Beyound Bills (BBPS) services — published, versioned, and linked from
-      every product surface.
-    </p>
-    <div class="legal-grid">
-      <a class="legal-card" href="/policies/terms.html">
-        <div class="label">Platform</div>
-        <div class="title">Terms of Use</div>
-        <div class="desc">The agreement that governs your use of Beyound across both services.</div>
-      </a>
-      <a class="legal-card" href="/policies/privacy.html">
-        <div class="label">Platform</div>
-        <div class="title">Privacy Policy</div>
-        <div class="desc">What we collect, how we use it, who we share it with, your rights.</div>
-      </a>
-      <a class="legal-card" href="/policies/wallet/terms.html">
-        <div class="label">Wallet</div>
-        <div class="title">Wallet Terms &amp; Privacy</div>
-        <div class="desc">Service-specific rules for the prepaid Beyound Wallet.</div>
-      </a>
-      <a class="legal-card" href="/policies/bbps/terms.html">
-        <div class="label">Bills · BBPS</div>
-        <div class="title">BBPS Terms &amp; Privacy</div>
-        <div class="desc">Service-specific rules for credit-card bill payments via BBPS.</div>
-      </a>
-      <a class="legal-card" href="/policies/refund-cancellation.html">
-        <div class="label">Platform</div>
-        <div class="title">Cancellation &amp; Refund</div>
-        <div class="desc">Refund rules for failed and disputed transactions.</div>
-      </a>
-      <a class="legal-card" href="/policies/grievance.html">
-        <div class="label">Platform</div>
-        <div class="title">Grievance Redressal</div>
-        <div class="desc">Escalation matrix, response timelines, contact points.</div>
-      </a>
-      <a class="legal-card" href="/policies/">
-        <div class="label">Index</div>
-        <div class="title">All policies →</div>
-        <div class="desc">Full policy index including campaign T&amp;Cs and per-service variants.</div>
-      </a>
+  <section class="how">
+    <div class="how-inner">
+      <p class="section-eyebrow">How it works</p>
+      <h2 class="section-title">Three steps. Money moves.</h2>
+      <p class="section-sub">
+        Same flow whether you're paying a bill or topping up the wallet.
+        We handle the rails — you just confirm the amount.
+      </p>
+      <div class="how-steps">
+        <div class="how-step">
+          <div class="step-num">1</div>
+          <div class="step-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="13" rx="2"/><path d="M2 10h20"/><path d="M6 15h2"/></svg>
+          </div>
+          <h3>Pick your payment mode</h3>
+          <p>Credit card, debit card, net banking or UPI. Whatever you have on hand.</p>
+        </div>
+        <div class="how-step">
+          <div class="step-num">2</div>
+          <div class="step-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg>
+          </div>
+          <h3>We route the money</h3>
+          <p>Via BBPS for bills, via the prepaid wallet for transfers. RBI &amp; NPCI compliant rails.</p>
+        </div>
+        <div class="how-step">
+          <div class="step-num">3</div>
+          <div class="step-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>
+          </div>
+          <h3>Done in seconds</h3>
+          <p>Receipt in your inbox, statement updated, beneficiary credited. No back-and-forth.</p>
+        </div>
+      </div>
     </div>
   </section>
 
@@ -658,6 +1326,12 @@
           <span class="brand-mark">b</span>
           <span class="brand-name">beyound</span>
         </a>
+        <div class="trust-strip" aria-label="Compliance and security">
+          <span class="trust-badge"><span class="trust-dot"></span>PCI DSS</span>
+          <span class="trust-badge"><span class="trust-dot"></span>ISO 27001</span>
+          <span class="trust-badge"><span class="trust-dot"></span>AES-256</span>
+          <span class="trust-badge"><span class="trust-dot"></span>Secure</span>
+        </div>
         <p>BeyoundExtra Tech Private Limited. Payments technology, built in India.</p>
       </div>
       <div class="footer-col">
@@ -675,13 +1349,15 @@
           <li><a href="/policies/privacy.html">Privacy Policy</a></li>
           <li><a href="/policies/refund-cancellation.html">Refund &amp; Cancellation</a></li>
           <li><a href="/policies/grievance.html">Grievance Redressal</a></li>
-          <li><a href="/policies/">All policies →</a></li>
         </ul>
       </div>
       <div class="footer-col">
         <h4>Company</h4>
         <ul>
           <li><a href="/policies/about.html">About Beyound</a></li>
+          <li><a href="/careers/">Careers</a></li>
+          <li><a href="/blog/">Blog</a></li>
+          <li><a href="/faq/">FAQ</a></li>
           <li><a href="mailto:support@beyound.in">support@beyound.in</a></li>
           <li>Bangalore, India</li>
         </ul>
@@ -689,9 +1365,64 @@
     </div>
     <div class="footer-legal">
       <span>&copy; 2026 BeyoundExtra Tech Private Limited. All rights reserved.</span>
-      <span>Corporate Office: First Floor, Building No. 138, 4th Main Road, Industrial Town, Rajajinagar, Bangalore North, Karnataka, India 560044</span>
+      <span>Corporate Office: 43, Residency Rd, Shanthala Nagar, Ashok Nagar, Bengaluru, Karnataka</span>
       <span>Registered Address: Khasra No 1467-1468, Balwanta Industrial Area Mali Ki Dhani, Nasirabad, Ajmer Road, Balwanta- 305601, Rajasthan</span>
     </div>
   </footer>
+  <script>
+    // Toggle .is-scrolled on the header once the cinematic hero has
+    // scrolled out of view, so the nav switches from transparent /
+    // white-text (over the video) to the original translucent-white
+    // sticky look (over the body sections).
+    (function () {
+      var header = document.querySelector('.site-header');
+      var hero = document.querySelector('.hero-cinematic');
+      if (!header) return;
+      var threshold = hero ? hero.offsetHeight - 80 : 80;
+      function update() {
+        if (window.scrollY > threshold) {
+          header.classList.add('is-scrolled');
+        } else {
+          header.classList.remove('is-scrolled');
+        }
+      }
+      window.addEventListener('scroll', update, { passive: true });
+      window.addEventListener('resize', function () {
+        threshold = hero ? hero.offsetHeight - 80 : 80;
+        update();
+      });
+      update();
+    })();
+  </script>
+  <script>
+    /* Connection-aware, deferred hero video loader. Keeps the 16MB reel off
+       the critical path: the CSS gradient on `.hero-cinematic-media` is the
+       instant LCP paint. Video attaches only on capable, non-data-saver
+       connections, after the page is idle. Respects reduced-motion. */
+    (function () {
+      var v = document.querySelector('.hero-cinematic-media video[data-hero-src]');
+      if (!v) return;
+      var rm = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)');
+      if (rm && rm.matches) return;
+      var c = navigator.connection;
+      if (c && (c.saveData || /(^|-)2g/.test(c.effectiveType || ''))) return;
+      function load() {
+        var s = document.createElement('source');
+        s.src = v.getAttribute('data-hero-src');
+        s.type = 'video/mp4';
+        v.appendChild(s);
+        v.load();
+        var p = v.play();
+        if (p && typeof p.catch === 'function') {
+          p.catch(function (err) { void err; });
+        }
+      }
+      if ('requestIdleCallback' in window) {
+        requestIdleCallback(load, { timeout: 3000 });
+      } else {
+        window.addEventListener('load', function () { setTimeout(load, 1200); });
+      }
+    })();
+  </script>
 </body>
 </html>
