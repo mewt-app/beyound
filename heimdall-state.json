@@ -16,7 +16,7 @@
     "lint_clean": false,
     "last_review": null,
     "conflict_reflection_done": true,
-    "dirty": false
+    "dirty": true
   },
   "maintainer": {
     "enabled": false,

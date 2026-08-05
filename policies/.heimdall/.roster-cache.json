@@ -1,14 +1,14 @@
 [
   {
     "activity_ts": null,
-    "age_seconds": 4.6,
+    "age_seconds": 14.4,
     "file": null,
     "haid": "haid:akshat.akshats-macbook-air-2-755c",
     "handle": "akshat",
     "online": true,
     "project": "github.com/mewt-app/beyound",
     "state": "idle",
-    "ts": 1785913319.5159166,
-    "verdict": null
+    "ts": 1785913015.3543186,
+    "verdict": "watching"
   }
 ]
