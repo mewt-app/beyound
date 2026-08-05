@@ -1,0 +1,2 @@
+{"commit":null,"duration_ms":null,"error":null,"event_type":"install_step","extra":{},"gate":null,"loc":null,"outcome":"started","phase":"install","run_id":"run-6cacd34ef8044408ace78d830e72f50b","schema_version":"1.0.0","step":"auth","tokens":null,"ts":"2026-08-05T05:04:29+00:00"}
+{"commit":null,"duration_ms":620,"error":null,"event_type":"install_step","extra":{},"gate":null,"loc":null,"outcome":"succeeded","phase":"install","run_id":"run-1ad05fb0a779406585c3c4ea0899b0f4","schema_version":"1.0.0","step":"auth","tokens":null,"ts":"2026-08-05T05:04:29+00:00"}

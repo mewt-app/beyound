@@ -45,5 +45,7 @@
     "wallet OTP via twilio notification-otp wrapper, 6-digit codes",
     "Beyound entity name: BeyoundExtra Tech Private Limited (NOT Technologies)",
     "brand-wide cutoff for wallet history: 2026-05-13T00:00:00+05:30"
-  ]
+  ],
+  "phase": "unknown",
+  "auto_checkpoint_at": "2026-08-05T06:36:07Z"
 }

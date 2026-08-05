@@ -1,0 +1,21 @@
+{
+  "architecture": "no recognized source project \u2014 single-level layout \u2014 no build manifest",
+  "build_commands": [],
+  "conventions": [
+    ".gitignore present"
+  ],
+  "derivation": {
+    "cost_units": 35,
+    "count": 1,
+    "method": "structural-scan"
+  },
+  "entry_points": [],
+  "fingerprint": "9904164ee2586fa967789e03011422301a9a1610de5a8f799f829a7c8c133207",
+  "generated_at": "2026-08-05T05:04:28Z",
+  "key_modules": [],
+  "languages": [],
+  "manifests": [],
+  "repo": "/Users/akshat/Desktop/superpe/beyound",
+  "schema_version": "1.0.0",
+  "test_commands": []
+}

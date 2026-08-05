@@ -1,3 +1,8 @@
 .superpowers/
 superx-state.json
 .planning/
+
+# heimdall team secret — gitignored on a PUBLIC/unverified repo: a bearer
+# secret must never be committed to a world-readable repo. Grow the team
+# out-of-band with `hmd invite`.
+.heimdall/team.json
