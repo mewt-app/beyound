@@ -1,10 +1,12 @@
 <!-- heimdall-auto-checkpoint:begin -->
-## Auto-checkpoint — 2026-08-05T08:50:37Z
+## Auto-checkpoint — 2026-08-11T05:33:47Z
 
 > Written automatically at session end (mechanical, no LLM). Run `/hmd:save`
 > for a richer human/LLM-authored handoff — it enriches this same file.
 
 ### Recent commits
+- 284eef2 fix(policies): unify corporate office address to WeWork Galaxy 43, 560025
+- a6226c0 heimdall: session-end checkpoint (3 files)
 - 5c379ea fix(policies): Rally Promise refund calculated on Transaction Fees inclusive of GST
 - 38f999c fix(policies): refine Rally Promise T&C
 - ca73f32 heimdall: auto-checkpoint (5 files)
@@ -13,12 +15,16 @@
 - b0c7532 refund eta-2
 - c7ab056 refund eta
 - 2742e47 Merge pull request #1 from mewt-app/address-change
-- 7aee746 address update
-- 08c66f1 new phone added
 
 ### Uncommitted changes (git status --porcelain)
 ```
  M .heimdall/.roster-cache.json
+ M .heimdall/telemetry/events.ndjson
+?? .heimdall/.roster-cache.json.20828.tmp
+?? .heimdall/.roster-cache.json.22964.tmp
+?? .heimdall/.roster-cache.json.5450.tmp
+?? .heimdall/.roster-cache.json.67178.tmp
+?? .heimdall/.roster-cache.json.86625.tmp
 ```
 
 ### Resume
