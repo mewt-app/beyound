@@ -136,8 +136,9 @@
     .header-cta:hover { background: var(--checkout-dark); }
 
     @media (max-width: 760px) {
-      .site-header-inner { grid-template-columns: auto 1fr; }
-      .site-header-inner > .header-nav { display: none; }
+      /* Collapse the nav on mobile but keep the docs CTA — it is the only
+         way off this page into the integration reference. */
+      .site-header-inner > .header-nav a:not(.header-cta) { display: none; }
     }
 
     /* ---------- hero ---------- */
@@ -267,7 +268,7 @@
     }
     .about-inner .meta {
       font-size: 13px;
-      color: var(--muted-soft);
+      color: var(--muted);
     }
     .about-points {
       list-style: none;
@@ -883,10 +884,11 @@
     <section class="how" id="how" aria-label="How Beyound Checkout works for shoppers">
       <div class="how-inner">
         <p class="section-eyebrow">How it works for shoppers</p>
-        <h2 class="section-title">Three steps, then one tap every time.</h2>
+        <h2 class="section-title">Three steps, then one tap.</h2>
         <p class="section-sub">
           The approval happens once, at the brand where you first choose
-          Beyound. Every payment after that at the same brand skips it.
+          Beyound. Every payment after that at the same brand, up to ₹25,000,
+          skips it.
         </p>
         <div class="how-steps">
           <div class="how-step">
@@ -1060,8 +1062,8 @@
         <h2>Beyound Checkout is in developer preview.</h2>
         <p>
           It is not open to every merchant yet, and it is not yet a live
-          payment method at the brands you shop with. We are bringing early
-          merchants on one at a time so we can watch each integration closely.
+          payment method at the brands you shop with. We are onboarding early
+          merchants selectively.
         </p>
         <p>
           If you run an online brand and want early access, write to us and
