@@ -816,6 +816,99 @@
       gap: 12px;
       justify-content: space-between;
     }
+    /* ---------- business half ---------- */
+    .biz {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: clamp(56px, 8vw, 88px) clamp(20px, 5vw, 32px) 0;
+    }
+    .biz + .biz { padding-top: clamp(40px, 6vw, 64px); }
+    .biz .section-title, .biz .section-sub, .biz .section-eyebrow { text-align: left; }
+    .biz .section-sub { margin-left: 0; }
+    .split-grid {
+      display: grid;
+      gap: 20px;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      margin-top: 28px;
+    }
+    .split-col {
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 26px;
+      background: #fff;
+    }
+    .split-col h3 {
+      font-size: 13px;
+      letter-spacing: 1.4px;
+      text-transform: uppercase;
+      color: var(--checkout-accent);
+      margin-bottom: 14px;
+    }
+    .split-col ul { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+    .split-col li {
+      font-size: 14px;
+      color: var(--ink-soft);
+      line-height: 1.55;
+      padding-left: 20px;
+      position: relative;
+    }
+    .split-col li::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 8px;
+      width: 7px;
+      height: 7px;
+      border-radius: 999px;
+      background: var(--checkout-accent);
+    }
+    .biz-table-wrap {
+      margin-top: 24px;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      overflow-x: auto;
+    }
+    .biz-table { width: 100%; border-collapse: collapse; font-size: 14px; min-width: 460px; }
+    .biz-table th {
+      text-align: left;
+      background: var(--bg-soft);
+      color: var(--muted);
+      font-size: 12px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      font-weight: 600;
+      padding: 13px 18px;
+      border-bottom: 1px solid var(--line);
+    }
+    .biz-table td {
+      padding: 13px 18px;
+      border-bottom: 1px solid var(--line);
+      color: var(--muted);
+      vertical-align: top;
+      line-height: 1.55;
+    }
+    .biz-table tr:last-child td { border-bottom: 0; }
+    .biz-table td:first-child { color: var(--ink); font-weight: 600; white-space: nowrap; }
+    .callout {
+      margin-top: 24px;
+      border: 1px solid var(--line);
+      border-left: 3px solid var(--checkout-accent);
+      border-radius: 14px;
+      background: var(--bg-soft);
+      padding: 20px 24px;
+    }
+    .callout strong { color: var(--ink); }
+    .callout p { color: var(--muted); font-size: 14.5px; line-height: 1.65; }
+    .callout .callout-label {
+      display: block;
+      font-size: 12px;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+      color: var(--checkout-accent);
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+
   </style>
 </head>
 <body>
@@ -1056,7 +1149,208 @@
       </div>
     </section>
 
-    <section class="notice" aria-label="Availability of Beyound Checkout">
+  
+  <section class="biz" id="business" aria-label="Beyound Checkout for business">
+    <p class="section-eyebrow">For business</p>
+    <h2 class="section-title">Four parties, one screen.</h2>
+    <p class="section-sub">
+      The shopper only ever sees one branded sheet. Everything behind it — routing,
+      bank verification, settlement — stays out of view.
+    </p>
+    <div class="biz-table-wrap">
+      <table class="biz-table">
+        <thead><tr><th scope="col">Party</th><th scope="col">Role</th></tr></thead>
+        <tbody>
+          <tr><td>The shopper</td><td>Pays for something. Sees the Beyound sheet and nothing else.</td></tr>
+          <tr><td>The brand</td><td>Puts the sheet on its own checkout page and gets paid.</td></tr>
+          <tr><td>Beyound</td><td>Owns the checkout experience: the sheet, routing, security and the loyalty layer.</td></tr>
+          <tr><td>The processing partner</td><td>Provides the rails that actually move the money.</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="split-grid">
+      <div class="split-col">
+        <h3>The brand does</h3>
+        <ul>
+          <li>Tells Beyound the order amount</li>
+          <li>Renders the Beyound sheet on its checkout page</li>
+          <li>Marks the order paid once Beyound confirms</li>
+          <li>Ships the goods or delivers the service</li>
+        </ul>
+      </div>
+      <div class="split-col">
+        <h3>Beyound does</h3>
+        <ul>
+          <li>Presents every payment method in one sheet</li>
+          <li>Routes the transaction to the right rail</li>
+          <li>Handles all bank security and verification</li>
+          <li>Sends the authoritative paid or failed confirmation</li>
+          <li>Manages loyalty, saved instruments and settlement</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="biz" id="money" aria-label="How the money moves">
+    <p class="section-eyebrow">How the money moves</p>
+    <h2 class="section-title">Order, pay, capture, confirm, settle.</h2>
+    <ol class="flow-list">
+      <li>
+        <span class="flow-num" aria-hidden="true">1</span>
+        <div>
+          <h3>The order is created</h3>
+          <p>The brand tells Beyound an order is ready for a specific amount, and Beyound opens a one-time checkout session for exactly that amount.</p>
+        </div>
+      </li>
+      <li>
+        <span class="flow-num" aria-hidden="true">2</span>
+        <div>
+          <h3>The shopper pays in the sheet</h3>
+          <p>Beyound presents the methods, routes the transaction to the right rail, and walks the shopper through any bank verification.</p>
+        </div>
+      </li>
+      <li>
+        <span class="flow-num" aria-hidden="true">3</span>
+        <div>
+          <h3>The payment is captured</h3>
+          <p>The payment clears at the bank or processor, and the funds are committed to the brand.</p>
+        </div>
+      </li>
+      <li>
+        <span class="flow-num" aria-hidden="true">4</span>
+        <div>
+          <h3>The brand is told, authoritatively</h3>
+          <p>Beyound sends a signed confirmation that the order was paid or failed. That notice is the single source of truth the brand acts on.</p>
+        </div>
+      </li>
+      <li>
+        <span class="flow-num" aria-hidden="true">5</span>
+        <div>
+          <h3>Funds settle</h3>
+          <p>Captured funds reach the brand on the agreed cycle, net of processing fees.</p>
+        </div>
+      </li>
+    </ol>
+    <div class="callout">
+      <span class="callout-label">The rule that keeps the books straight</span>
+      <p>
+        <strong>An order is only paid when the signed confirmation says so</strong> — never on
+        the strength of an on-screen message alone. That confirmation is delivered even if the
+        shopper closes the tab the moment they pay, which is exactly why it, and not the screen,
+        is what both sides reconcile against.
+      </p>
+    </div>
+  </section>
+
+  <section class="biz" id="settlement" aria-label="Settlement and reconciliation">
+    <p class="section-eyebrow">Settlement &amp; reconciliation</p>
+    <h2 class="section-title">Money arrives on schedule, and the books agree.</h2>
+    <div class="biz-table-wrap">
+      <table class="biz-table">
+        <thead><tr><th scope="col">Concern</th><th scope="col">How it works</th></tr></thead>
+        <tbody>
+          <tr><td>Getting paid</td><td>Captured funds settle to the brand on the agreed cycle, net of fees.</td></tr>
+          <tr><td>Knowing what settled</td><td>Every terminal outcome arrives as a signed confirmation, which is the anchor for reconciliation.</td></tr>
+          <tr><td>Matching payments to orders</td><td>Each order carries the brand's own reference, so records line up one to one.</td></tr>
+          <tr><td>Amounts</td><td>Every figure is tracked in paisa as an exact integer, never rounded in transit.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="biz" id="cash" aria-label="Beyound Cash and loyalty">
+    <p class="section-eyebrow">Beyound Cash</p>
+    <h2 class="section-title">A reason to come back, not just a way to pay.</h2>
+    <p class="section-sub">
+      Beyound Cash is a rewards balance shoppers earn and spend inside the sheet. There is no
+      separate loyalty programme for a brand to run.
+    </p>
+    <div class="split-grid">
+      <div class="split-col">
+        <h3>Earned at checkout</h3>
+        <ul>
+          <li>Accumulates on qualifying payments</li>
+          <li>Nothing for the brand to operate</li>
+        </ul>
+      </div>
+      <div class="split-col">
+        <h3>Spent at checkout</h3>
+        <ul>
+          <li>Applies against the next purchase, inside the sheet</li>
+          <li>Shoppers return to spend it, so brands see repeat purchases</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="biz" id="commercials" aria-label="Commercial model and getting started">
+    <p class="section-eyebrow">Commercials &amp; onboarding</p>
+    <h2 class="section-title">Standard payments economics, agreed per partnership.</h2>
+    <p class="section-sub">
+      Rates, settlement cycles and revenue-share terms are set per partnership, so this page
+      covers the what and the why rather than the numbers.
+    </p>
+    <ol class="flow-list">
+      <li>
+        <span class="flow-num" aria-hidden="true">1</span>
+        <div>
+          <h3>Align on the commercial model</h3>
+          <p>Rates, settlement cycle and revenue share.</p>
+        </div>
+      </li>
+      <li>
+        <span class="flow-num" aria-hidden="true">2</span>
+        <div>
+          <h3>Get sandbox credentials</h3>
+          <p>Beyound provisions a sandbox so the whole flow can be exercised without real money.</p>
+        </div>
+      </li>
+      <li>
+        <span class="flow-num" aria-hidden="true">3</span>
+        <div>
+          <h3>Validate end to end</h3>
+          <p>Your engineers run the full flow in the sandbox against the integration guide.</p>
+        </div>
+      </li>
+      <li>
+        <span class="flow-num" aria-hidden="true">4</span>
+        <div>
+          <h3>Go live</h3>
+          <p>Beyound issues live credentials, and the first brands start taking payments.</p>
+        </div>
+      </li>
+    </ol>
+    <div class="callout">
+      <span class="callout-label">Next step</span>
+      <p>
+        Engineers can dig into the mechanics in the
+        <a href="/checkout/docs/">technical integration guide</a>. For commercial terms, write to
+        <a href="mailto:support@beyound.in">support@beyound.in</a>.
+      </p>
+    </div>
+  </section>
+
+  <section class="biz" id="glossary" aria-label="Glossary">
+    <p class="section-eyebrow">Glossary</p>
+    <h2 class="section-title">The words that keep appearing.</h2>
+    <div class="biz-table-wrap">
+      <table class="biz-table">
+        <thead><tr><th scope="col">Term</th><th scope="col">Plain meaning</th></tr></thead>
+        <tbody>
+          <tr><td>Checkout sheet</td><td>The branded payment screen the shopper pays inside.</td></tr>
+          <tr><td>Order</td><td>A single purchase for a specific amount, created when the shopper is ready to pay.</td></tr>
+          <tr><td>Capture</td><td>The moment the payment clears and the funds are committed.</td></tr>
+          <tr><td>Settlement</td><td>Moving captured funds to the brand's account, net of fees, on the agreed cycle.</td></tr>
+          <tr><td>Confirmation</td><td>Beyound's signed, authoritative paid or failed notice — the source of truth.</td></tr>
+          <tr><td>Beyound Cash</td><td>The rewards balance shoppers earn and spend at checkout.</td></tr>
+          <tr><td>Sandbox</td><td>A safe test environment where the full flow runs without real money.</td></tr>
+          <tr><td>Payment method</td><td>How the shopper pays: card, UPI, net banking or a saved instrument.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="notice" aria-label="Availability of Beyound Checkout">
       <div class="notice-inner">
         <span class="notice-badge">Developer preview</span>
         <h2>Beyound Checkout is in developer preview.</h2>
@@ -1112,7 +1406,6 @@
         <ul>
           <li><a href="/policies/about.html">About Beyound</a></li>
           <li><a href="/checkout/docs/">Checkout docs</a></li>
-          <li><a href="/checkout/for-business/">Checkout for business</a></li>
           <li><a href="/blog/">Blog</a></li>
           <li><a href="/faq/">FAQ</a></li>
           <li><a href="/careers/">Careers</a></li>
