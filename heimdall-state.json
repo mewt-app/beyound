@@ -13,7 +13,7 @@
   "agent_history": [],
   "quality_gates": {
     "tests_passing": false,
-    "lint_clean": false,
+    "lint_clean": true,
     "last_review": null,
     "conflict_reflection_done": true,
     "dirty": true
