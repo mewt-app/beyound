@@ -1,7 +1,7 @@
 [
   {
-    "activity_ts": null,
-    "age_seconds": 0.8,
+    "activity_ts": 1786702917.0,
+    "age_seconds": 7.8,
     "branch": "main",
     "file": null,
     "haid": "haid:rj.rishabhs-macbook-air-46d5",
@@ -9,7 +9,7 @@
     "online": true,
     "project": "github.com/superrally/beyound",
     "state": "idle",
-    "ts": 1786702912.4293604,
-    "verdict": "watching"
+    "ts": 1786703657.3137515,
+    "verdict": null
   }
 ]
