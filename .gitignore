@@ -6,3 +6,6 @@ superx-state.json
 # secret must never be committed to a world-readable repo. Grow the team
 # out-of-band with `hmd invite`.
 .heimdall/team.json
+.heimdall/verdict.json
+.heimdall/receipts/
+.heimdall/audit.json

@@ -1,0 +1,1278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Beyound Checkout — Developer docs</title>
+  <meta name="description" content="Merchant integration reference for Beyound Checkout: create an order from your server with a secret key, mount the payment sheet in the browser with a checkout session token, and confirm the result server-side.">
+  <meta name="theme-color" content="#7C3AED">
+  <meta property="og:title" content="Beyound Checkout — Developer docs">
+  <meta property="og:description" content="Create an order server-side, hand the checkout session to the browser, read the authoritative payment status back on your server. The Beyound Checkout merchant integration reference.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://beyound.in/checkout/docs/">
+  <link rel="canonical" href="https://beyound.in/checkout/docs/">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='50' fill='%23059669'/><text x='50' y='68' text-anchor='middle' font-size='52' font-weight='700' font-family='system-ui' fill='white'>b</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&display=swap" media="print" onload="this.media='all'">
+  <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&display=swap"></noscript>
+  <style>
+    :root {
+      --brand: #059669;
+      --brand-dark: #047857;
+      --brand-soft: rgba(5, 150, 105, 0.08);
+      --brand-glow: rgba(5, 150, 105, 0.18);
+
+      /* Checkout surface accent. The site brand stays green. */
+      --checkout-accent: #7C3AED;
+      --checkout-dark: #5B21B6;
+      --checkout-soft: rgba(124, 58, 237, 0.08);
+      --checkout-line: rgba(124, 58, 237, 0.24);
+
+      --ink: #0F172A;
+      --ink-soft: #1F2937;
+      --muted: #475569;
+      --muted-soft: #94A3B8;
+      --line: #E2E8F0;
+      --line-strong: #CBD5E1;
+      --bg: #ffffff;
+      --bg-soft: #F8FAFC;
+      --mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body { scrollbar-width: none; -ms-overflow-style: none; }
+    html::-webkit-scrollbar, body::-webkit-scrollbar { width: 0; height: 0; display: none; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Sora', system-ui, -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+      line-height: 1.65;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a { color: var(--checkout-dark); }
+
+    /* ---------- header (same lockup as the site root) ---------- */
+    .site-header {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      background: rgba(255, 255, 255, 0.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--line);
+    }
+    .site-header-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 14px clamp(20px, 5vw, 32px);
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      align-items: center;
+      gap: 24px;
+    }
+    .site-header-inner > .header-nav { justify-self: end; }
+    .brand-lockup {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+      color: var(--ink);
+    }
+    .brand-mark {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--brand), var(--brand-dark));
+      color: #fff;
+      font-weight: 700;
+      font-size: 18px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 14px var(--brand-glow);
+    }
+    .brand-name {
+      font-weight: 800;
+      font-size: 20px;
+      letter-spacing: -0.6px;
+    }
+    .brand-sub {
+      font-weight: 600;
+      font-size: 12px;
+      letter-spacing: 1.6px;
+      text-transform: uppercase;
+      color: var(--checkout-dark);
+      padding-left: 10px;
+      margin-left: 2px;
+      border-left: 1px solid var(--line-strong);
+    }
+    .header-nav {
+      display: flex;
+      gap: 22px;
+      align-items: center;
+    }
+    .header-nav a {
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--muted);
+    }
+    .header-nav a:hover { color: var(--ink); }
+    .header-cta {
+      padding: 8px 16px;
+      border-radius: 999px;
+      background: var(--ink);
+      color: #fff !important;
+      font-weight: 600;
+    }
+    .header-cta:hover { background: var(--checkout-dark); }
+    @media (max-width: 720px) {
+      .site-header-inner { grid-template-columns: auto 1fr; gap: 12px; }
+      .header-nav a:not(.header-cta) { display: none; }
+      .brand-sub { display: none; }
+    }
+
+    /* ---------- title block ---------- */
+    .doc-hero {
+      position: relative;
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: clamp(40px, 6vw, 72px) clamp(20px, 5vw, 32px) clamp(24px, 3vw, 36px);
+    }
+    .doc-hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(circle at 12% 20%, rgba(124, 58, 237, 0.10) 0%, transparent 55%),
+        radial-gradient(circle at 88% 0%, rgba(124, 58, 237, 0.07) 0%, transparent 50%);
+      pointer-events: none;
+      z-index: -1;
+    }
+    .preview-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 14px;
+      border-radius: 999px;
+      background: var(--checkout-soft);
+      border: 1px solid var(--checkout-line);
+      color: var(--checkout-dark);
+      font-size: 11px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      font-weight: 700;
+      margin-bottom: 20px;
+    }
+    .preview-badge .dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--checkout-accent);
+      flex-shrink: 0;
+    }
+    .doc-hero h1 {
+      font-size: clamp(32px, 5.2vw, 54px);
+      font-weight: 800;
+      letter-spacing: -1.6px;
+      line-height: 1.06;
+      margin-bottom: 16px;
+    }
+    .doc-hero h1 .accent { color: var(--checkout-accent); }
+    .doc-hero .lede {
+      font-size: clamp(15px, 1.6vw, 18px);
+      color: var(--muted);
+      max-width: 680px;
+      line-height: 1.6;
+    }
+    .preview-note {
+      margin-top: 26px;
+      max-width: 680px;
+      padding: 16px 18px;
+      border: 1px solid var(--checkout-line);
+      border-left: 3px solid var(--checkout-accent);
+      border-radius: 0 14px 14px 0;
+      background: var(--checkout-soft);
+      font-size: 14.5px;
+      color: var(--ink-soft);
+    }
+    .preview-note strong { color: var(--checkout-dark); }
+
+    /* ---------- layout: sticky TOC + content ---------- */
+    .doc-layout {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 8px clamp(20px, 5vw, 32px) clamp(56px, 8vw, 88px);
+      display: grid;
+      grid-template-columns: 232px minmax(0, 1fr);
+      gap: clamp(28px, 4vw, 56px);
+      align-items: start;
+    }
+    @media (max-width: 900px) {
+      .doc-layout { grid-template-columns: minmax(0, 1fr); gap: 24px; }
+    }
+    .doc-toc {
+      position: sticky;
+      top: 84px;
+      align-self: start;
+      padding: 18px;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: var(--bg-soft);
+    }
+    @media (max-width: 900px) {
+      .doc-toc { position: static; top: auto; }
+    }
+    .toc-title {
+      font-size: 11px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--muted);
+      font-weight: 700;
+      margin-bottom: 12px;
+    }
+    .doc-toc ol {
+      list-style: none;
+      counter-reset: toc;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+    .doc-toc li { counter-increment: toc; }
+    .doc-toc a {
+      display: block;
+      padding: 7px 10px;
+      border-radius: 10px;
+      font-size: 13.5px;
+      font-weight: 500;
+      color: var(--muted);
+      text-decoration: none;
+      line-height: 1.4;
+    }
+    .doc-toc a::before {
+      content: counter(toc) ".";
+      display: inline-block;
+      width: 20px;
+      color: var(--muted-soft);
+      font-variant-numeric: tabular-nums;
+    }
+    .doc-toc a:hover {
+      background: #fff;
+      color: var(--checkout-dark);
+      box-shadow: 0 1px 3px rgba(15, 23, 42, 0.06);
+    }
+
+    /* ---------- sections ---------- */
+    .doc-section {
+      scroll-margin-top: 92px;
+      padding: 34px 0;
+      border-top: 1px solid var(--line);
+    }
+    .doc-section:first-child { border-top: none; padding-top: 6px; }
+    .doc-section h2 {
+      font-size: clamp(23px, 2.8vw, 30px);
+      font-weight: 800;
+      letter-spacing: -0.8px;
+      margin-bottom: 12px;
+    }
+    .doc-section h3 {
+      font-size: 17px;
+      font-weight: 700;
+      letter-spacing: -0.3px;
+      margin: 28px 0 8px;
+    }
+    .doc-section p {
+      color: var(--muted);
+      font-size: 15px;
+      line-height: 1.7;
+      margin-bottom: 12px;
+      max-width: 760px;
+    }
+    .doc-section p strong, .doc-section li strong { color: var(--ink); font-weight: 700; }
+    .doc-section ul.plain {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin: 12px 0 16px;
+      max-width: 760px;
+    }
+    .doc-section ul.plain li {
+      position: relative;
+      padding-left: 20px;
+      font-size: 15px;
+      color: var(--muted);
+      line-height: 1.65;
+    }
+    .doc-section ul.plain li::before {
+      content: '';
+      position: absolute;
+      left: 2px;
+      top: 10px;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--checkout-accent);
+    }
+
+    code {
+      font-family: var(--mono);
+      font-size: 0.88em;
+      background: var(--checkout-soft);
+      color: var(--checkout-dark);
+      padding: 2px 6px;
+      border-radius: 6px;
+      word-break: break-word;
+    }
+
+    /* ---------- code blocks ---------- */
+    .code-block {
+      margin: 14px 0 20px;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      overflow: hidden;
+      background: var(--bg-soft);
+    }
+    .code-label {
+      padding: 9px 16px;
+      background: #fff;
+      border-bottom: 1px solid var(--line);
+      font-size: 11px;
+      letter-spacing: 1.6px;
+      text-transform: uppercase;
+      font-weight: 700;
+      color: var(--muted);
+    }
+    .code-block pre {
+      overflow-x: auto;
+      padding: 16px;
+      -webkit-overflow-scrolling: touch;
+    }
+    .code-block pre code {
+      display: block;
+      white-space: pre;
+      font-family: var(--mono);
+      font-size: 13px;
+      line-height: 1.7;
+      color: var(--ink);
+      background: none;
+      padding: 0;
+      border-radius: 0;
+      word-break: normal;
+    }
+
+    /* ---------- callouts ---------- */
+    .callout {
+      margin: 18px 0;
+      padding: 14px 16px;
+      border-left: 3px solid var(--checkout-accent);
+      border-radius: 0 12px 12px 0;
+      background: var(--checkout-soft);
+      font-size: 14.5px;
+      line-height: 1.65;
+      color: var(--ink-soft);
+      max-width: 760px;
+    }
+    .callout.warn {
+      border-left-color: #B45309;
+      background: rgba(245, 158, 11, 0.10);
+    }
+    .callout p { color: inherit; font-size: inherit; margin-bottom: 0; }
+    .callout p + p { margin-top: 8px; }
+
+    /* ---------- tables ---------- */
+    .table-wrap {
+      margin: 16px 0 20px;
+      overflow-x: auto;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      -webkit-overflow-scrolling: touch;
+    }
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      min-width: 620px;
+      font-size: 14px;
+    }
+    th, td {
+      text-align: left;
+      padding: 12px 14px;
+      border-bottom: 1px solid var(--line);
+      vertical-align: top;
+      color: var(--ink-soft);
+      line-height: 1.55;
+    }
+    thead th {
+      background: var(--bg-soft);
+      font-size: 11px;
+      letter-spacing: 1.4px;
+      text-transform: uppercase;
+      color: var(--muted);
+      font-weight: 700;
+      white-space: nowrap;
+    }
+    tbody tr:last-child td { border-bottom: none; }
+    .group-row td {
+      background: var(--checkout-soft);
+      color: var(--checkout-dark);
+      font-size: 11px;
+      letter-spacing: 1.6px;
+      text-transform: uppercase;
+      font-weight: 700;
+    }
+    .method {
+      font-family: var(--mono);
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--checkout-dark);
+    }
+    td .path {
+      font-family: var(--mono);
+      font-size: 12.5px;
+      background: none;
+      color: var(--ink);
+      padding: 0;
+      white-space: nowrap;
+    }
+    td .scope { white-space: nowrap; font-size: 13px; color: var(--muted); }
+
+    /* ---------- numbered steps ---------- */
+    .step {
+      display: grid;
+      grid-template-columns: 34px minmax(0, 1fr);
+      gap: 16px;
+      margin-top: 30px;
+    }
+    .step-num {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--checkout-accent), var(--checkout-dark));
+      color: #fff;
+      font-weight: 700;
+      font-size: 15px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 6px 16px rgba(124, 58, 237, 0.24);
+    }
+    .step h3 { margin-top: 4px; }
+    @media (max-width: 520px) {
+      .step { grid-template-columns: minmax(0, 1fr); gap: 10px; }
+    }
+
+    /* ---------- method hierarchy ---------- */
+    ol.method-list {
+      list-style: none;
+      counter-reset: mth;
+      display: grid;
+      gap: 12px;
+      margin: 18px 0 20px;
+      max-width: 820px;
+    }
+    ol.method-list li {
+      counter-increment: mth;
+      position: relative;
+      padding: 16px 18px 16px 56px;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: #fff;
+      font-size: 14.5px;
+      color: var(--muted);
+      line-height: 1.65;
+    }
+    ol.method-list li::before {
+      content: counter(mth);
+      position: absolute;
+      left: 16px;
+      top: 15px;
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      background: var(--checkout-soft);
+      color: var(--checkout-dark);
+      font-weight: 700;
+      font-size: 13px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    ol.method-list li strong { display: block; color: var(--ink); font-size: 15px; margin-bottom: 2px; }
+
+    /* ---------- footer ---------- */
+    .site-footer {
+      background: var(--ink);
+      color: #CBD5E1;
+      padding: 56px clamp(20px, 5vw, 32px) 28px;
+    }
+    .footer-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1.4fr 1fr 1fr 1fr;
+      gap: 40px;
+    }
+    @media (max-width: 800px) {
+      .footer-inner { grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 480px) {
+      .footer-inner { grid-template-columns: 1fr; }
+    }
+    .footer-col h4 {
+      font-size: 12px;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      color: #94A3B8;
+      margin-bottom: 14px;
+      font-weight: 600;
+    }
+    .footer-col ul {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .footer-col a {
+      color: #E2E8F0;
+      text-decoration: none;
+      font-size: 14px;
+    }
+    .footer-col a:hover { color: #fff; text-decoration: underline; }
+    .footer-brand .brand-mark { box-shadow: none; }
+    .footer-brand .brand-name { color: #fff; }
+    .footer-brand p {
+      margin-top: 16px;
+      font-size: 13px;
+      color: #94A3B8;
+      max-width: 280px;
+      line-height: 1.6;
+    }
+    .footer-legal {
+      max-width: 1100px;
+      margin: 40px auto 0;
+      padding-top: 24px;
+      border-top: 1px solid #1E293B;
+      font-size: 12px;
+      color: #64748B;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      justify-content: space-between;
+    }
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <div class="site-header-inner">
+      <a class="brand-lockup" href="/" aria-label="beyound home">
+        <span class="brand-mark">b</span>
+        <span class="brand-name">beyound</span>
+        <span class="brand-sub">Checkout docs</span>
+      </a>
+      <nav class="header-nav" aria-label="Documentation">
+        <a href="/">Home</a>
+        <a href="/policies/">Policies</a>
+        <a href="mailto:support@beyound.in">support@beyound.in</a>
+        <a class="header-cta" href="/checkout/">← Beyound Checkout</a>
+      </nav>
+    </div>
+  </header>
+
+  <div class="doc-hero">
+    <span class="preview-badge"><span class="dot"></span>Developer preview</span>
+    <h1>Beyound Checkout<br><span class="accent">Developer docs</span></h1>
+    <p class="lede">
+      Create an order on your server, hand the checkout session to the browser, and
+      read the authoritative payment status back on your server.
+    </p>
+    <div class="preview-note">
+      <strong>The Beyound Checkout API is in developer preview.</strong> It is not yet
+      open to every merchant, and there is no self-serve sign-up. Credentials — and the
+      base URL they work against — are issued on request: write to
+      <a href="mailto:support@beyound.in">support@beyound.in</a>. Anything not documented
+      on this page is not part of the preview contract yet; ask rather than assume.
+    </div>
+  </div>
+
+  <div class="doc-layout">
+    <nav class="doc-toc" aria-label="On this page">
+      <p class="toc-title">On this page</p>
+      <ol>
+        <li><a href="#overview">Overview</a></li>
+        <li><a href="#authentication">Authentication</a></li>
+        <li><a href="#quickstart">Quickstart</a></li>
+        <li><a href="#api-reference">API reference</a></li>
+        <li><a href="#payment-methods">Payment methods</a></li>
+        <li><a href="#status">Status and webhooks</a></li>
+        <li><a href="#errors">Errors and declines</a></li>
+        <li><a href="#going-live">Testing and going live</a></li>
+      </ol>
+    </nav>
+
+    <main>
+      <!-- ============ 1 · OVERVIEW ============ -->
+      <section class="doc-section" id="overview">
+        <h2>Overview</h2>
+        <p>
+          Beyound Checkout is a payment layer that sits between your checkout page and the
+          shopper's bank. The integration has three moving parts:
+        </p>
+        <ul class="plain">
+          <li><strong>Your server creates an order.</strong> One call with your secret key returns the order plus a <em>checkout session</em>.</li>
+          <li><strong>Your page hands that session to the browser.</strong> The session token authenticates the payment sheet, which renders inline on your own checkout page — the shopper never leaves your domain to choose a method.</li>
+          <li><strong>Your server reads the result.</strong> When the sheet reports back, you read the order on your server and act on that status, not on what the browser told you.</li>
+        </ul>
+
+        <h3>The two shopper paths</h3>
+        <ul class="plain">
+          <li>
+            <strong>One tap.</strong> If the shopper has already approved a card at your
+            brand — a standing instruction (e-mandate) they authorised once with a real
+            bank OTP — the pay bar charges that card in place. No sheet opens, no OTP, no
+            redirect, no bank page. This path is capped at <strong>₹25,000 per payment</strong>.
+          </li>
+          <li>
+            <strong>Full sheet.</strong> Everyone else. The sheet opens over your checkout
+            page with the fixed method hierarchy, and the authentication step depends on the
+            method chosen: an in-sheet 3-D Secure code for cards, an approval in the
+            shopper's UPI app, or a bank login for net banking.
+          </li>
+        </ul>
+
+        <h3>Which calls are yours</h3>
+        <p>
+          Your server calls exactly two endpoints: <code>POST /v1/orders</code> to create the
+          order, and <code>GET /v1/orders/{orderId}</code> to read the result. Every other
+          endpoint on this page is called by the sheet in the browser using the session
+          token. You do not implement those — they are documented so you know what is
+          happening on your page.
+        </p>
+
+        <h3>Conventions</h3>
+        <ul class="plain">
+          <li>Base path <code>/v1</code>. Transport is HTTPS with JSON bodies.</li>
+          <li>Amounts are <strong>integer minor units</strong> (paise) — <code>910700</code> is ₹9,107.00. Currency is <code>INR</code>.</li>
+          <li>Timestamps are RFC-3339, UTC.</li>
+          <li>Identifiers are opaque, prefixed strings: <code>ord_</code> for orders, <code>cs_</code> for checkout sessions, <code>pay_</code> for payments, <code>pi_</code> for saved instruments, <code>mnd_</code> for standing instructions.</li>
+        </ul>
+        <div class="callout">
+          <p>
+            <strong>Base URL.</strong> Every example on this page uses
+            <code>https://api.beyound.in</code> as the host. Treat that as a labelled
+            placeholder: the base URL your keys work against is confirmed when your preview
+            credentials are issued.
+          </p>
+        </div>
+        <div class="callout">
+          <p>
+            <strong>No address step.</strong> The preview contract has no address or
+            shipping resource. Address capture, validation and storage stay on your own
+            checkout — Beyound only collects the money.
+          </p>
+        </div>
+      </section>
+
+      <!-- ============ 2 · AUTHENTICATION ============ -->
+      <section class="doc-section" id="authentication">
+        <h2>Authentication</h2>
+        <p>
+          There are two credential types, and they are not interchangeable. Both travel in
+          the <code>Authorization</code> header as a bearer token.
+        </p>
+
+        <h3>Merchant secret key — server to server</h3>
+        <div class="code-block">
+          <div class="code-label">Your server only</div>
+          <pre><code>Authorization: Bearer sk_live_...</code></pre>
+        </div>
+        <p>
+          The secret key identifies your brand. It creates orders and reads them back. It is
+          the credential behind every merchant-scoped call in the reference below.
+        </p>
+        <div class="callout warn">
+          <p>
+            <strong>The secret key must never ship to the browser.</strong> Not in a script
+            tag, not in a data attribute, not in a public environment variable, not through
+            your own API as a passthrough. It belongs on your server, in your secret store.
+            Anything the browser can read, a shopper can read.
+          </p>
+        </div>
+
+        <h3>Checkout session token — browser and app</h3>
+        <div class="code-block">
+          <div class="code-label">Browser</div>
+          <pre><code>Authorization: Bearer cs_...</code></pre>
+        </div>
+        <p>
+          The session token is minted when an order's checkout is opened, and it is returned
+          to you as <code>session.client_token</code> from <code>POST /v1/orders</code>. It is
+          <strong>short-lived</strong> — it carries its own <code>expires_at</code> — and it is
+          <strong>scoped to one order</strong>. It is what every client-facing endpoint on this
+          page uses. It is safe in the browser precisely because it can do so little: it
+          cannot create orders, and it cannot touch a different order.
+        </p>
+
+        <h3>Idempotency</h3>
+        <p>
+          Every POST that moves money accepts an <code>Idempotency-Key</code> header, and
+          payment initiation requires one:
+        </p>
+        <div class="code-block">
+          <div class="code-label">Header</div>
+          <pre><code>Idempotency-Key: ord-req-8f2c1a7e</code></pre>
+        </div>
+        <ul class="plain">
+          <li><code>POST /v1/checkout/{sessionId}/payments</code> — <strong>required</strong>.</li>
+          <li><code>POST /v1/mandates/charge</code> — the one-tap charge, sent with an idempotency key.</li>
+        </ul>
+        <div class="callout">
+          <p>
+            The contract specifies <code>Idempotency-Key</code> for money-moving POSTs. Sending
+            it on order creation too — as the quickstart does — costs nothing and keeps your
+            retry logic uniform, but whether order creation de-duplicates on it is not yet
+            finalised in the preview API. Do not rely on it to prevent duplicate orders;
+            use your own <code>merchant_reference</code> to reconcile.
+          </p>
+        </div>
+
+        <h3>Shopper identity</h3>
+        <p>
+          The shopper is identified inside the checkout session, not by you. How that
+          identity is established on each surface — app sign-on versus a web step — is not
+          yet finalised in the preview API. You pass what you know about the shopper
+          (<code>customer.ref</code>, name, phone) when you create the order.
+        </p>
+      </section>
+
+      <!-- ============ 3 · QUICKSTART ============ -->
+      <section class="doc-section" id="quickstart">
+        <h2>Quickstart</h2>
+        <p>
+          Three steps: create, mount, confirm. The first and third are yours; the middle one
+          is mostly the sheet's.
+        </p>
+
+        <div class="step">
+          <div class="step-num">1</div>
+          <div>
+            <h3>Create the order on your server</h3>
+            <p>
+              Do this when the shopper reaches your payment step, with your secret key. The
+              response gives you both the order and the checkout session.
+            </p>
+            <div class="code-block">
+              <div class="code-label">Request · your server</div>
+              <pre><code>curl -X POST https://api.beyound.in/v1/orders \
+  -H 'Authorization: Bearer sk_live_YOUR_SECRET_KEY' \
+  -H 'Idempotency-Key: ord-req-8f2c1a7e' \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "currency": "INR",
+    "amount": { "base": 814200, "tax": 96500, "total": 910700 },
+    "line_items": [
+      { "type": "flight", "title": "IndiGo 6E 2144" }
+    ],
+    "customer": {
+      "ref": "cust_10482",
+      "name": "R. Jain",
+      "phone": "+919800003391"
+    },
+    "merchant_reference": "ORD-9987",
+    "fare_hold_seconds": 540
+  }'</code></pre>
+            </div>
+            <ul class="plain">
+              <li><code>amount</code> — <code>base</code>, <code>tax</code> and <code>total</code>, all in paise. <code>total</code> is what gets charged.</li>
+              <li><code>customer.ref</code> — your own identifier for the shopper. It comes back to you on reads.</li>
+              <li><code>merchant_reference</code> — your order number. Use it to reconcile.</li>
+              <li><code>fare_hold_seconds</code> — how long the order is held. When it elapses the order reads <code>expired</code> and payment attempts fail with <code>fare_hold_expired</code>.</li>
+            </ul>
+            <div class="callout">
+              <p>
+                The <code>line_items</code> example above is the shape the reference
+                implementation exercises, which models a travel order. The full
+                <code>line_items</code> schema for other verticals is not yet finalised in the
+                preview API — confirm your item shape with support before you build against it.
+              </p>
+            </div>
+            <div class="code-block">
+              <div class="code-label">Response · 201 (abridged)</div>
+              <pre><code>{
+  "order": {
+    "id": "ord_123",
+    "status": "created"
+  },
+  "session": {
+    "id": "cs_9f42",
+    "client_token": "cs_9f42_4c1d...",
+    "expires_at": "2026-08-14T06:10:00Z"
+  }
+}</code></pre>
+            </div>
+            <p>
+              Store <code>order.id</code> against your own order record now. You will need it
+              in step 3, and it is the only handle that survives the browser.
+            </p>
+          </div>
+        </div>
+
+        <div class="step">
+          <div class="step-num">2</div>
+          <div>
+            <h3>Hand the session to the browser and mount the sheet</h3>
+            <p>
+              Send <code>session.id</code> and <code>session.client_token</code> down to your
+              checkout page — rendered into the page by your server, or returned from your own
+              endpoint. Send nothing else. The token authenticates the sheet, which hydrates
+              itself from the session bootstrap:
+            </p>
+            <div class="code-block">
+              <div class="code-label">Browser · session bootstrap</div>
+              <pre><code>// sessionId and clientToken came from your server in step 1.
+// Your secret key never appears in this file.
+const res = await fetch(
+  `https://api.beyound.in/v1/checkout/session/${sessionId}`,
+  { headers: { Authorization: `Bearer ${clientToken}` } }
+);
+const checkout = await res.json();</code></pre>
+            </div>
+            <p>
+              One call hydrates the whole sheet. The response carries a
+              <code>session</code> block (with its <code>expires_at</code>), the
+              <code>merchant</code> branding, the <code>order</code> and its amount breakdown,
+              the <code>customer</code>, the <code>instruments</code> the shopper can pay with
+              in their fixed order, and any <code>offers</code> applicable to this order. If the
+              shopper already has an approved card at your brand, that block is present too —
+              which is exactly what selects the one-tap path over the full sheet.
+            </p>
+            <div class="callout warn">
+              <p>
+                <strong>The browser embed is not published during developer preview.</strong>
+                There is no public script tag, package name or install command for the sheet
+                yet — do not go looking for one, and do not build against a guess. What is
+                specified today is the session-token contract above. The embed is confirmed
+                together with your credentials.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="step">
+          <div class="step-num">3</div>
+          <div>
+            <h3>Read the final status on your server, then confirm the order</h3>
+            <p>
+              When the sheet finishes, poll the order with your secret key until it reaches a
+              terminal status. This read is what you act on.
+            </p>
+            <div class="code-block">
+              <div class="code-label">Request · your server</div>
+              <pre><code>curl https://api.beyound.in/v1/orders/ord_123 \
+  -H 'Authorization: Bearer sk_live_YOUR_SECRET_KEY'</code></pre>
+            </div>
+            <p>The order read gives you:</p>
+            <ul class="plain">
+              <li><code>status</code> — one of <code>created</code>, <code>paying</code>, <code>paid</code>, <code>failed</code>, <code>expired</code>.</li>
+              <li><code>confirmation</code> — present once paid. It carries the settlement reference <code>utr</code> and a <code>paid_summary</code> line you can print on a receipt.</li>
+              <li><code>fare_hold_expires_at</code> — when the hold on this order lapses.</li>
+            </ul>
+            <p>
+              The sheet itself polls <code>GET /v1/payments/{paymentId}</code> for the
+              in-flight payment states (<code>pending</code>, <code>authorising</code>,
+              <code>charging</code>, <code>settled</code>, <code>declined</code>). That read is
+              session-scoped and drives the UI. Your fulfilment decision should hang off the
+              order read, with your secret key.
+            </p>
+            <div class="callout warn">
+              <p>
+                <strong>The server-side status read is authoritative.</strong> Never mark an
+                order paid because a browser callback, redirect parameter or client-side
+                success screen said so — any of those can be replayed, forged or simply lost
+                when a shopper closes the tab. Only <code>status: "paid"</code> from
+                <code>GET /v1/orders/{orderId}</code>, read with your secret key, releases
+                goods.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ 4 · API REFERENCE ============ -->
+      <section class="doc-section" id="api-reference">
+        <h2>API reference</h2>
+        <p>
+          Every merchant- and session-scoped endpoint in the preview contract, grouped by
+          resource. Paths are relative to the base URL and already include the
+          <code>/v1</code> prefix.
+        </p>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Method + path</th>
+                <th>Purpose</th>
+                <th>Auth scope</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="group-row"><td colspan="3">Orders</td></tr>
+              <tr>
+                <td><span class="method">POST</span> <code class="path">/v1/orders</code></td>
+                <td>Create the order and mint its checkout session.</td>
+                <td><span class="scope">Merchant secret key</span></td>
+              </tr>
+              <tr>
+                <td><span class="method">GET</span> <code class="path">/v1/orders/{orderId}</code></td>
+                <td>Read order status and, once paid, the confirmation. The authoritative read.</td>
+                <td><span class="scope">Merchant key or session</span></td>
+              </tr>
+
+              <tr class="group-row"><td colspan="3">Session</td></tr>
+              <tr>
+                <td><span class="method">GET</span> <code class="path">/v1/checkout/session/{sessionId}</code></td>
+                <td>Hydrate the sheet in one call: order, merchant branding, customer, saved instruments, standing-instruction state, offers.</td>
+                <td><span class="scope">Session token</span></td>
+              </tr>
+
+              <tr class="group-row"><td colspan="3">Instruments</td></tr>
+              <tr>
+                <td><span class="method">GET</span> <code class="path">/v1/checkout/{sessionId}/instruments</code></td>
+                <td>Re-fetch the saved instruments in their fixed hierarchy. Usually already delivered by the session bootstrap.</td>
+                <td><span class="scope">Session token</span></td>
+              </tr>
+              <tr>
+                <td><span class="method">POST</span> <code class="path">/v1/checkout/{sessionId}/cards</code></td>
+                <td>Add a new card from a network token. No card number and no CVV is stored — the card data goes to the network tokenisation endpoint and only the token reaches Beyound.</td>
+                <td><span class="scope">Session token</span></td>
+              </tr>
+
+              <tr class="group-row"><td colspan="3">Payments</td></tr>
+              <tr>
+                <td><span class="method">POST</span> <code class="path">/v1/checkout/{sessionId}/payments</code></td>
+                <td>Initiate a payment for the method the shopper picked. Returns the payment id and the next action to perform. <code>Idempotency-Key</code> required.</td>
+                <td><span class="scope">Session token</span></td>
+              </tr>
+              <tr>
+                <td><span class="method">POST</span> <code class="path">/v1/payments/{paymentId}/otp</code></td>
+                <td>Submit the 3-D Secure code the shopper entered.</td>
+                <td><span class="scope">Session token</span></td>
+              </tr>
+              <tr>
+                <td><span class="method">POST</span> <code class="path">/v1/payments/{paymentId}/otp/resend</code></td>
+                <td>Re-send the 3-D Secure code. Returns the cool-down before the next resend.</td>
+                <td><span class="scope">Session token</span></td>
+              </tr>
+              <tr>
+                <td><span class="method">GET</span> <code class="path">/v1/payments/{paymentId}</code></td>
+                <td>Poll payment status, and on completion the receipt or the decline detail.</td>
+                <td><span class="scope">Session token</span></td>
+              </tr>
+
+              <tr class="group-row"><td colspan="3">Mandates — standing instructions</td></tr>
+              <tr>
+                <td><span class="method">POST</span> <code class="path">/v1/mandates/charge</code></td>
+                <td>Charge an approved card under its standing instruction. This is the one-tap path: no additional factor, cap enforced at ₹25,000 per payment.</td>
+                <td><span class="scope">Session token</span></td>
+              </tr>
+
+              <tr class="group-row"><td colspan="3">Offers</td></tr>
+              <tr>
+                <td><span class="method">GET</span> <code class="path">/v1/checkout/{sessionId}/offers</code></td>
+                <td>Offers applicable to this order. An empty array means the sheet shows no offer treatment at all.</td>
+                <td><span class="scope">Session token</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <p>
+          A standing instruction is created only as a side effect of a successful card
+          payment where the shopper ticked the consent — the bank's additional-factor step is
+          what registers it. There is no standalone create call. Listing and cancelling
+          standing instructions are customer-scoped surfaces, not part of the merchant
+          integration, so they are not documented here.
+        </p>
+      </section>
+
+      <!-- ============ 5 · PAYMENT METHODS ============ -->
+      <section class="doc-section" id="payment-methods">
+        <h2>Payment methods</h2>
+        <p>
+          The sheet renders one fixed hierarchy, in this order, for every shopper. It is not
+          personalised and not reorderable — fastest first, most likely to leave your page
+          last.
+        </p>
+        <ol class="method-list">
+          <li>
+            <strong>Approved card — one tap</strong>
+            Shown only when the shopper already has an active standing instruction on a card
+            at your brand. One tap charges it: no OTP, no redirect, no bank page. Capped at
+            ₹25,000 per payment; above the cap the attempt fails with
+            <code>mandate_cap_exceeded</code> and the shopper picks another method.
+          </li>
+          <li>
+            <strong>Eligible saved cards</strong>
+            Saved cards that can carry a standing instruction. They pay with one 3-D Secure
+            code now, and — if the shopper consents at the same time — become one-tap cards
+            for their next payment at your brand.
+          </li>
+          <li>
+            <strong>Other saved cards</strong>
+            Saved cards that are not eligible for a standing instruction. They pay exactly
+            like any other card, with 3-D Secure each time; the one-tap consent is not
+            offered on them.
+          </li>
+          <li>
+            <strong>New card</strong>
+            An add-card form. The card is tokenised with the network — no card number and no
+            CVV is stored by Beyound — and authenticated with a 3-D Secure code in the sheet.
+            The consent checkbox is intent only: the standing instruction is registered after
+            the bank's additional-factor step succeeds, never before.
+          </li>
+          <li>
+            <strong>UPI</strong>
+            Expands in place to the shopper's UPI apps, or a UPI ID. Sends a collect request
+            the shopper approves in their app, inside a fixed window.
+          </li>
+          <li>
+            <strong>Net banking</strong>
+            Expands to a bank list and hands off with a redirect and a return URL. Last in
+            the order because it is the slowest and the most likely to take the shopper off
+            your page.
+          </li>
+        </ol>
+
+        <h3>What each method returns</h3>
+        <p>
+          Payment initiation answers with the payment id, a status, and a
+          <code>next_action</code> describing what has to happen before the money moves. The
+          sheet drives that action; you do not.
+        </p>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Method</th>
+                <th>next_action.type</th>
+                <th>What follows</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Approved card (one tap)</td>
+                <td><code class="path">mandate_charge</code></td>
+                <td>No shopper action. Poll until the payment settles.</td>
+              </tr>
+              <tr>
+                <td>Saved or new card</td>
+                <td><code class="path">otp_3ds</code></td>
+                <td>The sheet collects the 3-D Secure code and submits it to <code>/otp</code>.</td>
+              </tr>
+              <tr>
+                <td>UPI</td>
+                <td><code class="path">upi_collect</code></td>
+                <td>Collect request to the chosen app; <code>expires_in_s</code> bounds the wait.</td>
+              </tr>
+              <tr>
+                <td>Net banking</td>
+                <td><code class="path">netbanking_redirect</code></td>
+                <td>Carries <code>redirect_url</code> and <code>return_url</code> for the bank hand-off.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="code-block">
+          <div class="code-label">Response · payment initiated, card path</div>
+          <pre><code>{
+  "payment_id": "pay_1",
+  "status": "authorising",
+  "next_action": {
+    "type": "otp_3ds",
+    "bank": "ICICI Bank",
+    "phone_masked": "+91 ·····3391",
+    "resend_after_s": 24,
+    "expires_in_s": 300
+  }
+}</code></pre>
+        </div>
+      </section>
+
+      <!-- ============ 6 · STATUS AND WEBHOOKS ============ -->
+      <section class="doc-section" id="status">
+        <h2>Status and webhooks</h2>
+
+        <h3>Webhooks</h3>
+        <p>
+          <strong>The preview API does not specify webhooks.</strong> There are no event
+          names, no delivery endpoint, no signing scheme and no retry policy in the contract
+          today — so none are documented here, and you should not design your fulfilment
+          around a callback that does not exist yet. If outbound events matter to your
+          integration, say so when you request credentials.
+        </p>
+
+        <h3>How to get status today</h3>
+        <p>
+          Status is retrieved by polling. Two reads exist, and they are for different callers:
+        </p>
+        <ul class="plain">
+          <li>
+            <strong>Your server</strong> polls <code>GET /v1/orders/{orderId}</code> with the
+            secret key. Statuses: <code>created</code>, <code>paying</code>,
+            <code>paid</code>, <code>failed</code>, <code>expired</code>. Poll from the moment
+            you hand the session to the browser until you get a terminal status or the hold
+            expires.
+          </li>
+          <li>
+            <strong>The sheet</strong> polls <code>GET /v1/payments/{paymentId}</code> with the
+            session token. Statuses: <code>pending</code>, <code>authorising</code>,
+            <code>charging</code>, <code>settled</code>, <code>declined</code>. This drives the
+            in-sheet UI — it is not your fulfilment signal.
+          </li>
+        </ul>
+        <p>
+          A settled payment carries the amount, what it was paid with, and a
+          <code>receipt</code> containing the settlement reference. The same outcome reaches
+          you as <code>confirmation</code> on the order read.
+        </p>
+      </section>
+
+      <!-- ============ 7 · ERRORS ============ -->
+      <section class="doc-section" id="errors">
+        <h2>Errors and declines</h2>
+        <p>Every error uses one envelope, whatever the endpoint:</p>
+        <div class="code-block">
+          <div class="code-label">Error envelope</div>
+          <pre><code>{
+  "error": {
+    "code": "card_declined",
+    "message": "...",
+    "retryable": true,
+    "details": { }
+  }
+}</code></pre>
+        </div>
+        <p>
+          Branch on <code>code</code>, never on <code>message</code> — the message is written
+          for humans and will change. <code>retryable</code> marks the errors where re-sending
+          the same request can succeed.
+        </p>
+
+        <h3>Error codes</h3>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr><th>Code</th><th>Meaning</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><code class="path">unauthorized</code></td><td>Missing, invalid, or wrong-scope credential.</td></tr>
+              <tr><td><code class="path">session_expired</code></td><td>The checkout session is past its <code>expires_at</code>. Create a new order.</td></tr>
+              <tr><td><code class="path">order_not_found</code></td><td>No order with that id under this key.</td></tr>
+              <tr><td><code class="path">order_expired</code></td><td>The order is no longer payable.</td></tr>
+              <tr><td><code class="path">fare_hold_expired</code></td><td>The hold window on the order elapsed before the payment completed.</td></tr>
+              <tr><td><code class="path">card_declined</code></td><td>The issuing bank declined the card. Nothing was charged.</td></tr>
+              <tr><td><code class="path">mandate_cap_exceeded</code></td><td>The amount is above the ₹25,000 one-tap cap. The shopper must pick another method.</td></tr>
+              <tr><td><code class="path">mandate_inactive</code></td><td>The standing instruction is no longer active — cancelled at Beyound or at the bank.</td></tr>
+              <tr><td><code class="path">otp_invalid</code></td><td>Wrong 3-D Secure code.</td></tr>
+              <tr><td><code class="path">otp_expired</code></td><td>The 3-D Secure code lapsed before it was submitted.</td></tr>
+              <tr><td><code class="path">upi_timeout</code></td><td>The shopper did not approve the UPI collect request in time.</td></tr>
+              <tr><td><code class="path">instrument_ineligible</code></td><td>That instrument cannot be used for this payment.</td></tr>
+              <tr><td><code class="path">validation_error</code></td><td>The request body failed validation. Check <code>details</code>.</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3>Declines</h3>
+        <p>
+          A decline is not an error envelope — it is a terminal payment status. The payment
+          read comes back with <code>status: "declined"</code> and a <code>decline</code>
+          object:
+        </p>
+        <div class="code-block">
+          <div class="code-label">Response · declined payment (abridged)</div>
+          <pre><code>{
+  "status": "declined",
+  "decline": {
+    "reason": "Your bank declined the card. Nothing was charged.",
+    "fare_hold_expires_at": "2026-08-14T06:19:00Z",
+    "retry_suggestion": "Try UPI or another card"
+  }
+}</code></pre>
+        </div>
+        <ul class="plain">
+          <li><strong>A decline means nothing was charged.</strong> No money left the shopper's account, so there is nothing to reverse and no refund to issue.</li>
+          <li><strong>A declined payment registers no standing instruction.</strong> If the shopper consented to one-tap on a card that then declined, the consent does not take effect — the bank's additional-factor step is what registers it, and it did not succeed.</li>
+          <li><strong>The order stays payable</strong> until <code>fare_hold_expires_at</code>. The sheet offers a retry with a different method inside that window; your order record should not be cancelled the moment one attempt declines.</li>
+        </ul>
+      </section>
+
+      <!-- ============ 8 · GOING LIVE ============ -->
+      <section class="doc-section" id="going-live">
+        <h2>Testing and going live</h2>
+        <p>
+          Beyound Checkout is in developer preview, and the honest version is short:
+          onboarding is a conversation, not a sign-up form.
+        </p>
+        <ul class="plain">
+          <li><strong>Credentials are issued on request.</strong> Write to <a href="mailto:support@beyound.in">support@beyound.in</a> with your brand and the domains your checkout runs on. Your secret key, the base URL it works against, and the browser embed are issued together.</li>
+          <li><strong>There is no published sandbox.</strong> No test base URL and no test card numbers are part of the preview contract. Do not construct your own against a guessed host.</li>
+          <li><strong>There are no webhooks yet.</strong> Build the server-side poll from the start — see the status section above.</li>
+          <li><strong>Everything not on this page is unspecified.</strong> Rate limits, settlement timing, commercial terms and the browser embed are not in the preview API contract. Ask; do not assume.</li>
+        </ul>
+        <p>
+          Two things are worth getting right before you write any code, because they do not
+          change when the preview does: keep the secret key on your server, and treat the
+          server-side order read as the only thing that marks an order paid.
+        </p>
+      </section>
+    </main>
+  </div>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div class="footer-col footer-brand">
+        <a class="brand-lockup" href="/" style="color:#fff">
+          <span class="brand-mark">b</span>
+          <span class="brand-name">beyound</span>
+        </a>
+        <p>BeyoundExtra Tech Private Limited. Payments technology, built in India.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Checkout</h4>
+        <ul>
+          <li><a href="/checkout/">Beyound Checkout</a></li>
+          <li><a href="/policies/terms.html">Terms of Use</a></li>
+          <li><a href="/policies/privacy.html">Privacy Policy</a></li>
+          <li><a href="/policies/grievance.html">Grievance Redressal</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Services</h4>
+        <ul>
+          <li><a href="https://wallet.beyound.in">Beyound Wallet</a></li>
+          <li><a href="https://bills.beyound.in">Beyound Bills (BBPS)</a></li>
+          <li><a href="https://kyc.beyound.in">Beyound KYC</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Company</h4>
+        <ul>
+          <li><a href="/policies/about.html">About Beyound</a></li>
+          <li><a href="/blog/">Blog</a></li>
+          <li><a href="/faq/">FAQ</a></li>
+          <li><a href="mailto:support@beyound.in">support@beyound.in</a></li>
+          <li>Bangalore, India</li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-legal">
+      <span>&copy; 2026 BeyoundExtra Tech Private Limited. All rights reserved.</span>
+      <span>Corporate Office: Wework Galaxy 43, Residency Rd, Shanthala Nagar, Ashok Nagar, Bengaluru, Karnataka - 560025</span>
+      <span>Registered Address: Khasra No 1467-1468, Balwanta Industrial Area Mali Ki Dhani, Nasirabad, Ajmer Road, Balwanta- 305601, Rajasthan</span>
+    </div>
+  </footer>
+</body>
+</html>

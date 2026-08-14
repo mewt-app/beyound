@@ -1,0 +1,223 @@
+[
+  {
+    "haid": "haid:rj.rishabhs-macbook-air-46d5",
+    "handle": "rj",
+    "last_branch": "",
+    "last_commit_ts": 1781175799.0,
+    "last_seen_ts": 1786702750.96975,
+    "online": true,
+    "sources": [
+      "presence",
+      "git",
+      "github"
+    ],
+    "tier": "online"
+  },
+  {
+    "haid": null,
+    "handle": "akshat",
+    "last_branch": "main",
+    "last_commit_ts": 1786426180.0,
+    "last_seen_ts": null,
+    "online": false,
+    "sources": [
+      "git",
+      "github"
+    ],
+    "tier": "contributed"
+  },
+  {
+    "haid": null,
+    "handle": "anu",
+    "last_branch": "address-change",
+    "last_commit_ts": 1782915321.0,
+    "last_seen_ts": null,
+    "online": false,
+    "sources": [
+      "git",
+      "github"
+    ],
+    "tier": "contributed"
+  },
+  {
+    "haid": null,
+    "handle": "priyadharshan",
+    "last_branch": "",
+    "last_commit_ts": 1779435717.0,
+    "last_seen_ts": null,
+    "online": false,
+    "sources": [
+      "git",
+      "github"
+    ],
+    "tier": "contributed"
+  },
+  {
+    "haid": null,
+    "handle": "MADALAVINAYKUMAR",
+    "last_branch": "",
+    "last_commit_ts": null,
+    "last_seen_ts": null,
+    "online": false,
+    "sources": [
+      "github"
+    ],
+    "tier": "member"
+  },
+  {
+    "haid": null,
+    "handle": "Nikhil311234",
+    "last_branch": "",
+    "last_commit_ts": null,
+    "last_seen_ts": null,
+    "online": false,
+    "sources": [
+      "github"
+    ],
+    "tier": "member"
+  },
+  {
+    "haid": null,
+    "handle": "Ravikiran2904",
+    "last_branch": "",
+    "last_commit_ts": null,
+    "last_seen_ts": null,
+    "online": false,
+    "sources": [
+      "github"
+    ],
+    "tier": "member"
+  },
+  {
+    "haid": null,
+    "handle": "SuperKrishnaSingh",
+    "last_branch": "",
+    "last_commit_ts": null,
+    "last_seen_ts": null,
+    "online": false,
+    "sources": [
+      "github"
+    ],
+    "tier": "member"
+  },
+  {
+    "haid": null,
+    "handle": "SuperMadhavan",
+    "last_branch": "",
+    "last_commit_ts": null,
+    "last_seen_ts": null,
+    "online": false,
+    "sources": [
+      "github"
+    ],
+    "tier": "member"
+  },
+  {
+    "haid": null,
+    "handle": "chsaikrishna123",
+    "last_branch": "",
+    "last_commit_ts": null,
+    "last_seen_ts": null,
+    "online": false,
+    "sources": [
+      "github"
+    ],
+    "tier": "member"
+  },
+  {
+    "haid": null,
+    "handle": "harshal-vyas",
+    "last_branch": "",
+    "last_commit_ts": null,
+    "last_seen_ts": null,
+    "online": false,
+    "sources": [
+      "github"
+    ],
+    "tier": "member"
+  },
+  {
+    "haid": null,
+    "handle": "iris594",
+    "last_branch": "",
+    "last_commit_ts": null,
+    "last_seen_ts": null,
+    "online": false,
+    "sources": [
+      "github"
+    ],
+    "tier": "member"
+  },
+  {
+    "haid": null,
+    "handle": "ranjitha-max",
+    "last_branch": "",
+    "last_commit_ts": null,
+    "last_seen_ts": null,
+    "online": false,
+    "sources": [
+      "github"
+    ],
+    "tier": "member"
+  },
+  {
+    "haid": null,
+    "handle": "riteshsuperpe",
+    "last_branch": "",
+    "last_commit_ts": null,
+    "last_seen_ts": null,
+    "online": false,
+    "sources": [
+      "github"
+    ],
+    "tier": "member"
+  },
+  {
+    "haid": null,
+    "handle": "sanket-spe",
+    "last_branch": "",
+    "last_commit_ts": null,
+    "last_seen_ts": null,
+    "online": false,
+    "sources": [
+      "github"
+    ],
+    "tier": "member"
+  },
+  {
+    "haid": null,
+    "handle": "shreekta24",
+    "last_branch": "",
+    "last_commit_ts": null,
+    "last_seen_ts": null,
+    "online": false,
+    "sources": [
+      "github"
+    ],
+    "tier": "member"
+  },
+  {
+    "haid": null,
+    "handle": "tejashwini-cmd",
+    "last_branch": "",
+    "last_commit_ts": null,
+    "last_seen_ts": null,
+    "online": false,
+    "sources": [
+      "github"
+    ],
+    "tier": "member"
+  },
+  {
+    "haid": null,
+    "handle": "viveksuperpe",
+    "last_branch": "",
+    "last_commit_ts": null,
+    "last_seen_ts": null,
+    "online": false,
+    "sources": [
+      "github"
+    ],
+    "tier": "member"
+  }
+]

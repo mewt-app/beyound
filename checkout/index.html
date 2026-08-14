@@ -1,0 +1,1127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Beyound Checkout — approve once, then pay in one tap</title>
+  <meta name="description" content="Beyound Checkout is a payment layer between an online brand's checkout and your bank. Approve your card once with a real bank one-time password, then pay in one tap at that brand — no OTP, no redirect, no bank page.">
+  <meta name="theme-color" content="#059669">
+  <meta property="og:title" content="Beyound Checkout — approve once, then pay in one tap">
+  <meta property="og:description" content="Choose Beyound at an online brand's checkout, approve your card once with your bank, and every repeat payment at that brand is a single tap.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://beyound.in/checkout/">
+  <link rel="canonical" href="https://beyound.in/checkout/">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='50' fill='rgb(5,150,105)'/><text x='50' y='68' text-anchor='middle' font-size='52' font-weight='700' font-family='system-ui' fill='white'>b</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&display=swap" media="print" onload="this.media='all'">
+  <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&display=swap"></noscript>
+  <style>
+    :root {
+      --brand: #059669;
+      --brand-dark: #047857;
+      --brand-soft: rgba(5, 150, 105, 0.08);
+      --brand-glow: rgba(5, 150, 105, 0.18);
+      --ink: #0F172A;
+      --ink-soft: #1F2937;
+      --muted: #475569;
+      --muted-soft: #94A3B8;
+      --line: #E2E8F0;
+      --line-strong: #CBD5E1;
+      --bg: #ffffff;
+      --bg-soft: #F8FAFC;
+      --wallet-accent: #0EA5E9;
+      --bills-accent: #F59E0B;
+      /* Product accent for Beyound Checkout, used the same way
+         --wallet-accent and --bills-accent are used on the home page.
+         Brand green stays the site-level identity (header mark, footer). */
+      --checkout-accent: #7C3AED;
+      --checkout-dark: #5B21B6;
+      --checkout-soft: rgba(124, 58, 237, 0.08);
+      --checkout-glow: rgba(124, 58, 237, 0.18);
+      --checkout-tint: #F5F3FF;
+      --checkout-edge: rgba(124, 58, 237, 0.20);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    /* Hide vertical scroll indicator across all browsers while keeping
+       scroll functionality intact. */
+    html, body { scrollbar-width: none; -ms-overflow-style: none; }
+    html::-webkit-scrollbar, body::-webkit-scrollbar { width: 0; height: 0; display: none; }
+    *::-webkit-scrollbar { width: 0; height: 0; display: none; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Sora', system-ui, -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+      line-height: 1.65;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a { color: var(--checkout-accent); }
+
+    /* ---------- header ---------- */
+    /* This page opens on a light hero rather than the cinematic video
+       reel, so the header settles into the translucent-white treatment
+       immediately and needs no scroll-state script. */
+    .site-header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 20;
+      background: rgba(255, 255, 255, 0.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--line);
+    }
+    .site-header-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 16px clamp(20px, 5vw, 32px);
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      align-items: center;
+      gap: 24px;
+    }
+    .site-header-inner > .header-nav {
+      justify-self: center;
+    }
+    .brand-lockup {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+      color: var(--ink);
+    }
+    .brand-mark {
+      width: 34px;
+      height: 34px;
+      border-radius: 999px;
+      background: linear-gradient(135deg, var(--brand), var(--brand-dark));
+      color: #fff;
+      font-weight: 700;
+      font-size: 18px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 14px var(--brand-glow);
+    }
+    .brand-name {
+      font-weight: 800;
+      font-size: 20px;
+      letter-spacing: -0.6px;
+    }
+    .header-nav {
+      display: flex;
+      gap: 22px;
+      align-items: center;
+    }
+    .header-nav a {
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--muted);
+    }
+    .header-nav a:hover { color: var(--ink); }
+    .header-cta {
+      padding: 8px 16px;
+      border-radius: 999px;
+      background: var(--ink);
+      color: #fff !important;
+      font-weight: 600;
+    }
+    .header-cta:hover { background: var(--checkout-dark); }
+
+    @media (max-width: 760px) {
+      .site-header-inner { grid-template-columns: auto 1fr; }
+      .site-header-inner > .header-nav { display: none; }
+    }
+
+    /* ---------- hero ---------- */
+    .hero {
+      position: relative;
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: clamp(116px, 15vw, 168px) clamp(20px, 5vw, 32px) clamp(48px, 7vw, 72px);
+      text-align: center;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(circle at top left, rgba(124, 58, 237, 0.13), transparent 540px),
+        radial-gradient(circle at top right, rgba(5, 150, 105, 0.09), transparent 460px);
+      pointer-events: none;
+      z-index: -1;
+    }
+    .hero .eyebrow {
+      display: inline-block;
+      padding: 6px 14px;
+      border-radius: 999px;
+      background: var(--checkout-soft);
+      color: var(--checkout-dark);
+      font-size: 12px;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      font-weight: 600;
+      margin-bottom: 24px;
+    }
+    .hero h1 {
+      font-size: clamp(38px, 6.4vw, 68px);
+      font-weight: 800;
+      letter-spacing: -2px;
+      line-height: 1.05;
+      margin-bottom: 20px;
+    }
+    .hero h1 .accent {
+      background: linear-gradient(135deg, var(--checkout-accent), var(--checkout-dark));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+    .hero p.lede {
+      font-size: clamp(16px, 2vw, 19px);
+      color: var(--muted);
+      max-width: 660px;
+      margin: 0 auto 36px;
+      line-height: 1.6;
+    }
+    .hero-actions {
+      display: flex;
+      gap: 14px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    .hero-rise {
+      animation: hero-rise 700ms ease-out both;
+    }
+    @keyframes hero-rise {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .hero-rise { animation: none; }
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 14px 26px;
+      border-radius: 14px;
+      font-weight: 600;
+      font-size: 15px;
+      text-decoration: none;
+      transition: transform 120ms ease, box-shadow 120ms ease, background 120ms ease;
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, var(--checkout-accent), var(--checkout-dark));
+      color: #fff;
+      box-shadow: 0 8px 24px var(--checkout-glow);
+    }
+    .btn-primary:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 12px 28px var(--checkout-glow);
+    }
+    .btn-ghost {
+      background: transparent;
+      color: var(--ink);
+      border: 1px solid var(--line-strong);
+    }
+    .btn-ghost:hover { border-color: var(--ink); }
+
+    /* ---------- what it is ---------- */
+    .about {
+      background: var(--bg-soft);
+      border-top: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+    }
+    .about-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: clamp(64px, 8vw, 96px) clamp(20px, 5vw, 32px);
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 56px;
+      align-items: start;
+    }
+    @media (max-width: 800px) {
+      .about-inner { grid-template-columns: 1fr; gap: 32px; }
+    }
+    .about-inner h2 {
+      font-size: clamp(28px, 4vw, 38px);
+      font-weight: 800;
+      letter-spacing: -1px;
+      margin-bottom: 16px;
+    }
+    .about-inner .lede {
+      font-size: 17px;
+      color: var(--muted);
+      line-height: 1.65;
+      margin-bottom: 16px;
+    }
+    .about-inner .meta {
+      font-size: 13px;
+      color: var(--muted-soft);
+    }
+    .about-points {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+    .about-points li {
+      display: grid;
+      grid-template-columns: 28px 1fr;
+      gap: 14px;
+      font-size: 15px;
+      color: var(--ink-soft);
+    }
+    .about-points li strong {
+      color: var(--ink);
+      font-weight: 700;
+    }
+    .about-points li::before {
+      content: '✓';
+      width: 28px;
+      height: 28px;
+      border-radius: 999px;
+      background: var(--checkout-soft);
+      color: var(--checkout-dark);
+      font-weight: 700;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+    }
+
+    /* ---------- section headings ---------- */
+    .section-eyebrow {
+      font-size: 12px;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      color: var(--muted);
+      font-weight: 600;
+      margin-bottom: 10px;
+      text-align: center;
+    }
+    .section-title {
+      font-size: clamp(28px, 4vw, 40px);
+      font-weight: 800;
+      letter-spacing: -1px;
+      text-align: center;
+      margin-bottom: 14px;
+    }
+    .section-sub {
+      text-align: center;
+      color: var(--muted);
+      max-width: 620px;
+      margin: 0 auto 48px;
+      font-size: 15px;
+    }
+
+    /* ---------- how it works ---------- */
+    .how {
+      background: linear-gradient(180deg, var(--bg), var(--bg-soft));
+      border-bottom: 1px solid var(--line);
+    }
+    .how-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: clamp(64px, 8vw, 96px) clamp(20px, 5vw, 32px);
+      text-align: center;
+    }
+    .how-steps {
+      margin-top: 48px;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+      position: relative;
+    }
+    /* Dashed connector between the step medallions. It renders behind
+       the cards, so only the gap segments are visible — the fixed
+       inset works across the whole 700px-to-1100px container range. */
+    .how-steps::before {
+      content: '';
+      position: absolute;
+      top: 36px;
+      left: 150px;
+      right: 150px;
+      height: 2px;
+      background: repeating-linear-gradient(
+        to right,
+        var(--line-strong) 0 8px,
+        transparent 8px 16px
+      );
+      z-index: 0;
+    }
+    @media (max-width: 700px) {
+      .how-steps { grid-template-columns: 1fr; }
+      .how-steps::before { display: none; }
+    }
+    .how-step {
+      position: relative;
+      z-index: 1;
+      padding: 32px 24px;
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      text-align: left;
+    }
+    .how-step .step-num {
+      width: 72px;
+      height: 72px;
+      border-radius: 999px;
+      background: linear-gradient(135deg, var(--checkout-accent), var(--checkout-dark));
+      color: #fff;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 26px;
+      margin: -68px auto 18px;
+      box-shadow: 0 12px 28px var(--checkout-glow);
+      letter-spacing: -1px;
+      display: flex;
+    }
+    .how-step h3 {
+      font-size: 19px;
+      font-weight: 700;
+      letter-spacing: -0.4px;
+      margin-bottom: 8px;
+      text-align: center;
+    }
+    .how-step p {
+      font-size: 14px;
+      color: var(--muted);
+      line-height: 1.65;
+      text-align: center;
+    }
+    .how-step .step-icon {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 16px;
+      color: var(--checkout-accent);
+    }
+    .how-step .step-icon svg { width: 40px; height: 40px; }
+
+    /* ---------- payment methods ---------- */
+    .modes {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: clamp(56px, 7vw, 80px) clamp(20px, 5vw, 32px);
+      text-align: center;
+    }
+    .modes-row {
+      margin-top: 8px;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 12px;
+    }
+    .mode-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 18px;
+      border-radius: 999px;
+      background: #fff;
+      border: 1px solid var(--line);
+      color: var(--ink-soft);
+      font-weight: 600;
+      font-size: 14px;
+      box-shadow: 0 4px 14px rgba(15, 23, 42, 0.04);
+    }
+    .mode-chip svg {
+      width: 22px;
+      height: 22px;
+      flex-shrink: 0;
+      color: var(--checkout-accent);
+    }
+    .modes-note {
+      margin: 28px auto 0;
+      max-width: 640px;
+      font-size: 14px;
+      color: var(--muted);
+      line-height: 1.65;
+    }
+
+    /* ---------- trust ---------- */
+    .trust {
+      background: var(--bg-soft);
+      border-top: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+    }
+    .trust-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: clamp(64px, 8vw, 96px) clamp(20px, 5vw, 32px);
+    }
+    .trust-grid {
+      display: grid;
+      gap: 20px;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    }
+    .trust-card {
+      position: relative;
+      padding: 28px 24px;
+      border-radius: 22px;
+      border: 1px solid var(--line);
+      background: #fff;
+      overflow: hidden;
+    }
+    .trust-card::after {
+      content: '';
+      position: absolute;
+      width: 150px;
+      height: 150px;
+      right: -50px;
+      top: -50px;
+      border-radius: 999px;
+      background: var(--checkout-soft);
+      pointer-events: none;
+    }
+    .trust-card .icon {
+      position: relative;
+      z-index: 1;
+      width: 44px;
+      height: 44px;
+      border-radius: 14px;
+      background: var(--checkout-soft);
+      color: var(--checkout-dark);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 16px;
+    }
+    .trust-card h3 {
+      position: relative;
+      z-index: 1;
+      font-size: 17px;
+      font-weight: 700;
+      letter-spacing: -0.3px;
+      margin-bottom: 8px;
+    }
+    .trust-card p {
+      position: relative;
+      z-index: 1;
+      font-size: 14px;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    /* ---------- decorative dot pattern ---------- */
+    .pattern-bg { position: relative; }
+    .pattern-bg::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image:
+        radial-gradient(circle at 1px 1px, rgba(124, 58, 237, 0.10) 1px, transparent 0);
+      background-size: 24px 24px;
+      -webkit-mask-image: radial-gradient(ellipse at center, #000, transparent);
+      mask-image: radial-gradient(ellipse at center, #000, transparent);
+      pointer-events: none;
+      z-index: 0;
+    }
+    .pattern-bg > * { position: relative; z-index: 1; }
+
+    /* ---------- merchants ---------- */
+    .merchants-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: clamp(64px, 8vw, 100px) clamp(20px, 5vw, 32px);
+      display: grid;
+      grid-template-columns: 1.05fr 1fr;
+      gap: 56px;
+      align-items: center;
+    }
+    @media (max-width: 860px) {
+      .merchants-inner { grid-template-columns: 1fr; gap: 40px; }
+    }
+    .merchants-copy .eyebrow {
+      display: inline-block;
+      padding: 6px 14px;
+      border-radius: 999px;
+      background: var(--checkout-soft);
+      color: var(--checkout-dark);
+      font-size: 11px;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      font-weight: 600;
+      margin-bottom: 18px;
+    }
+    .merchants-copy h2 {
+      font-size: clamp(30px, 4.4vw, 44px);
+      font-weight: 800;
+      letter-spacing: -1.2px;
+      line-height: 1.1;
+      margin-bottom: 16px;
+    }
+    .merchants-copy > p {
+      color: var(--muted);
+      font-size: 16px;
+      max-width: 520px;
+      line-height: 1.65;
+      margin-bottom: 26px;
+    }
+    .flow-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      margin-bottom: 30px;
+    }
+    .flow-list li {
+      display: grid;
+      grid-template-columns: 34px 1fr;
+      gap: 14px;
+      align-items: start;
+    }
+    .flow-list .flow-num {
+      width: 34px;
+      height: 34px;
+      border-radius: 999px;
+      background: var(--checkout-soft);
+      color: var(--checkout-dark);
+      font-weight: 700;
+      font-size: 15px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .flow-list h3 {
+      font-size: 16px;
+      font-weight: 700;
+      letter-spacing: -0.3px;
+      margin-bottom: 4px;
+    }
+    .flow-list p {
+      font-size: 14px;
+      color: var(--muted);
+      line-height: 1.65;
+    }
+
+    .merchants-visual {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .sheet-mock {
+      width: clamp(258px, 84vw, 320px);
+      border-radius: 24px;
+      background: #fff;
+      border: 1px solid var(--line);
+      box-shadow: 0 26px 60px rgba(15, 23, 42, 0.14);
+      padding: 22px;
+    }
+    .sheet-head {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--line);
+      margin-bottom: 16px;
+    }
+    .sheet-mark {
+      width: 28px;
+      height: 28px;
+      border-radius: 999px;
+      background: linear-gradient(135deg, var(--checkout-accent), var(--checkout-dark));
+      color: #fff;
+      font-weight: 700;
+      font-size: 15px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .sheet-head strong {
+      font-size: 15px;
+      font-weight: 700;
+      letter-spacing: -0.3px;
+    }
+    .sheet-head small {
+      display: block;
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--muted-soft);
+      letter-spacing: 0.2px;
+    }
+    .sheet-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 14px;
+      border-radius: 14px;
+      border: 1px solid var(--line);
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--ink-soft);
+      margin-bottom: 10px;
+    }
+    .sheet-row svg { width: 18px; height: 18px; flex-shrink: 0; color: var(--muted); }
+    .sheet-row.is-selected {
+      border-color: var(--checkout-accent);
+      background: var(--checkout-tint);
+      color: var(--checkout-dark);
+    }
+    .sheet-row.is-selected svg { color: var(--checkout-accent); }
+    .sheet-row .sheet-tick { margin-left: auto; }
+    .sheet-btn {
+      margin-top: 18px;
+      padding: 13px 18px;
+      border-radius: 14px;
+      background: linear-gradient(135deg, var(--checkout-accent), var(--checkout-dark));
+      color: #fff;
+      font-weight: 600;
+      font-size: 14px;
+      text-align: center;
+      box-shadow: 0 10px 24px var(--checkout-glow);
+    }
+
+    /* ---------- availability notice ---------- */
+    .notice {
+      background: var(--checkout-tint);
+      border-top: 1px solid var(--checkout-edge);
+      border-bottom: 1px solid var(--checkout-edge);
+    }
+    .notice-inner {
+      max-width: 820px;
+      margin: 0 auto;
+      padding: clamp(56px, 7vw, 84px) clamp(20px, 5vw, 32px);
+      text-align: center;
+    }
+    .notice-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 7px 16px;
+      border-radius: 999px;
+      background: var(--checkout-accent);
+      color: #fff;
+      font-size: 11px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      font-weight: 700;
+      margin-bottom: 20px;
+    }
+    .notice-inner h2 {
+      font-size: clamp(26px, 3.6vw, 36px);
+      font-weight: 800;
+      letter-spacing: -1px;
+      line-height: 1.15;
+      margin-bottom: 16px;
+    }
+    .notice-inner p {
+      color: var(--muted);
+      font-size: 16px;
+      line-height: 1.65;
+      margin: 0 auto 14px;
+      max-width: 640px;
+    }
+    .notice-inner .btn { margin-top: 18px; }
+
+    /* ---------- trust strip (compliance badges in the footer-brand block) ---------- */
+    .trust-strip {
+      margin-top: 16px;
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    .trust-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: rgba(5, 150, 105, 0.10);
+      color: #6EE7B7;
+      font-size: 10px;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+      font-weight: 600;
+      border: 1px solid rgba(5, 150, 105, 0.20);
+    }
+    .trust-dot {
+      width: 5px;
+      height: 5px;
+      border-radius: 999px;
+      background: var(--brand);
+      flex-shrink: 0;
+    }
+
+    /* ---------- footer ---------- */
+    .site-footer {
+      background: var(--ink);
+      color: #CBD5E1;
+      padding: 56px clamp(20px, 5vw, 32px) 28px;
+    }
+    .footer-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1.4fr 1fr 1fr 1fr;
+      gap: 40px;
+    }
+    @media (max-width: 800px) {
+      .footer-inner { grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 480px) {
+      .footer-inner { grid-template-columns: 1fr; }
+    }
+    .footer-col h4 {
+      font-size: 12px;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      color: #94A3B8;
+      margin-bottom: 14px;
+      font-weight: 600;
+    }
+    .footer-col ul {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .footer-col a {
+      color: #E2E8F0;
+      text-decoration: none;
+      font-size: 14px;
+    }
+    .footer-col a:hover { color: #fff; text-decoration: underline; }
+    .footer-brand .brand-mark { box-shadow: none; }
+    .footer-brand .brand-name { color: #fff; }
+    .footer-brand p {
+      margin-top: 16px;
+      font-size: 13px;
+      color: #94A3B8;
+      max-width: 280px;
+      line-height: 1.6;
+    }
+    .footer-legal {
+      max-width: 1100px;
+      margin: 40px auto 0;
+      padding-top: 24px;
+      border-top: 1px solid #1E293B;
+      font-size: 12px;
+      color: #64748B;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      justify-content: space-between;
+    }
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <div class="site-header-inner">
+      <a class="brand-lockup" href="/" aria-label="beyound home">
+        <span class="brand-mark">b</span>
+        <span class="brand-name">beyound</span>
+      </a>
+      <nav class="header-nav" aria-label="Beyound Checkout">
+        <a href="/">Home</a>
+        <a href="#what">What it is</a>
+        <a href="#how">How it works</a>
+        <a href="#merchants">For merchants</a>
+        <a class="header-cta" href="/checkout/docs/">Docs</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero" aria-label="Beyound Checkout introduction">
+      <div class="hero-rise">
+        <span class="eyebrow">Beyound Checkout</span>
+        <h1>Approve once.<br><span class="accent">Then pay in one tap.</span></h1>
+        <p class="lede">
+          Beyound Checkout is a payment layer that sits between an online
+          brand's checkout and the bank that issued your card. Approve your
+          card once with your bank, and every payment after that at the same
+          brand takes a single tap.
+        </p>
+        <div class="hero-actions">
+          <a class="btn btn-primary" href="/checkout/docs/">Read the docs →</a>
+          <a class="btn btn-ghost" href="mailto:support@beyound.in">Talk to us</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="about" id="what" aria-label="What Beyound Checkout is">
+      <div class="about-inner">
+        <div>
+          <p class="section-eyebrow" style="text-align:left">What it is</p>
+          <h2>A payment layer, not a wallet.</h2>
+          <p class="lede">
+            When you pick Beyound at a brand's checkout, you approve your card
+            once with your bank. That one approval is a standing instruction —
+            an e-mandate — and it is what lets every later payment at that same
+            brand go through on a single tap, with no one-time password, no
+            redirect and no bank page in the middle.
+          </p>
+          <p class="lede">
+            Beyound Checkout is not a wallet. There is no balance to load and
+            no stored value to keep track of. Each payment is charged to the
+            card, UPI handle or bank account you chose, at the moment you tap.
+          </p>
+          <p class="meta">Operated by BeyoundExtra Tech Private Limited · Bangalore, India</p>
+        </div>
+        <ul class="about-points">
+          <li><span><strong>Nothing to top up.</strong> No balance, no stored value, no separate account to fund. Money moves from the account you approved straight to the brand.</span></li>
+          <li><span><strong>Your bank does the checking.</strong> The one-time approval is authenticated by your bank with a real one-time password, the way any card mandate is.</span></li>
+          <li><span><strong>Capped by design.</strong> One-tap payments are limited to ₹25,000 per payment.</span></li>
+          <li><span><strong>Cancel whenever you like.</strong> The mandate can be cancelled at any time — write to <a href="mailto:support@beyound.in">support@beyound.in</a> and one-tap payments stop.</span></li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="how" id="how" aria-label="How Beyound Checkout works for shoppers">
+      <div class="how-inner">
+        <p class="section-eyebrow">How it works for shoppers</p>
+        <h2 class="section-title">Three steps, then one tap every time.</h2>
+        <p class="section-sub">
+          The approval happens once, at the brand where you first choose
+          Beyound. Every payment after that at the same brand skips it.
+        </p>
+        <div class="how-steps">
+          <div class="how-step">
+            <div class="step-num">1</div>
+            <div class="step-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3h2l2.4 12.1a2 2 0 0 0 2 1.6h8.7a2 2 0 0 0 2-1.6L21 8H6"/><circle cx="9" cy="20" r="1"/><circle cx="18" cy="20" r="1"/></svg>
+            </div>
+            <h3>Choose Beyound at checkout</h3>
+            <p>At an online brand's checkout, pick Beyound as your payment method. The payment sheet opens right there on the brand's page.</p>
+          </div>
+          <div class="how-step">
+            <div class="step-num">2</div>
+            <div class="step-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/><path d="M12 15v3"/></svg>
+            </div>
+            <h3>Approve your card once</h3>
+            <p>First time only: approve your card with a real one-time password from your bank. That approval is an RBI-compliant e-mandate. Would rather not use a card? Pay by UPI or net banking instead.</p>
+          </div>
+          <div class="how-step">
+            <div class="step-num">3</div>
+            <div class="step-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11V6a2 2 0 0 1 4 0v5"/><path d="M13 11V9a2 2 0 0 1 4 0v2"/><path d="M17 11.5a2 2 0 0 1 4 0V15a6 6 0 0 1-6 6h-2a7 7 0 0 1-7-7v-3a2 2 0 0 1 4 0"/></svg>
+            </div>
+            <h3>Pay in one tap after that</h3>
+            <p>Every repeat payment at that brand is a single tap. No one-time password, no redirect, no bank page.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="modes" id="methods" aria-label="Payment methods supported by Beyound Checkout">
+      <p class="section-eyebrow">Payment methods</p>
+      <h2 class="section-title">Pay the way you already do.</h2>
+      <p class="section-sub">
+        Whether it is your first payment at a brand or an alternative to the
+        one-tap path, these are the methods the sheet supports.
+      </p>
+      <div class="modes-row">
+        <span class="mode-chip">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/><path d="M6 15h4"/></svg>
+          Saved card
+        </span>
+        <span class="mode-chip">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/><path d="M17 16h2"/><path d="M18 15v2"/></svg>
+          New card · 3-D Secure
+        </span>
+        <span class="mode-chip">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="2" width="14" height="20" rx="3"/><path d="M11 18h2"/></svg>
+          UPI
+        </span>
+        <span class="mode-chip">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="6" width="18" height="12" rx="1"/><path d="M3 10h18"/><path d="M7 14h2"/><path d="M12 14h5"/></svg>
+          Net banking
+        </span>
+      </div>
+      <p class="modes-note">
+        A new card is approved with a 3-D Secure one-time password and kept as
+        a token — the card number itself is never stored. A UPI payment is
+        approved in your own UPI app. Net banking takes you to your bank the
+        way it always has.
+      </p>
+    </section>
+
+    <section class="trust" aria-label="Trust and compliance">
+      <div class="trust-inner pattern-bg">
+        <p class="section-eyebrow">Trust and compliance</p>
+        <h2 class="section-title">The one tap has rules behind it.</h2>
+        <p class="section-sub">
+          A single tap only works because the approval underneath it was done
+          properly, once, with your bank.
+        </p>
+        <div class="trust-grid">
+          <div class="trust-card">
+            <div class="icon" aria-hidden="true">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 4 6v6c0 5 3.5 9 8 10 4.5-1 8-5 8-10V6l-8-4z"/><path d="m9 12 2 2 4-4"/></svg>
+            </div>
+            <h3>An RBI-compliant e-mandate</h3>
+            <p>The first approval is an e-mandate for recurring card payments, and your bank authenticates it with a real one-time password. We never stand in for that step.</p>
+          </div>
+          <div class="trust-card">
+            <div class="icon" aria-hidden="true">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v18"/><path d="M5 8h9a3 3 0 0 1 0 6H5"/><path d="M5 20h14"/></svg>
+            </div>
+            <h3>Capped at ₹25,000 a payment</h3>
+            <p>One-tap charges are limited to ₹25,000 per payment. Larger amounts fall outside the one-tap path.</p>
+          </div>
+          <div class="trust-card">
+            <div class="icon" aria-hidden="true">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="m15 9-6 6"/><path d="m9 9 6 6"/></svg>
+            </div>
+            <h3>Cancel the mandate any time</h3>
+            <p>The approval is yours to end. Cancel it whenever you like and one-tap payments at that brand stop.</p>
+          </div>
+          <div class="trust-card">
+            <div class="icon" aria-hidden="true">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/><path d="M6 15h3"/><circle cx="17" cy="15" r="1.6"/></svg>
+            </div>
+            <h3>Tokenised cards</h3>
+            <p>A saved card is held as a token, not as a card number. The number itself is never stored.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="merchants" id="merchants" aria-label="Beyound Checkout for merchants">
+      <div class="merchants-inner">
+        <div class="merchants-copy">
+          <span class="eyebrow">For merchants</span>
+          <h2>Your checkout page. Our payment sheet.</h2>
+          <p>
+            Beyound Checkout is built to sit inside the checkout you already
+            have, rather than replace it. The secret key stays on your server;
+            the browser only ever holds a short-lived session.
+          </p>
+          <ol class="flow-list">
+            <li>
+              <span class="flow-num" aria-hidden="true">1</span>
+              <div>
+                <h3>Create the order from your server</h3>
+                <p>Your backend calls Beyound with your secret API key to create the order. The key never reaches the browser.</p>
+              </div>
+            </li>
+            <li>
+              <span class="flow-num" aria-hidden="true">2</span>
+              <div>
+                <h3>Hand the session to the browser</h3>
+                <p>That call returns a checkout session token. Pass it to your front end when you are ready to collect payment.</p>
+              </div>
+            </li>
+            <li>
+              <span class="flow-num" aria-hidden="true">3</span>
+              <div>
+                <h3>Render the sheet inline</h3>
+                <p>The browser uses the session token to render the payment sheet on your own checkout page. On the one-tap path the shopper is never sent away to another page.</p>
+              </div>
+            </li>
+          </ol>
+          <a class="btn btn-primary" href="/checkout/docs/">Read the docs →</a>
+        </div>
+        <div class="merchants-visual" aria-hidden="true">
+          <div class="sheet-mock">
+            <div class="sheet-head">
+              <span class="sheet-mark">b</span>
+              <span>
+                <strong>Pay with Beyound</strong>
+                <small>on this brand's checkout page</small>
+              </span>
+            </div>
+            <div class="sheet-row is-selected">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/><path d="M6 15h4"/></svg>
+              Saved card
+              <svg class="sheet-tick" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg>
+            </div>
+            <div class="sheet-row">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="3"/><path d="M11 18h2"/></svg>
+              UPI
+            </div>
+            <div class="sheet-row">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="6" width="18" height="12" rx="1"/><path d="M3 10h18"/><path d="M7 14h2"/><path d="M12 14h5"/></svg>
+              Net banking
+            </div>
+            <div class="sheet-btn">Pay in one tap</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="notice" aria-label="Availability of Beyound Checkout">
+      <div class="notice-inner">
+        <span class="notice-badge">Developer preview</span>
+        <h2>Beyound Checkout is in developer preview.</h2>
+        <p>
+          It is not open to every merchant yet, and it is not yet a live
+          payment method at the brands you shop with. We are bringing early
+          merchants on one at a time so we can watch each integration closely.
+        </p>
+        <p>
+          If you run an online brand and want early access, write to us and
+          tell us what you sell and how you take payments today.
+        </p>
+        <a class="btn btn-primary" href="mailto:support@beyound.in">Email support@beyound.in</a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div class="footer-col footer-brand">
+        <a class="brand-lockup" href="/" style="color:#fff">
+          <span class="brand-mark">b</span>
+          <span class="brand-name">beyound</span>
+        </a>
+        <div class="trust-strip" aria-label="Compliance and security">
+          <span class="trust-badge"><span class="trust-dot"></span>PCI DSS</span>
+          <span class="trust-badge"><span class="trust-dot"></span>ISO 27001</span>
+          <span class="trust-badge"><span class="trust-dot"></span>AES-256</span>
+          <span class="trust-badge"><span class="trust-dot"></span>Secure</span>
+        </div>
+        <p>BeyoundExtra Tech Private Limited. Payments technology, built in India.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Services</h4>
+        <ul>
+          <li><a href="/checkout/">Beyound Checkout</a></li>
+          <li><a href="https://wallet.beyound.in">Beyound Wallet</a></li>
+          <li><a href="https://bills.beyound.in">Beyound Bills (BBPS)</a></li>
+          <li><a href="https://kyc.beyound.in">Beyound KYC</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Policies</h4>
+        <ul>
+          <li><a href="/policies/terms.html">Terms of Use</a></li>
+          <li><a href="/policies/privacy.html">Privacy Policy</a></li>
+          <li><a href="/policies/refund-cancellation.html">Refund &amp; Cancellation</a></li>
+          <li><a href="/policies/grievance.html">Grievance Redressal</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Company</h4>
+        <ul>
+          <li><a href="/policies/about.html">About Beyound</a></li>
+          <li><a href="/checkout/docs/">Checkout docs</a></li>
+          <li><a href="/blog/">Blog</a></li>
+          <li><a href="/faq/">FAQ</a></li>
+          <li><a href="/careers/">Careers</a></li>
+          <li><a href="mailto:support@beyound.in">support@beyound.in</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-legal">
+      <span>&copy; 2026 BeyoundExtra Tech Private Limited. All rights reserved.</span>
+      <span>Corporate Office: Wework Galaxy 43, Residency Rd, Shanthala Nagar, Ashok Nagar, Bengaluru, Karnataka - 560025</span>
+      <span>Registered Address: Khasra No 1467-1468, Balwanta Industrial Area Mali Ki Dhani, Nasirabad, Ajmer Road, Balwanta- 305601, Rajasthan</span>
+    </div>
+  </footer>
+</body>
+</html>
