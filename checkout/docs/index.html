@@ -217,7 +217,7 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--ink);outline-offset
   <div class="meta">
     <span><b>Version</b> August 2026</span>
     <span><b>API base</b> <code>https://api-v2.superpe.in</code></span>
-    <span><b>Checkout host</b> <code>https://checkout.rallyapp.in</code></span>
+    <span><b>Checkout host</b> <code>https://checkout.beyound.in</code></span>
   </div>
 </header>
 
@@ -240,7 +240,7 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--ink);outline-offset
     <thead><tr><th>Environment</th><th>API base URL</th><th>Checkout host</th></tr></thead>
     <tbody>
       <tr><td>Sandbox</td><td>Same host as prod. Sandbox is a <code>sandbox=true</code> flag on the <code>sk_</code> key, not a separate URL.</td><td>Shared during onboarding.</td></tr>
-      <tr><td>Prod</td><td><code>https://api-v2.superpe.in</code></td><td><code>https://checkout.rallyapp.in</code></td></tr>
+      <tr><td>Prod</td><td><code>https://api-v2.superpe.in</code></td><td><code>https://checkout.beyound.in</code></td></tr>
     </tbody>
   </table></div>
   <ul>
@@ -391,8 +391,8 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--ink);outline-offset
   <div class="tbl"><table>
     <thead><tr><th>Header</th><th>Value</th></tr></thead>
     <tbody>
-      <tr><td><code>X-Rally-Event</code></td><td><code>order.paid</code>, <code>payment.captured</code>, <code>order.failed</code>, or <code>payment.declined</code>.</td></tr>
-      <tr><td><code>X-Rally-Delivery</code></td><td>UUID. Unique per delivery attempt. Use this as your dedupe key.</td></tr>
+      <tr><td><code>X-Beyound-Event</code></td><td><code>order.paid</code>, <code>payment.captured</code>, <code>order.failed</code>, or <code>payment.declined</code>.</td></tr>
+      <tr><td><code>X-Beyound-Delivery</code></td><td>UUID. Unique per delivery attempt. Use this as your dedupe key.</td></tr>
       <tr><td><code>X-Signature</code></td><td><code>hex(hmac_sha256(webhook_secret, raw_request_body))</code></td></tr>
       <tr><td><code>X-Timestamp</code></td><td>Unix seconds. Reject if <code>|now − X-Timestamp| &gt; 300</code>.</td></tr>
     </tbody>
@@ -584,7 +584,7 @@ app.<span class="t">post</span>(<span class="s">'/beyound/webhook'</span>, (req,
     <span class="k">return</span> res.<span class="t">status</span>(<span class="n">401</span>).<span class="t">send</span>(<span class="s">'bad signature'</span>);
   }
 
-  <span class="c">// Dedupe on X-Rally-Delivery, then handle req.body.event</span>
+  <span class="c">// Dedupe on X-Beyound-Delivery, then handle req.body.event</span>
   res.<span class="t">sendStatus</span>(<span class="n">200</span>);
 });</pre>
   </div>
