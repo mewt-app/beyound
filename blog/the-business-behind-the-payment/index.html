@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>The Business Behind the Payment — by Kiran Prabhatan · beyound</title>
+  <meta name="description" content="On a dashboard a transaction is a line item. On the other side of it is a person who had a reason to pay. A note from Kiran Prabhatan, Director at BeyoundExtra Tech, on acquisition, retention and the economics of trust.">
+  <meta name="theme-color" content="#059669">
+  <meta property="og:title" content="The Business Behind the Payment">
+  <meta property="og:description" content="A note from Kiran Prabhatan on why the most interesting numbers in a payments business are rarely just numbers.">
+  <meta property="og:type" content="article">
+  <meta property="article:published_time" content="2026-08-26T09:00:00+05:30">
+  <meta property="article:author" content="Kiran Prabhatan">
+  <link rel="canonical" href="https://beyound.in/blog/the-business-behind-the-payment/">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='50' fill='%23059669'/><text x='50' y='68' text-anchor='middle' font-size='52' font-weight='700' font-family='system-ui' fill='white'>b</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700;9..144,800;9..144,900&family=Sora:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --brand: #059669;
+      --brand-dark: #047857;
+      --brand-soft: rgba(5, 150, 105, 0.08);
+      --ink: #0F172A;
+      --ink-soft: #1F2937;
+      --muted: #475569;
+      --muted-soft: #94A3B8;
+      --line: #E2E8F0;
+      --bg: #ffffff;
+      --bg-soft: #F8FAFC;
+      --paper: #FBF8F1;
+      --serif: 'Fraunces', 'Times New Roman', Georgia, serif;
+      --sans: 'Sora', system-ui, -apple-system, sans-serif;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { scrollbar-width: none; -ms-overflow-style: none; }
+    html::-webkit-scrollbar, body::-webkit-scrollbar { width: 0; height: 0; display: none; }
+    body {
+      font-family: var(--sans);
+      background: var(--paper);
+      color: var(--ink);
+      line-height: 1.7;
+      -webkit-font-smoothing: antialiased;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    a { color: var(--brand); }
+
+    /* ── header ── */
+    .page-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 20px clamp(20px, 5vw, 48px);
+      border-bottom: 1px solid var(--line);
+      max-width: 1100px; margin: 0 auto; width: 100%;
+      background: var(--paper);
+    }
+    .brand-link { display: inline-flex; align-items: center; gap: 10px; text-decoration: none; color: var(--ink); }
+    .brand-mark { width: 32px; height: 32px; border-radius: 50%; background: linear-gradient(135deg, var(--brand), var(--brand-dark)); color: #fff; font-weight: 700; font-size: 18px; display: inline-flex; align-items: center; justify-content: center; }
+    .brand-name { font-weight: 800; font-size: 18px; letter-spacing: -0.5px; }
+    .back-link { font-size: 14px; color: var(--brand); text-decoration: none; font-weight: 500; }
+    .back-link:hover { text-decoration: underline; }
+
+    /* ── hero ── */
+    .article-hero {
+      max-width: 920px;
+      margin: 0 auto;
+      padding: clamp(48px, 7vw, 88px) clamp(20px, 5vw, 32px) clamp(24px, 4vw, 40px);
+      text-align: center;
+    }
+    .kicker {
+      display: inline-block;
+      padding: 6px 14px;
+      border-radius: 999px;
+      background: var(--brand-soft);
+      color: var(--brand);
+      font-size: 11px;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      font-weight: 600;
+      margin-bottom: 22px;
+    }
+    h1 {
+      font-family: var(--serif);
+      font-weight: 700;
+      font-size: clamp(36px, 6vw, 64px);
+      letter-spacing: -1.4px;
+      line-height: 1.05;
+      margin-bottom: 22px;
+      color: var(--ink);
+    }
+    .deck {
+      font-family: var(--serif);
+      font-weight: 400;
+      font-style: italic;
+      font-size: clamp(18px, 2vw, 22px);
+      color: var(--muted);
+      max-width: 640px;
+      margin: 0 auto 32px;
+      line-height: 1.45;
+    }
+    .byline {
+      display: inline-flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 12px;
+      align-items: center;
+      font-size: 13px;
+      color: var(--muted);
+      letter-spacing: 0.3px;
+      padding-top: 16px;
+      border-top: 1px solid var(--line);
+    }
+    .byline .author { color: var(--ink); font-weight: 600; }
+    .byline .dot { width: 4px; height: 4px; border-radius: 50%; background: var(--muted-soft); display: inline-block; }
+
+    /* ── hero image ── */
+    .hero-figure {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 clamp(20px, 5vw, 32px) clamp(40px, 6vw, 64px);
+    }
+    .hero-image {
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      border-radius: 28px;
+      position: relative;
+      overflow: hidden;
+      background:
+        radial-gradient(at 22% 30%, rgba(110, 231, 183, 0.55), transparent 55%),
+        radial-gradient(at 80% 70%, rgba(5, 150, 105, 0.55), transparent 55%),
+        linear-gradient(135deg, #052e1f 0%, #0b4a32 50%, #064e3b 100%);
+      box-shadow: 0 30px 70px rgba(5, 56, 36, 0.18);
+    }
+    .hero-image::after {
+      content: 'b';
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: rgba(255,255,255,0.92);
+      font-family: var(--serif);
+      font-size: clamp(120px, 22vw, 240px);
+      font-weight: 700;
+      letter-spacing: -8px;
+      text-shadow: 0 12px 36px rgba(0,0,0,0.20);
+    }
+    .hero-image--logo { display: flex; align-items: center; justify-content: center; }
+    .hero-image--logo::after { content: none; }
+    .hero-logo-tile {
+      background: #fff;
+      border-radius: 24px;
+      padding: clamp(24px, 4vw, 44px);
+      box-shadow: 0 18px 44px rgba(3, 32, 21, 0.28);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .hero-logo-tile img {
+      display: block;
+      width: clamp(120px, 18vw, 200px);
+      height: auto;
+    }
+    .hero-caption {
+      max-width: 720px;
+      margin: 16px auto 0;
+      font-size: 13px;
+      text-align: center;
+      color: var(--muted);
+      font-style: italic;
+    }
+
+    /* ── body ── */
+    article.body {
+      max-width: 680px;
+      margin: 0 auto;
+      padding: 0 clamp(20px, 5vw, 32px) clamp(64px, 8vw, 96px);
+    }
+    article.body p {
+      font-size: 18px;
+      line-height: 1.78;
+      margin-bottom: 22px;
+      color: var(--ink-soft);
+    }
+    article.body p strong { color: var(--ink); font-weight: 600; }
+    article.body p em { color: var(--ink); font-style: italic; }
+    article.body p:first-of-type::first-letter {
+      font-family: var(--serif);
+      font-weight: 700;
+      float: left;
+      font-size: 78px;
+      line-height: 0.85;
+      padding: 6px 12px 0 0;
+      color: var(--brand);
+    }
+    article.body h2 {
+      font-family: var(--serif);
+      font-weight: 700;
+      font-size: clamp(26px, 3vw, 32px);
+      letter-spacing: -0.8px;
+      line-height: 1.15;
+      margin: 56px 0 18px;
+      color: var(--ink);
+    }
+    article.body h2::before {
+      content: '';
+      display: block;
+      width: 48px;
+      height: 3px;
+      background: var(--brand);
+      border-radius: 2px;
+      margin-bottom: 16px;
+    }
+    article.body figure {
+      margin: 40px -40px;
+      border-radius: 18px;
+      overflow: hidden;
+    }
+    @media (max-width: 760px) {
+      article.body figure { margin: 32px 0; }
+    }
+    article.body figure .img {
+      width: 100%;
+      aspect-ratio: 16 / 10;
+      position: relative;
+      overflow: hidden;
+    }
+    article.body figure .img.a {
+      background:
+        radial-gradient(at 25% 30%, rgba(110, 231, 183, 0.45), transparent 55%),
+        radial-gradient(at 75% 70%, rgba(5, 150, 105, 0.35), transparent 60%),
+        linear-gradient(135deg, #f0fdf4 0%, #d1fae5 100%);
+    }
+    article.body figure .img.b {
+      background:
+        radial-gradient(at 50% 30%, rgba(5, 150, 105, 0.55), transparent 60%),
+        linear-gradient(135deg, #064e3b 0%, #047857 100%);
+    }
+    article.body figure .img.c {
+      background:
+        radial-gradient(at 70% 50%, rgba(110, 231, 183, 0.45), transparent 55%),
+        linear-gradient(135deg, #FBF8F1 0%, #ECFDF5 100%);
+    }
+    article.body figure .img-tag {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: rgba(255,255,255,0.85);
+      font-family: var(--serif);
+      font-size: 96px;
+      font-weight: 600;
+      letter-spacing: -3px;
+    }
+    article.body figure .img.a .img-tag,
+    article.body figure .img.c .img-tag { color: rgba(5, 150, 105, 0.55); }
+    article.body figure figcaption {
+      padding: 14px 18px;
+      background: #fff;
+      border-top: 1px solid var(--line);
+      font-size: 13px;
+      color: var(--muted);
+      font-style: italic;
+    }
+    article.body blockquote {
+      margin: 40px 0;
+      padding: 24px 0 24px 28px;
+      border-left: 3px solid var(--brand);
+      font-family: var(--serif);
+      font-weight: 500;
+      font-style: italic;
+      font-size: 24px;
+      color: var(--ink);
+      line-height: 1.4;
+      letter-spacing: -0.5px;
+    }
+    article.body blockquote cite {
+      display: block;
+      margin-top: 10px;
+      font-family: var(--sans);
+      font-weight: 500;
+      font-style: normal;
+      font-size: 13px;
+      color: var(--muted);
+      letter-spacing: 0.3px;
+    }
+    article.body ul {
+      margin: 0 0 24px 22px;
+      color: var(--ink-soft);
+      font-size: 18px;
+    }
+    article.body ul li { margin-bottom: 8px; line-height: 1.7; }
+
+    .article-footer {
+      max-width: 680px;
+      margin: 0 auto;
+      padding: 0 clamp(20px, 5vw, 32px) clamp(40px, 6vw, 64px);
+      border-top: 1px solid var(--line);
+      padding-top: 32px;
+    }
+    .author-card {
+      display: grid;
+      grid-template-columns: 56px 1fr;
+      gap: 16px;
+      align-items: center;
+    }
+    .author-avatar {
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--brand), var(--brand-dark));
+      color: #fff;
+      font-family: var(--serif);
+      font-weight: 700;
+      font-size: 22px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 8px 18px rgba(5, 150, 105, 0.20);
+    }
+    .author-meta strong { display: block; font-weight: 700; font-size: 15px; }
+    .author-meta span { font-size: 13px; color: var(--muted); }
+    .article-cta {
+      margin-top: 32px;
+      padding: 28px;
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      text-align: center;
+    }
+    .article-cta h3 {
+      font-family: var(--serif);
+      font-weight: 700;
+      font-size: 22px;
+      letter-spacing: -0.4px;
+      margin-bottom: 6px;
+    }
+    .article-cta p { color: var(--muted); font-size: 14px; margin-bottom: 16px; }
+    .article-cta a {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 20px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, var(--brand), var(--brand-dark));
+      color: #fff;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 14px;
+      box-shadow: 0 10px 24px rgba(5, 150, 105, 0.20);
+    }
+
+    .page-footer {
+      border-top: 1px solid var(--line);
+      background: var(--bg-soft);
+      padding: 24px clamp(20px, 5vw, 32px);
+      text-align: center;
+      font-size: 12px;
+      color: var(--muted);
+    }
+  </style>
+</head>
+<body>
+  <header class="page-header">
+    <a class="brand-link" href="/" aria-label="beyound home">
+      <span class="brand-mark">b</span>
+      <span class="brand-name">beyound</span>
+    </a>
+    <a class="back-link" href="/blog/">← All posts</a>
+  </header>
+
+  <section class="article-hero">
+    <span class="kicker">Finance · business notes</span>
+    <h1>The Business Behind<br>the Payment</h1>
+    <p class="deck">
+      On a dashboard, a transaction is a line item. On the other side of
+      it is a person who had a reason to make that payment — and that
+      choice is where the real story begins.
+    </p>
+    <div class="byline">
+      <span>By <span class="author">Kiran Prabhatan</span></span>
+      <span class="dot" aria-hidden="true"></span>
+      <span>Director, BeyoundExtra Tech</span>
+      <span class="dot" aria-hidden="true"></span>
+      <time datetime="2026-08-26">26 August 2026</time>
+      <span class="dot" aria-hidden="true"></span>
+      <span>6 min read</span>
+    </div>
+  </section>
+
+  <figure class="hero-figure">
+    <div class="hero-image hero-image--logo">
+      <div class="hero-logo-tile">
+        <img src="rally-logo.png" alt="Rally logo" width="200" height="200">
+      </div>
+    </div>
+    <figcaption class="hero-caption">
+      Volumes, revenue, costs, acquisition, retention, margins. The
+      numbers aren't the destination — they're a way of understanding
+      whether what we're building creates real value.
+    </figcaption>
+  </figure>
+
+  <article class="body">
+    <p>
+      A few months ago, if you had asked me what building a payments
+      company would involve, I would probably have given you a fairly
+      predictable answer. Product, technology, partnerships, operations,
+      compliance, customer acquisition — all the usual pieces that come
+      together to make a fintech work. What I didn't quite appreciate was
+      how quickly all of those pieces start speaking to each other once
+      you're actually building.
+    </p>
+
+    <p>
+      Today, a large part of my role at Rally sits across Finance and the
+      business. That means I spend a lot of time looking at numbers:
+      transaction volumes, revenue, costs, acquisition, retention,
+      margins and everything in between. But the longer I spend doing it,
+      the more I've realised that the most interesting numbers are rarely
+      just numbers.
+    </p>
+
+    <p>
+      Take a transaction. On a dashboard, it is a line item. Someone paid
+      a bill, a certain amount moved, a certain amount was earned. But on
+      the other side of that transaction is a person who had a reason to
+      make that payment. They had a bill due, a deadline to meet, or
+      simply a payment they wanted to get out of the way. They chose
+      Rally to do it. That choice is where the real story begins.
+    </p>
+
+    <p>
+      This is perhaps what I enjoy most about building Rally. You get to
+      see the connection between the smallest customer decision and the
+      larger business. A change in the product can change behaviour. A
+      better customer experience can change retention. A pricing decision
+      can change the economics of a transaction. A reward can bring
+      someone back — or, if we haven't thought it through properly,
+      simply become a cost with no lasting impact.
+    </p>
+
+    <blockquote>
+      Nothing exists in isolation.
+    </blockquote>
+
+    <p>
+      That makes Finance a much more interesting place to sit than people
+      sometimes imagine. It isn't just about asking whether we can afford
+      something. It's about understanding what we're buying with that
+      investment. If we spend more to acquire a customer, are we
+      acquiring someone who will transact once or someone who will stay
+      with us? If we give RallyCash, are we creating a reason to come
+      back? If we make a payment experience faster or simpler, does that
+      actually change the way people use the product? The numbers don't
+      answer those questions by themselves. They tell you where to look.
+    </p>
+
+    <p>
+      And payments make those questions even more important because the
+      underlying product is money. When a customer makes a payment
+      through Rally, we're asking them to trust us with something that
+      matters to them. They want to know that the payment will go
+      through, that their money will settle when we say it will, that the
+      charges are clear and that they can find the details when they need
+      them. These aren't features in the conventional sense. They're the
+      foundations of trust.
+    </p>
+
+    <p>
+      I think that's also why the journey from acquiring a customer to
+      retaining one is so fascinating. Getting someone to try Rally is
+      one problem. Giving them enough reason to return is another. The
+      first can be influenced by a campaign, an offer or a message. The
+      second has much more to do with whether the product actually
+      delivered on the promise.
+    </p>
+
+    <p>
+      We're now among the top five credit card bill payment applications
+      in India, which is a milestone we're genuinely proud of. But being
+      inside the business makes you look at that milestone differently.
+      You don't spend too long celebrating the position before asking
+      what it will take to maintain it. Growth is exciting, but
+      sustainable growth is much more interesting. It means building a
+      business where customers get more value, the product gets better,
+      and the economics become stronger at the same time.
+    </p>
+
+    <p>
+      That balance is not always easy. There are decisions where the
+      customer experience clearly wins, even if the immediate economics
+      aren't perfect. There are other decisions where discipline matters
+      more than excitement. Sometimes you make a bet because you believe
+      the behaviour will change over time. Sometimes the numbers tell you
+      to stop. And sometimes the hardest decision is admitting that
+      something that looked good on paper simply isn't working in the
+      real world.
+    </p>
+
+    <p>
+      Those are the moments when building a company becomes genuinely
+      interesting. You're constantly moving between what the customer
+      wants, what the product can deliver and what the business can
+      sustainably support. The job isn't to maximise one of those things.
+      It's to find the point where all three can work together.
+    </p>
+
+    <p>
+      That's probably the perspective I bring to Rally from Finance. I
+      care deeply about the numbers, but I don't think the numbers are
+      the destination. They are a way of understanding whether the things
+      we're building are creating real value.
+    </p>
+
+    <p>
+      Because ultimately, a healthy business doesn't come from making a
+      spreadsheet look good. It comes from giving people a reason to
+      choose you, giving them an experience that makes them want to come
+      back, and building the economics around that behaviour so you can
+      keep improving the product.
+    </p>
+
+    <p>
+      That's what we're trying to do at Rally.
+    </p>
+
+    <blockquote>
+      We're building a payments business, but we're also building the
+      habits, trust and economics that can make it last.
+    </blockquote>
+
+    <p>
+      And for me, that's the most exciting part of the journey.
+    </p>
+  </article>
+
+  <section class="article-footer">
+    <div class="author-card">
+      <div class="author-avatar" aria-hidden="true">K</div>
+      <div class="author-meta">
+        <strong>Kiran Prabhatan</strong>
+        <span>Director, BeyoundExtra Tech Private Limited.</span>
+      </div>
+    </div>
+    <div class="article-cta">
+      <h3>Interested in the numbers behind the product?</h3>
+      <p>The Finance team works closest to the business — and to the decisions that shape it.</p>
+      <a href="mailto:careers@beyound.in?subject=Finance%20%E2%80%94%20hello">careers@beyound.in</a>
+    </div>
+  </section>
+
+  <footer class="page-footer">
+    <p>&copy; 2026 BeyoundExtra Tech Private Limited. All rights reserved.</p>
+  </footer>
+</body>
+</html>

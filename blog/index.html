@@ -133,6 +133,23 @@
       font-weight: 700;
       letter-spacing: -3px;
     }
+    .post-thumb--img {
+      background: #fff;
+      border: 1px solid var(--line);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 18px;
+    }
+    .post-thumb--img::after { content: none; }
+    .post-thumb--img img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+    .post-thumb--photo { background: #fff; border: 1px solid var(--line); }
+    .post-thumb--photo::after { content: none; }
+    .post-thumb--photo img { width: 100%; height: 100%; object-fit: cover; display: block; }
     .post-meta {
       font-size: 12px;
       color: var(--muted-soft);
@@ -186,6 +203,38 @@
     </p>
 
     <div class="post-list">
+      <a class="post-card" href="/blog/a-front-row-seat-to-building-rally/">
+        <div class="post-thumb post-thumb--photo">
+          <img src="/blog/a-front-row-seat-to-building-rally/growth-arrow.jpg" alt="An upward arrow made of green and blue chevrons, sprouting leaves as it climbs." width="1600" height="872" loading="lazy">
+        </div>
+        <div>
+          <p class="post-meta">August 21, 2026 · 3 min read · Culture</p>
+          <h2 class="post-title">A Front-Row Seat to Building Rally</h2>
+          <p class="post-summary">
+            Notes from inside the Growth &amp; Acquisition team — the
+            campaigns that worked, the ones that didn't, and why never
+            quite knowing what will work is the best part of the job.
+          </p>
+          <p class="post-author">By <strong>Shreekta</strong>, Growth &amp; Acquisition</p>
+        </div>
+      </a>
+
+      <a class="post-card" href="/blog/the-business-behind-the-payment/">
+        <div class="post-thumb post-thumb--img">
+          <img src="/blog/the-business-behind-the-payment/rally-logo.png" alt="Rally logo" width="200" height="200" loading="lazy">
+        </div>
+        <div>
+          <p class="post-meta">August 26, 2026 · 6 min read · Finance</p>
+          <h2 class="post-title">The Business Behind the Payment</h2>
+          <p class="post-summary">
+            On a dashboard, a transaction is a line item. On the other
+            side of it is a person who had a reason to pay — and that
+            choice is where the real story begins.
+          </p>
+          <p class="post-author">By <strong>Kiran Prabhatan</strong>, CFO &amp; Director</p>
+        </div>
+      </a>
+
       <a class="post-card" href="/blog/the-beyound-app-is-coming/">
         <div class="post-thumb" aria-hidden="true"></div>
         <div>
