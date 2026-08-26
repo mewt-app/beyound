@@ -146,6 +146,15 @@
       letter-spacing: -8px;
       text-shadow: 0 12px 36px rgba(0,0,0,0.20);
     }
+    .hero-image--photo { background: #fff; border: 1px solid var(--line); box-shadow: 0 24px 60px rgba(5, 56, 36, 0.12); }
+    .hero-image--photo::after { content: none; }
+    .hero-image--photo img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
     .hero-caption {
       max-width: 720px;
       margin: 16px auto 0;
@@ -375,7 +384,9 @@
   </section>
 
   <figure class="hero-figure">
-    <div class="hero-image" role="img" aria-label="Beyound brand mark — a green circle with a serif 'b'."></div>
+    <div class="hero-image hero-image--photo">
+      <img src="growth-arrow.jpg" alt="An upward arrow made of green and blue chevrons, sprouting leaves as it climbs." width="1600" height="872">
+    </div>
     <figcaption class="hero-caption">
       Rally is among the top 5 credit card bill payment applications in
       India. This is what that looks like from the inside.
