@@ -32,6 +32,9 @@
       --bg-soft: #F8FAFC;
       --wallet-accent: #0EA5E9;
       --bills-accent: #F59E0B;
+      --checkout-accent: #7C3AED;
+      --checkout-dark: #5B21B6;
+      --checkout-glow: rgba(124, 58, 237, 0.22);
     }
 
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -513,6 +516,35 @@
       font-weight: 600;
       font-size: 14px;
     }
+    /* The checkout card holds two buttons, so it is a <div> rather than a
+       whole-card <a> (anchors cannot nest). .is-static drops the hover lift,
+       shadow and border/glow shift, since the card itself is not clickable —
+       only the two buttons inside it are. */
+    .service-card.is-static { cursor: default; }
+    .service-card.is-static:hover {
+      transform: none;
+      box-shadow: none;
+      border-color: var(--line);
+    }
+    .service-card.is-static:hover::after { opacity: 0.5; }
+    .service-actions {
+      position: relative;
+      z-index: 1;
+      margin-top: auto;
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .service-actions .btn { padding: 12px 20px; font-size: 14px; }
+    .service-actions .btn-primary {
+      background: linear-gradient(135deg, var(--checkout-accent), var(--checkout-dark));
+      box-shadow: 0 8px 24px var(--checkout-glow);
+    }
+    .service-actions .btn-primary:hover { box-shadow: 0 12px 28px rgba(124, 58, 237, 0.28); }
+    .service-actions .btn:focus-visible {
+      outline: 2px solid var(--ink);
+      outline-offset: 2px;
+    }
     .service-card.wallet {
       --card-accent: rgba(14, 165, 233, 0.12);
       --card-border: var(--wallet-accent);
@@ -524,6 +556,18 @@
       --card-border: var(--bills-accent);
       --card-icon-bg: rgba(245, 158, 11, 0.12);
       --card-icon-fg: var(--bills-accent);
+    }
+    .service-card.checkout {
+      --card-accent: rgba(124, 58, 237, 0.13);
+      --card-border: var(--checkout-accent);
+      --card-icon-bg: rgba(124, 58, 237, 0.11);
+      --card-icon-fg: var(--checkout-accent);
+    }
+    /* auto-fit drops to 2 tracks below 1072px, which would strand the third
+       card alone on its own row across the whole tablet band. Span it full
+       width there so the row reads as intentional. */
+    @media (min-width: 728px) and (max-width: 1071px) {
+      .service-card.checkout { grid-column: 1 / -1; }
     }
 
     /* ---------- about ---------- */
@@ -1043,6 +1087,7 @@
       </a>
       <nav class="header-nav">
         <a href="#services">Services</a>
+        <a href="/checkout/">Checkout</a>
         <a href="#about">About</a>
         <a href="/blog/">Blog</a>
         <a href="/policies/">Policies</a>
@@ -1195,8 +1240,8 @@
     <p class="section-eyebrow">Our services</p>
     <h2 class="section-title">Built for how you actually pay</h2>
     <p class="section-sub">
-      Two consumer services, one compliance and security backbone. Pick the one
-      that fits your moment.
+      Three services, one compliance and security backbone. Two you open
+      yourself; the third meets you at a merchant's checkout.
     </p>
     <div class="service-grid">
       <a class="service-card wallet" href="https://wallet.beyound.in">
@@ -1221,6 +1266,20 @@
         </ul>
         <span class="arrow">bills.beyound.in →</span>
       </a>
+      <div class="service-card checkout is-static">
+        <span class="icon" aria-hidden="true">🛍️</span>
+        <h3>Beyound Checkout</h3>
+        <p>Pay at ecommerce brands by choosing Beyound at checkout. Approve your card once with your bank, then every repeat payment up to ₹25,000 is a single tap — no OTP, no redirect to a bank page.</p>
+        <ul>
+          <li>One tap on repeat payments, up to ₹25,000</li>
+          <li>Cards, UPI and net banking on first payment</li>
+          <li>Bank-authenticated e-mandate, tokenised cards</li>
+        </ul>
+        <div class="service-actions">
+          <a class="btn btn-primary" href="/checkout/docs/">Read docs →</a>
+          <a class="btn btn-ghost" href="/checkout/">Read more</a>
+        </div>
+      </div>
     </div>
   </section>
 
@@ -1339,6 +1398,7 @@
         <ul>
           <li><a href="https://wallet.beyound.in">Beyound Wallet</a></li>
           <li><a href="https://bills.beyound.in">Beyound Bills (BBPS)</a></li>
+          <li><a href="/checkout/">Beyound Checkout</a></li>
           <li><a href="https://kyc.beyound.in">Beyound KYC</a></li>
         </ul>
       </div>

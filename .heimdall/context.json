@@ -5,17 +5,17 @@
     ".gitignore present"
   ],
   "derivation": {
-    "cost_units": 35,
-    "count": 1,
+    "cost_units": 34,
+    "count": 2,
     "method": "structural-scan"
   },
   "entry_points": [],
-  "fingerprint": "9904164ee2586fa967789e03011422301a9a1610de5a8f799f829a7c8c133207",
-  "generated_at": "2026-08-05T05:04:28Z",
+  "fingerprint": "1728c05b4067c270c6efd681884237bac16e24169f91c0accca929e966166ff1",
+  "generated_at": "2026-08-14T10:03:39Z",
   "key_modules": [],
   "languages": [],
   "manifests": [],
-  "repo": "/Users/akshat/Desktop/superpe/beyound",
+  "repo": "/Users/rj/Downloads/code/beyound",
   "schema_version": "1.0.0",
   "test_commands": []
 }

@@ -1,0 +1,672 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Beyound Checkout — Partner Integration Guide</title>
+  <meta name="description" content="Partner integration guide for Beyound Checkout: create an order from your server, render the hosted payment sheet in the browser, and treat the webhook as the authoritative result.">
+  <meta name="theme-color" content="#059669">
+  <meta property="og:title" content="Beyound Checkout — Partner Integration Guide">
+  <meta property="og:description" content="Partner integration guide for Beyound Checkout: create an order from your server, render the hosted payment sheet in the browser, and treat the webhook as the authoritative result.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://beyound.in/checkout/docs/">
+  <link rel="canonical" href="https://beyound.in/checkout/docs/">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='50' fill='%23059669'/><text x='50' y='68' text-anchor='middle' font-size='52' font-weight='700' font-family='system-ui' fill='white'>b</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+/* ── Tokens ────────────────────────────────────────────────────────────── */
+:root{
+  --font:'Sora',system-ui,-apple-system,"Helvetica Neue",Arial,sans-serif;
+  --font-head:'Sora',system-ui,-apple-system,sans-serif;
+  --mono:ui-monospace,"SF Mono",Monaco,"Cascadia Code","Roboto Mono",monospace;
+  --white:#fff;--ink:#141414;--ink-2:#4B4B4B;--ink-3:#727272;
+  --g50:#F3F3F3;--g100:#E8E8E8;--g200:#DDD;--g300:#C6C6C6;
+  --bg:#fff;--canvas:#FAFAFA;
+  --blue-50:#ECFDF5;--blue-100:#A7F3D0;--blue:#059669;--blue-600:#047857;--blue-deep:#064E3B;
+  --green-50:#E6F2ED;--green:#05944F;
+  --amber-50:#FFF2D9;--amber:#B97502;
+  --red-50:#FFEFEB;--red:#DE1135;
+  --purple-50:#F3ECFA;--purple:#7356BF;
+  --code-bg:#0E1726;--code-ink:#E6EDF3;--code-dim:#8B98A9;
+  --code-str:#9ECBFF;--code-key:#79C0FF;--code-tag:#7EE787;--code-num:#F2CC60;
+  --sidebar-w:288px;--maxw:860px;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--font);font-size:15px;line-height:1.62;-webkit-font-smoothing:antialiased}
+a{color:var(--blue);text-decoration:none}
+a:hover{color:var(--blue-600)}
+
+/* ── Layout ────────────────────────────────────────────────────────────── */
+.layout{display:grid;grid-template-columns:var(--sidebar-w) 1fr;min-height:100vh}
+
+/* Sidebar */
+aside{position:sticky;top:0;height:100vh;overflow-y:auto;background:var(--canvas);border-right:1px solid var(--g200);padding:22px 0 48px}
+.brand{display:flex;align-items:center;gap:10px;padding:4px 24px 18px;margin-bottom:6px;border-bottom:1px solid var(--g200)}
+.brand img{height:26px;width:auto}
+.brand .bt{font-family:var(--font-head);font-weight:700;font-size:16px;letter-spacing:-.01em}
+.brand .bs{font-size:11px;color:var(--ink-3);font-weight:500;letter-spacing:.04em;text-transform:uppercase;margin-top:2px}
+nav{padding:14px 12px 0}
+nav .grp{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.07em;color:var(--ink-3);padding:16px 12px 6px}
+nav a{display:block;padding:6px 12px;border-radius:8px;color:var(--ink-2);font-size:13.5px;line-height:1.35}
+nav a:hover{background:var(--g100);color:var(--ink)}
+nav a.active{background:var(--blue-50);color:var(--blue-600);font-weight:500}
+nav a.sub{padding-left:24px;font-size:13px;color:var(--ink-3)}
+
+/* Main */
+main{min-width:0;padding:0 56px 120px}
+.wrap{max-width:var(--maxw);margin:0 auto}
+header.top{padding:52px 0 8px}
+header.top .eyebrow{font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--blue)}
+header.top h1{font-family:var(--font-head);font-weight:700;font-size:40px;line-height:1.1;letter-spacing:-.02em;margin:12px 0 10px}
+header.top .lede{font-size:17px;color:var(--ink-2);max-width:640px}
+header.top .meta{margin-top:18px;font-size:13px;color:var(--ink-3);display:flex;gap:16px;flex-wrap:wrap}
+header.top .meta b{color:var(--ink-2);font-weight:500}
+
+section{padding-top:40px;scroll-margin-top:24px}
+section>h2{font-family:var(--font-head);font-weight:700;font-size:26px;letter-spacing:-.015em;margin:0 0 6px;padding-top:14px;border-top:1px solid var(--g100)}
+section:first-of-type>h2{border-top:0}
+h3{font-family:var(--font-head);font-weight:600;font-size:18px;margin:30px 0 8px;letter-spacing:-.01em}
+p{margin:12px 0}
+ul,ol{margin:12px 0;padding-left:22px}
+li{margin:5px 0}
+strong{font-weight:600}
+hr{border:0;border-top:1px solid var(--g100);margin:36px 0}
+
+/* Inline code */
+code{font-family:var(--mono);font-size:13px;background:var(--g50);border:1px solid var(--g200);border-radius:5px;padding:1px 5px;color:var(--ink)}
+h3 code,p code,li code,td code{white-space:nowrap}
+
+/* Code blocks */
+.code{position:relative;background:var(--code-bg);border-radius:12px;margin:16px 0;overflow:hidden;box-shadow:0 1px 2px rgba(20,20,20,.05),0 8px 24px rgba(20,20,20,.06)}
+.code .cbar{display:flex;align-items:center;justify-content:space-between;padding:9px 14px;background:rgba(255,255,255,.03);border-bottom:1px solid rgba(255,255,255,.06)}
+.code .clang{font-family:var(--mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--code-dim)}
+.code .ccopy{font-family:var(--font);font-size:12px;color:var(--code-dim);background:transparent;border:1px solid rgba(255,255,255,.14);border-radius:6px;padding:3px 10px;cursor:pointer;transition:.15s}
+.code .ccopy:hover{color:var(--code-ink);border-color:rgba(255,255,255,.3)}
+.code pre{margin:0;padding:16px 18px;overflow-x:auto;font-family:var(--mono);font-size:12.8px;line-height:1.7;color:var(--code-ink)}
+.code pre .c{color:var(--code-dim);font-style:italic}
+.code pre .s{color:var(--code-str)}
+.code pre .k{color:var(--code-key)}
+.code pre .n{color:var(--code-num)}
+.code pre .t{color:var(--code-tag)}
+
+/* Tables */
+.tbl{margin:18px 0;border:1px solid var(--g200);border-radius:12px;overflow:hidden}
+table{width:100%;border-collapse:collapse;font-size:13.5px}
+thead th{text-align:left;background:var(--g50);color:var(--ink-2);font-weight:600;font-size:12px;letter-spacing:.03em;text-transform:uppercase;padding:11px 14px;border-bottom:1px solid var(--g200)}
+tbody td{padding:11px 14px;border-bottom:1px solid var(--g100);vertical-align:top;color:var(--ink-2)}
+tbody tr:last-child td{border-bottom:0}
+tbody td:first-child{color:var(--ink);font-weight:500}
+td code{font-size:12.5px}
+
+/* HTTP method pills */
+.m{display:inline-block;font-family:var(--mono);font-size:11px;font-weight:600;padding:2px 8px;border-radius:6px;letter-spacing:.02em}
+.m.get{background:var(--blue-50);color:var(--blue-600)}
+.m.post{background:var(--green-50);color:var(--green)}
+.m.delete{background:var(--red-50);color:var(--red)}
+.m.gp{background:var(--purple-50);color:var(--purple)}
+
+/* yes/no chips */
+.chip{display:inline-block;font-size:11px;font-weight:600;padding:1px 8px;border-radius:20px}
+.chip.y{background:var(--green-50);color:var(--green)}
+.chip.n{background:var(--g100);color:var(--ink-3)}
+.chip.rec{background:var(--amber-50);color:var(--amber)}
+
+/* Callouts */
+.note{margin:18px 0;padding:14px 16px;border-radius:10px;border:1px solid;font-size:14px}
+.note p{margin:6px 0}
+.note p:first-child{margin-top:0}.note p:last-child{margin-bottom:0}
+.note .nl{font-weight:600;font-size:12px;letter-spacing:.05em;text-transform:uppercase;display:block;margin-bottom:4px}
+.note.info{background:var(--blue-50);border-color:var(--blue-100)}
+.note.info .nl{color:var(--blue-600)}
+.note.warn{background:var(--amber-50);border-color:#F3DCA8}
+.note.warn .nl{color:var(--amber)}
+.note.crit{background:var(--red-50);border-color:#F6C9BE}
+.note.crit .nl{color:var(--red)}
+
+/* Endpoint header row */
+.ep{display:flex;align-items:center;gap:12px;margin:26px 0 4px;flex-wrap:wrap}
+.ep .path{font-family:var(--mono);font-size:15px;font-weight:500;color:var(--ink)}
+.ep .desc{color:var(--ink-3);font-size:14px}
+
+/* Steps */
+ol.steps{counter-reset:s;list-style:none;padding-left:0;margin:16px 0}
+ol.steps>li{counter-increment:s;position:relative;padding:8px 0 8px 42px;border-bottom:1px solid var(--g100)}
+ol.steps>li:last-child{border-bottom:0}
+ol.steps>li::before{content:counter(s);position:absolute;left:0;top:8px;width:26px;height:26px;border-radius:50%;background:var(--ink);color:#fff;font-family:var(--mono);font-size:12px;font-weight:600;display:flex;align-items:center;justify-content:center}
+ol.steps>li b{color:var(--ink);font-weight:600}
+
+/* Checklist */
+ul.chk{list-style:none;padding-left:0}
+ul.chk li{position:relative;padding:6px 0 6px 30px}
+ul.chk li::before{content:"";position:absolute;left:0;top:9px;width:17px;height:17px;border:1.5px solid var(--g300);border-radius:5px}
+ul.chk li::after{content:"";position:absolute;left:5px;top:11px;width:6px;height:10px;border:solid var(--green);border-width:0 2px 2px 0;transform:rotate(42deg);opacity:.85}
+
+footer{max-width:var(--maxw);margin:80px auto 0;padding-top:24px;border-top:1px solid var(--g200);color:var(--ink-3);font-size:13px}
+
+/* Mobile */
+.menu-btn{display:none}
+@media(max-width:1080px){ main{padding:0 28px 100px} }
+@media(max-width:860px){
+  .layout{grid-template-columns:1fr}
+  aside{position:fixed;z-index:40;width:var(--sidebar-w);transform:translateX(-100%);transition:transform .2s;box-shadow:0 12px 40px rgba(0,0,0,.18)}
+  aside.open{transform:translateX(0)}
+  .menu-btn{display:inline-flex;align-items:center;gap:8px;position:fixed;top:14px;left:14px;z-index:50;background:var(--ink);color:#fff;border:0;border-radius:10px;padding:9px 14px;font-family:var(--font);font-size:13px;font-weight:500;cursor:pointer;box-shadow:0 4px 14px rgba(0,0,0,.2)}
+  header.top{padding-top:64px}
+  header.top h1{font-size:32px}
+}
+
+/* ── beyound overrides ─────────────────────────────────────────────────── */
+.brand .bmark{
+  display:inline-flex;align-items:center;justify-content:center;
+  width:30px;height:30px;border-radius:999px;flex:none;
+  background:var(--blue);color:#fff;font-weight:700;font-size:17px;
+  font-family:var(--font-head);line-height:1;
+}
+a:focus-visible,button:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+</style>
+</head>
+<body>
+
+<button class="menu-btn" id="menuBtn">☰ Contents</button>
+<div class="layout">
+
+<!-- ── SIDEBAR ─────────────────────────────────────────────────────────── -->
+<aside id="sidebar">
+  <div class="brand">
+    <span class="bmark" aria-hidden="true">b</span>
+    <div>
+      <div class="bt">Beyound Checkout</div>
+      <div class="bs">Integration Guide</div>
+    </div>
+  </div>
+  <nav id="toc">
+    <a href="#overview">What this is</a>
+    <a href="#environments">Environments</a>
+    <a href="#brand-key">Getting a brand key</a>
+    <a href="#auth">Auth</a>
+    <a href="#flow">End-to-end flow</a>
+    <div class="grp">Server API</div>
+    <a href="#server-api">Response envelope</a>
+    <a href="#create-order" class="sub">POST /orders</a>
+    <a href="#poll-order" class="sub">GET /orders/{id}</a>
+    <div class="grp">Server-to-server</div>
+    <a href="#webhooks">Webhooks</a>
+    <a href="#error-codes">Error codes</a>
+    <a href="#idempotency">Idempotency</a>
+    <div class="grp">Reference</div>
+    <a href="#sandbox">Sandbox</a>
+    <a href="#beyound-cash">Beyound Cash</a>
+    <a href="#go-live">Go-live checklist</a>
+    <a href="#appendix-a">A · Endpoints</a>
+    <a href="#appendix-b">B · Full curl</a>
+    <a href="#appendix-c">C · Verify webhook</a>
+  </nav>
+</aside>
+
+<!-- ── MAIN ────────────────────────────────────────────────────────────── -->
+<main>
+<div class="wrap">
+
+<header class="top">
+  <div class="eyebrow">Partner Integration</div>
+  <h1>Beyound Checkout</h1>
+  <p class="lede">A hosted payment sheet. Render it on your checkout page; buyers pick a card, UPI, net-banking, or a saved “bolt” and pay. Beyound handles PG routing, 3DS OTP, saved-card tokenization, and settlement.</p>
+  <div class="meta">
+    <span><b>Version</b> August 2026</span>
+    <span><b>API base</b> <code>https://api-v2.superpe.in</code></span>
+    <span><b>Checkout host</b> <code>https://checkout.beyound.in</code></span>
+  </div>
+</header>
+
+<!-- WHAT THIS IS -->
+<section id="overview">
+  <h2>What this is</h2>
+  <p>Beyound Checkout is a hosted payment sheet. You render it on your checkout page; buyers pick a card, UPI, net-banking, or a saved “bolt” and pay. Beyound handles the PG routing, 3DS OTP, saved-card tokenization, and settlement — end to end, inside the sheet.</p>
+  <p>Your side of the integration is two things:</p>
+  <ul>
+    <li><strong>Server</strong> — create an order → get back a session token.</li>
+    <li><strong>Browser</strong> — render the Beyound checkout sheet with the session token; the buyer pays inside it.</li>
+  </ul>
+  <div class="note info"><span class="nl">Source of truth</span><p>The webhook comes last and is authoritative. Everything else is UI.</p></div>
+</section>
+
+<!-- ENVIRONMENTS -->
+<section id="environments">
+  <h2>Environments</h2>
+  <div class="tbl"><table>
+    <thead><tr><th>Environment</th><th>API base URL</th><th>Checkout host</th></tr></thead>
+    <tbody>
+      <tr><td>Sandbox</td><td>Same host as prod. Sandbox is a <code>sandbox=true</code> flag on the <code>sk_</code> key, not a separate URL.</td><td>Shared during onboarding.</td></tr>
+      <tr><td>Prod</td><td><code>https://api-v2.superpe.in</code></td><td><code>https://checkout.beyound.in</code></td></tr>
+    </tbody>
+  </table></div>
+  <ul>
+    <li>Amounts are integers, in <strong>paisa</strong> — never rupees.</li>
+    <li>Timestamps are ISO-8601.</li>
+    <li>Request bodies accept camelCase or snake_case (Beyound aliases both). <strong>Responses are camelCase only.</strong></li>
+  </ul>
+</section>
+
+<!-- BRAND KEY -->
+<section id="brand-key">
+  <h2>Getting a brand key</h2>
+  <p>Beyound ops provisions you a brand row (<code>brand_…</code>) internally. You receive three things over a secrets channel:</p>
+  <ul>
+    <li><code>sk_live_…</code> — server-to-server secret. Send as <code>Authorization: Bearer sk_live_…</code>. Never expose to the browser.</li>
+    <li><code>sk_sandbox_…</code> — sandbox counterpart. Same API, <code>sandbox=true</code> on the row.</li>
+    <li><code>webhook_secret</code> — HMAC-SHA256 key. You verify inbound webhooks with this.</li>
+  </ul>
+  <div class="note warn"><span class="nl">Key handling</span><p>Beyound stores only <code>sha256(sk_…)</code> on our side. If you ever lose the raw key, we mint a new one and disable the old — no lookup, no recovery.</p></div>
+  <p>The brand row also holds:</p>
+  <ul>
+    <li><code>allowedOrigins</code> — the origins allowed to render the checkout sheet (e.g. <code>https://your-store.com,https://www.your-store.com</code>).</li>
+    <li><code>webhookUrl</code> — where Beyound POSTs terminal events.</li>
+  </ul>
+</section>
+
+<!-- AUTH -->
+<section id="auth">
+  <h2>Auth</h2>
+  <p>Every server request carries:</p>
+  <div class="code">
+    <div class="cbar"><span class="clang">http</span><button class="ccopy">Copy</button></div>
+<pre><span class="k">Authorization</span>: Bearer sk_live_&lt;random&gt;
+<span class="k">Content-Type</span>: application/json
+<span class="k">Idempotency-Key</span>: &lt;uuid&gt;            <span class="c"># recommended on POSTs</span></pre>
+  </div>
+  <p>Your <code>sk_</code> key fully identifies your brand — every order is bound to it automatically. There’s nothing else to send for identity.</p>
+  <p>The checkout sheet uses a short-lived <code>cs_…</code> session token, not the <code>sk_…</code>. That token is minted for you inside the create-order response — see the next section.</p>
+</section>
+
+<!-- FLOW -->
+<section id="flow">
+  <h2>End-to-end flow</h2>
+  <ol class="steps">
+    <li><b>Your backend → Beyound.</b> <code>POST /api/v1/orders</code> with the cart total.</li>
+    <li><b>Beyound → your backend.</b> Response has an <code>order.id</code> (<code>ord_…</code>) and a <code>session.clientToken</code> (<code>cs_…</code>).</li>
+    <li><b>Your backend → browser.</b> Ship the <code>cs_…</code> token down to the checkout page.</li>
+    <li><b>Browser renders the Beyound checkout sheet.</b> Point the sheet at the session token — Beyound serves the payment UI from the checkout host.</li>
+    <li><b>Buyer pays inside the sheet.</b> Beyound routes the transaction to a PG and walks the buyer through 3DS, OTP, and any bank redirects — all handled inside the sheet.</li>
+    <li><b>Beyound → your backend.</b> Webhook (<code>order.paid</code> or <code>order.failed</code>) hits <code>webhookUrl</code> with an HMAC signature. This is authoritative. Only mark your order as paid after this fires and the signature verifies.</li>
+  </ol>
+  <div class="note info"><span class="nl">Trust the webhook</span><p>The sheet shows the buyer a confirmation the moment payment settles, but your order state must only flip on the webhook. If the buyer closes the tab after paying, the webhook still delivers.</p></div>
+</section>
+
+<!-- SERVER API -->
+<section id="server-api">
+  <h2>Server API</h2>
+  <p>Base URL: <code>https://api-v2.superpe.in</code>. Every response is wrapped:</p>
+  <div class="code">
+    <div class="cbar"><span class="clang">json</span><button class="ccopy">Copy</button></div>
+<pre><span class="c">// success</span>
+{ <span class="k">"success"</span>: <span class="t">true</span>, <span class="k">"message"</span>: <span class="s">"…"</span>, <span class="k">"data"</span>: { … }, <span class="k">"timestamp"</span>: <span class="s">"…"</span>, <span class="k">"status"</span>: <span class="n">200</span> }
+
+<span class="c">// error</span>
+{ <span class="k">"error"</span>: { <span class="k">"code"</span>: <span class="s">"unauthorized"</span>, <span class="k">"message"</span>: <span class="s">"…"</span>, <span class="k">"retryable"</span>: <span class="t">false</span>, <span class="k">"details"</span>: {} },
+  <span class="k">"timestamp"</span>: <span class="s">"…"</span> }</pre>
+  </div>
+  <p>Success is <code>success === true</code>. The error catalogue is under <code>error.code</code>.</p>
+
+  <!-- CREATE ORDER -->
+  <div id="create-order" style="scroll-margin-top:24px">
+    <div class="ep"><span class="m post">POST</span><span class="path">/api/v1/orders</span><span class="desc">create order</span></div>
+    <p>Idempotent on <code>merchantReference</code>. Retrying with the same <code>merchantReference</code> returns the same order with a freshly minted session — no duplicate rows.</p>
+    <h3>Request</h3>
+    <div class="code">
+      <div class="cbar"><span class="clang">json</span><button class="ccopy">Copy</button></div>
+<pre>{
+  <span class="k">"currency"</span>: <span class="s">"INR"</span>,
+  <span class="k">"amount"</span>: { <span class="k">"base"</span>: <span class="n">400</span>, <span class="k">"tax"</span>: <span class="n">0</span>, <span class="k">"total"</span>: <span class="n">400</span> },
+  <span class="k">"customer"</span>: {
+    <span class="k">"ref"</span>:   <span class="s">"usr_partner_12345"</span>,
+    <span class="k">"name"</span>:  <span class="s">"Ravi K"</span>,
+    <span class="k">"phone"</span>: <span class="s">"9000055500"</span>
+  },
+  <span class="k">"merchantReference"</span>: <span class="s">"order-abc-2026-08-11-0001"</span>,
+  <span class="k">"surface"</span>: <span class="s">"web"</span>
+}</pre>
+    </div>
+    <div class="tbl"><table>
+      <thead><tr><th>Field</th><th>Required</th><th>Notes</th></tr></thead>
+      <tbody>
+        <tr><td><code>amount.base</code> / <code>amount.tax</code> / <code>amount.total</code></td><td><span class="chip y">yes</span></td><td>Integer paisa.</td></tr>
+        <tr><td><code>currency</code></td><td><span class="chip n">no</span></td><td>Defaults to INR. Only INR is supported.</td></tr>
+        <tr><td><code>customer.phone</code></td><td><span class="chip rec">recommended</span></td><td>Enables instant saved-card retrieval for repeat buyers.</td></tr>
+        <tr><td><code>merchantReference</code></td><td><span class="chip rec">recommended</span></td><td>Your order id. Enables safe retry.</td></tr>
+        <tr><td><code>fareHoldSeconds</code></td><td><span class="chip n">no</span></td><td>If set, order expires after this many seconds.</td></tr>
+        <tr><td><code>surface</code></td><td><span class="chip n">no</span></td><td><code>web</code> (default) or <code>app</code>.</td></tr>
+      </tbody>
+    </table></div>
+    <h3>Response — <code>201 Created</code></h3>
+    <div class="code">
+      <div class="cbar"><span class="clang">json</span><button class="ccopy">Copy</button></div>
+<pre>{
+  <span class="k">"success"</span>: <span class="t">true</span>,
+  <span class="k">"message"</span>: <span class="s">"Order created"</span>,
+  <span class="k">"data"</span>: {
+    <span class="k">"order"</span>: {
+      <span class="k">"id"</span>: <span class="s">"ord_499729764770600"</span>,
+      <span class="k">"currency"</span>: <span class="s">"INR"</span>,
+      <span class="k">"amount"</span>: { <span class="k">"base"</span>: <span class="n">400</span>, <span class="k">"tax"</span>: <span class="n">0</span>, <span class="k">"total"</span>: <span class="n">400</span> },
+      <span class="k">"status"</span>: <span class="s">"created"</span>,
+      <span class="k">"fareHoldExpiresAt"</span>: <span class="t">null</span>,
+      <span class="k">"merchantReference"</span>: <span class="s">"order-abc-2026-08-11-0001"</span>
+    },
+    <span class="k">"session"</span>: {
+      <span class="k">"id"</span>:          <span class="s">"cs_6633100777392113"</span>,
+      <span class="k">"clientToken"</span>: <span class="s">"cs_6633100777392113"</span>,
+      <span class="k">"expiresAt"</span>:   <span class="s">"2026-08-11T13:36:50.339731+05:30"</span>
+    }
+  },
+  <span class="k">"timestamp"</span>: <span class="s">"2026-08-11T07:06:50.436999Z"</span>,
+  <span class="k">"status"</span>: <span class="n">200</span>
+}</pre>
+    </div>
+    <p>Hand the <code>clientToken</code> (<code>cs_…</code>) to the browser and render the Beyound checkout sheet with it. The checkout host comes from onboarding — the response doesn’t embed it.</p>
+    <p><strong>Errors:</strong> <code>validation_error</code> (400), <code>unauthorized</code> (401), <code>duplicate_order</code> (409 — same <code>merchantReference</code>, different amount).</p>
+  </div>
+
+  <!-- POLL ORDER -->
+  <div id="poll-order" style="scroll-margin-top:24px">
+    <div class="ep"><span class="m get">GET</span><span class="path">/api/v1/orders/{orderId}</span><span class="desc">poll order</span></div>
+    <p>Returns the current state. Use for either polling or as a sanity check against the webhook.</p>
+    <p>Response body is the order object from create-order. Once paid, an additional confirmation block appears with <code>pnr</code>, <code>utr</code>, and <code>paidSummary</code>.</p>
+    <div class="tbl"><table>
+      <thead><tr><th>Order statuses</th><th>Payment statuses</th></tr></thead>
+      <tbody><tr>
+        <td><code>created</code>, <code>paying</code>, <code>paid</code>, <code>failed</code>, <code>expired</code></td>
+        <td><code>pending</code>, <code>authorising</code>, <code>charging</code>, <code>settled</code>, <code>declined</code></td>
+      </tr></tbody>
+    </table></div>
+  </div>
+</section>
+
+<!-- WEBHOOKS -->
+<section id="webhooks">
+  <h2>Webhooks</h2>
+  <p>Terminal events POST to your <code>webhookUrl</code> with these headers:</p>
+  <div class="tbl"><table>
+    <thead><tr><th>Header</th><th>Value</th></tr></thead>
+    <tbody>
+      <tr><td><code>X-Beyound-Event</code></td><td><code>order.paid</code>, <code>payment.captured</code>, <code>order.failed</code>, or <code>payment.declined</code>.</td></tr>
+      <tr><td><code>X-Beyound-Delivery</code></td><td>UUID. Unique per delivery attempt. Use this as your dedupe key.</td></tr>
+      <tr><td><code>X-Signature</code></td><td><code>hex(hmac_sha256(webhook_secret, raw_request_body))</code></td></tr>
+      <tr><td><code>X-Timestamp</code></td><td>Unix seconds. Reject if <code>|now − X-Timestamp| &gt; 300</code>.</td></tr>
+    </tbody>
+  </table></div>
+  <div class="note warn"><span class="nl">Verify before you parse</span><p>Verify the signature before parsing the body. Constant-time compare (<code>hmac.compare_digest</code> in Python, <code>crypto.timingSafeEqual</code> in Node, <code>MessageDigest.isEqual</code> in Java).</p></div>
+  <p><strong>Retries on non-2xx:</strong> 30s → 5m → 30m → 3h → 12h → 24h. Six attempts, then we mark the row failed and stop. Respond 2xx fast (&lt; 3s), do the actual work async.</p>
+
+  <h3>Events (today)</h3>
+  <ul>
+    <li><code>order.paid</code> — order flipped to paid.</li>
+    <li><code>payment.captured</code> — a payment attempt reached settled.</li>
+    <li><code>order.failed</code> — order flipped to failed.</li>
+    <li><code>payment.declined</code> — a payment attempt reached declined.</li>
+  </ul>
+  <div class="note info"><span class="nl">Roadmap</span><p><code>mandate.activated</code>, <code>mandate.cancelled</code>, <code>refund.processed</code> are on the roadmap. We’ll announce before enabling them.</p></div>
+
+  <h3>Body shape</h3>
+  <p>Same for every event:</p>
+  <div class="code">
+    <div class="cbar"><span class="clang">json</span><button class="ccopy">Copy</button></div>
+<pre>{
+  <span class="k">"event"</span>:        <span class="s">"order.paid"</span>,
+  <span class="k">"delivery_id"</span>:  <span class="s">"b1a2c3d4-e5f6-7890-abcd-ef1234567890"</span>,
+  <span class="k">"created_at"</span>:   <span class="s">"2026-08-11T10:31:14Z"</span>,
+  <span class="k">"data"</span>: {
+    <span class="k">"order"</span>: {
+      <span class="k">"id"</span>: <span class="s">"ord_499729764770600"</span>,
+      <span class="k">"status"</span>: <span class="s">"paid"</span>,
+      <span class="k">"merchant_reference"</span>: <span class="s">"order-abc-2026-08-11-0001"</span>,
+      <span class="k">"amount"</span>: { <span class="k">"base"</span>: <span class="n">400</span>, <span class="k">"tax"</span>: <span class="n">0</span>, <span class="k">"total"</span>: <span class="n">400</span>, <span class="k">"currency"</span>: <span class="s">"INR"</span> }
+    },
+    <span class="k">"payment"</span>: {
+      <span class="k">"id"</span>: <span class="s">"pay_c3b7ff2e1d5a6b8c"</span>,
+      <span class="k">"status"</span>: <span class="s">"settled"</span>,
+      <span class="k">"pg"</span>: <span class="s">"razorpay"</span>,
+      <span class="k">"pg_payment_id"</span>: <span class="s">"pay_rzp_abcXYZ"</span>
+    }
+  }
+}</pre>
+  </div>
+</section>
+
+<!-- ERROR CODES -->
+<section id="error-codes">
+  <h2>Error codes</h2>
+  <p><code>error.code</code> values Beyound returns. All lowercase snake_case.</p>
+  <div class="tbl"><table>
+    <thead><tr><th>Code</th><th>HTTP</th><th>Retryable</th><th>Meaning</th></tr></thead>
+    <tbody>
+      <tr><td><code>unauthorized</code></td><td>401</td><td><span class="chip n">no</span></td><td>Missing / invalid <code>sk_</code>, or disabled brand.</td></tr>
+      <tr><td><code>session_expired</code></td><td>401</td><td><span class="chip n">no</span></td><td><code>cs_</code> token expired — mint a new one with <code>POST /orders</code> using the same <code>merchantReference</code>.</td></tr>
+      <tr><td><code>order_not_found</code></td><td>404</td><td><span class="chip n">no</span></td><td>Unknown <code>orderId</code>.</td></tr>
+      <tr><td><code>order_expired</code></td><td>409</td><td><span class="chip n">no</span></td><td>Fare-hold elapsed before payment.</td></tr>
+      <tr><td><code>duplicate_order</code></td><td>409</td><td><span class="chip n">no</span></td><td>Same <code>merchantReference</code>, different amount.</td></tr>
+      <tr><td><code>fare_hold_expired</code></td><td>409</td><td><span class="chip n">no</span></td><td>Fare-hold expired mid-payment.</td></tr>
+      <tr><td><code>card_declined</code></td><td>402</td><td><span class="chip y">yes</span></td><td>Issuer declined. Buyer can retry with a different card.</td></tr>
+      <tr><td><code>mandate_cap_exceeded</code></td><td>422</td><td><span class="chip n">no</span></td><td>Bolt charge &gt; ₹25,000.</td></tr>
+      <tr><td><code>mandate_inactive</code></td><td>422</td><td><span class="chip n">no</span></td><td>Bolt cancelled or declined.</td></tr>
+      <tr><td><code>otp_invalid</code></td><td>400</td><td><span class="chip y">yes</span></td><td>Wrong OTP. Buyer retries.</td></tr>
+      <tr><td><code>otp_expired</code></td><td>400</td><td><span class="chip y">yes</span></td><td>OTP expired. Buyer requests resend.</td></tr>
+      <tr><td><code>upi_timeout</code></td><td>504</td><td><span class="chip y">yes</span></td><td>UPI collect timed out.</td></tr>
+      <tr><td><code>instrument_ineligible</code></td><td>422</td><td><span class="chip n">no</span></td><td>Selected instrument not routeable for this order.</td></tr>
+      <tr><td><code>payment_not_found</code></td><td>404</td><td><span class="chip n">no</span></td><td>Unknown <code>paymentId</code>.</td></tr>
+      <tr><td><code>mandate_not_found</code></td><td>404</td><td><span class="chip n">no</span></td><td>Unknown <code>mandateId</code>.</td></tr>
+      <tr><td><code>validation_error</code></td><td>400</td><td><span class="chip n">no</span></td><td>Payload shape violation — see <code>error.message</code>.</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<!-- IDEMPOTENCY -->
+<section id="idempotency">
+  <h2>Idempotency</h2>
+  <p>Two layers:</p>
+  <ul>
+    <li><strong>Order-level.</strong> <code>merchantReference</code> is unique per brand in Beyound’s DB. Retrying <code>POST /orders</code> with the same <code>merchantReference</code> returns the existing order and a fresh session. Never duplicates.</li>
+    <li><strong>Request-level.</strong> Set <code>Idempotency-Key: &lt;uuid&gt;</code> on any POST. Beyound caches the response for 15 minutes keyed by <code>(brandId, endpoint, idempotencyKey, body_md5)</code> and replays it verbatim on retry.</li>
+  </ul>
+  <div class="note info"><span class="nl">Best practice</span><p>Send an <code>Idempotency-Key</code> on every POST and a <code>merchantReference</code> on <code>POST /orders</code>.</p></div>
+</section>
+
+<!-- SANDBOX -->
+<section id="sandbox">
+  <h2>Sandbox</h2>
+  <p>There isn’t a separate sandbox host yet. Provision a brand with <code>sandbox=true</code> and you’ll get an <code>sk_sandbox_…</code> key that hits the same base URL as prod but is logically isolated by the flag.</p>
+  <p>Test cards / UPI VPAs are not yet Beyound-owned. Charges route to the underlying PG’s own test mode (Razorpay test MID, etc.), so use whichever test data your PG documents. When Beyound’s dedicated sandbox lands, we’ll ship a matrix in this document.</p>
+</section>
+
+<!-- BEYOUND CASH -->
+<section id="beyound-cash">
+  <h2>Beyound Cash</h2>
+  <p>Buyers earn Beyound Cash on eligible checkouts. It shows up as a reward in the checkout sheet and, if the buyer has the Beyound app installed, in their app balance. Nothing for you to integrate — it’s inside the sheet. Documented here so the reward line-item in the receipt isn’t a surprise.</p>
+</section>
+
+<!-- GO LIVE -->
+<section id="go-live">
+  <h2>Go-live checklist</h2>
+  <ul class="chk">
+    <li>Beyound ops provisioned your prod <code>sk_live_…</code> + <code>webhook_secret</code>.</li>
+    <li>Your prod origin(s) are in the brand’s <code>allowedOrigins</code>.</li>
+    <li>Webhook endpoint is HTTPS, verifies the HMAC signature before parsing, responds 2xx in &lt; 3s.</li>
+    <li>Idempotency tested: same <code>merchantReference</code> fired twice → single order in your system.</li>
+    <li>Webhook wired: <code>order.paid</code> / <code>order.failed</code> is what actually flips your order state.</li>
+    <li>One card 3DS success + one card 3DS decline tested on sandbox.</li>
+    <li>One UPI success + one UPI decline tested on sandbox.</li>
+    <li>Your PCI review is comfortable: raw PAN, CVV, OTP never leave the Beyound checkout sheet.</li>
+  </ul>
+</section>
+
+<!-- APPENDIX A -->
+<section id="appendix-a">
+  <h2>Appendix A — Endpoints</h2>
+  <h3>Server-to-server (<code>sk_…</code>)</h3>
+  <div class="tbl"><table>
+    <thead><tr><th>Method</th><th>Path</th><th>Purpose</th></tr></thead>
+    <tbody>
+      <tr><td><span class="m post">POST</span></td><td><code>/api/v1/orders</code></td><td>Create order + mint session.</td></tr>
+      <tr><td><span class="m get">GET</span></td><td><code>/api/v1/orders/{orderId}</code></td><td>Poll order state.</td></tr>
+    </tbody>
+  </table></div>
+  <p>All buyer-facing payment endpoints (instrument selection, card entry, OTP, 3DS, Beyound Cash, bolts) live inside the Beyound checkout sheet and are not part of your integration surface.</p>
+</section>
+
+<!-- APPENDIX B -->
+<section id="appendix-b">
+  <h2>Appendix B — Full curl sample</h2>
+  <div class="code">
+    <div class="cbar"><span class="clang">bash</span><button class="ccopy">Copy</button></div>
+<pre>curl -X POST https://api-v2.superpe.in/api/v1/orders \
+  -H <span class="s">"Authorization: Bearer sk_sandbox_YOUR_BRAND_KEY"</span> \
+  -H <span class="s">"Idempotency-Key: &lt;your-unique-key&gt;"</span> \
+  -H <span class="s">"Content-Type: application/json"</span> \
+  -d <span class="s">'{
+    "currency": "INR",
+    "amount":   { "base": 400, "tax": 0, "total": 400 },
+    "customer": { "ref":"partner_user_4rs", "name":"Ravi K", "phone":"9000055500" },
+    "merchantReference": "order-abc-2026-08-11-0001",
+    "surface": "web"
+  }'</span></pre>
+  </div>
+  <h3>Response <code>201 Created</code></h3>
+  <div class="code">
+    <div class="cbar"><span class="clang">json</span><button class="ccopy">Copy</button></div>
+<pre>{
+  <span class="k">"success"</span>: <span class="t">true</span>,
+  <span class="k">"message"</span>: <span class="s">"Order created"</span>,
+  <span class="k">"data"</span>: {
+    <span class="k">"order"</span>: {
+      <span class="k">"id"</span>: <span class="s">"ord_499729764770600"</span>,
+      <span class="k">"currency"</span>: <span class="s">"INR"</span>,
+      <span class="k">"amount"</span>: { <span class="k">"base"</span>: <span class="n">400</span>, <span class="k">"tax"</span>: <span class="n">0</span>, <span class="k">"total"</span>: <span class="n">400</span> },
+      <span class="k">"status"</span>: <span class="s">"created"</span>,
+      <span class="k">"fareHoldExpiresAt"</span>: <span class="t">null</span>,
+      <span class="k">"merchantReference"</span>: <span class="s">"order-abc-2026-08-11-0001"</span>
+    },
+    <span class="k">"session"</span>: {
+      <span class="k">"id"</span>:          <span class="s">"cs_6633100777392113"</span>,
+      <span class="k">"clientToken"</span>: <span class="s">"cs_6633100777392113"</span>,
+      <span class="k">"expiresAt"</span>:   <span class="s">"2026-08-11T13:36:50.339731+05:30"</span>
+    }
+  },
+  <span class="k">"timestamp"</span>: <span class="s">"2026-08-11T07:06:50.436999Z"</span>,
+  <span class="k">"status"</span>: <span class="n">200</span>
+}</pre>
+  </div>
+</section>
+
+<!-- APPENDIX C -->
+<section id="appendix-c">
+  <h2>Appendix C — Verifying a webhook (Node)</h2>
+  <div class="code">
+    <div class="cbar"><span class="clang">javascript</span><button class="ccopy">Copy</button></div>
+<pre><span class="k">const</span> crypto = <span class="k">require</span>(<span class="s">'crypto'</span>);
+
+app.<span class="t">post</span>(<span class="s">'/beyound/webhook'</span>, (req, res) =&gt; {
+  <span class="k">const</span> raw       = req.rawBody;                            <span class="c">// raw utf-8 bytes</span>
+  <span class="k">const</span> supplied  = req.headers[<span class="s">'x-signature'</span>];
+  <span class="k">const</span> timestamp = <span class="t">Number</span>(req.headers[<span class="s">'x-timestamp'</span>]);
+
+  <span class="k">if</span> (Math.<span class="t">abs</span>(Date.<span class="t">now</span>() / <span class="n">1000</span> - timestamp) &gt; <span class="n">300</span>) {
+    <span class="k">return</span> res.<span class="t">status</span>(<span class="n">401</span>).<span class="t">send</span>(<span class="s">'stale'</span>);
+  }
+
+  <span class="k">const</span> expected = crypto
+    .<span class="t">createHmac</span>(<span class="s">'sha256'</span>, WEBHOOK_SECRET)
+    .<span class="t">update</span>(raw)
+    .<span class="t">digest</span>(<span class="s">'hex'</span>);
+
+  <span class="k">if</span> (!crypto.<span class="t">timingSafeEqual</span>(Buffer.<span class="t">from</span>(expected), Buffer.<span class="t">from</span>(supplied))) {
+    <span class="k">return</span> res.<span class="t">status</span>(<span class="n">401</span>).<span class="t">send</span>(<span class="s">'bad signature'</span>);
+  }
+
+  <span class="c">// Dedupe on X-Beyound-Delivery, then handle req.body.event</span>
+  res.<span class="t">sendStatus</span>(<span class="n">200</span>);
+});</pre>
+  </div>
+</section>
+
+<footer>
+  Beyound Checkout — Partner Integration Guide · August 2026 · <a href="mailto:support@beyound.in">support@beyound.in</a>
+ · <a href="/checkout/">Beyound Checkout</a> · <a href="/">beyound.in</a>
+</footer>
+
+</div>
+</main>
+</div>
+
+<script>
+// Copy buttons
+document.querySelectorAll('.ccopy').forEach(function(btn){
+  btn.addEventListener('click', function(){
+    var pre = btn.closest('.code').querySelector('pre');
+    navigator.clipboard.writeText(pre.innerText).then(function(){
+      var old = btn.textContent; btn.textContent = 'Copied';
+      setTimeout(function(){ btn.textContent = old; }, 1400);
+    });
+  });
+});
+
+// Scroll-spy active TOC link
+var links = Array.prototype.slice.call(document.querySelectorAll('#toc a'));
+var map = {};
+links.forEach(function(a){ map[a.getAttribute('href').slice(1)] = a; });
+var obs = new IntersectionObserver(function(entries){
+  entries.forEach(function(e){
+    if(e.isIntersecting){
+      links.forEach(function(a){ a.classList.remove('active'); });
+      var a = map[e.target.id];
+      if(a){ a.classList.add('active'); }
+    }
+  });
+}, { rootMargin:'0px 0px -75% 0px', threshold:0 });
+document.querySelectorAll('section[id]').forEach(function(s){ obs.observe(s); });
+
+// Mobile menu
+var sidebar = document.getElementById('sidebar');
+document.getElementById('menuBtn').addEventListener('click', function(){ sidebar.classList.toggle('open'); });
+document.querySelectorAll('#toc a').forEach(function(a){
+  a.addEventListener('click', function(){ sidebar.classList.remove('open'); });
+});
+</script>
+
+<script>
+// Copy buttons
+document.querySelectorAll('.ccopy').forEach(function(btn){
+  btn.addEventListener('click', function(){
+    var pre = btn.closest('.code').querySelector('pre');
+    navigator.clipboard.writeText(pre.innerText).then(function(){
+      var old = btn.textContent; btn.textContent = 'Copied';
+      setTimeout(function(){ btn.textContent = old; }, 1400);
+    });
+  });
+});
+
+// Scroll-spy active TOC link
+var links = Array.prototype.slice.call(document.querySelectorAll('#toc a'));
+var map = {};
+links.forEach(function(a){ map[a.getAttribute('href').slice(1)] = a; });
+var obs = new IntersectionObserver(function(entries){
+  entries.forEach(function(e){
+    if(e.isIntersecting){
+      links.forEach(function(a){ a.classList.remove('active'); });
+      var a = map[e.target.id];
+      if(a){ a.classList.add('active'); }
+    }
+  });
+}, { rootMargin:'0px 0px -75% 0px', threshold:0 });
+document.querySelectorAll('section[id]').forEach(function(s){ obs.observe(s); });
+
+// Mobile menu
+var sidebar = document.getElementById('sidebar');
+document.getElementById('menuBtn').addEventListener('click', function(){ sidebar.classList.toggle('open'); });
+document.querySelectorAll('#toc a').forEach(function(a){
+  a.addEventListener('click', function(){ sidebar.classList.remove('open'); });
+});
+</script>
+</body>
+</html>
