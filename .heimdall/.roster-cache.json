@@ -1,15 +1,15 @@
 [
   {
-    "activity_ts": 1786716472.0,
-    "age_seconds": 0.9,
+    "activity_ts": 1788334691.0,
+    "age_seconds": 14.9,
     "branch": "main",
     "file": null,
-    "haid": "haid:rj.rishabhs-macbook-air-46d5",
-    "handle": "rj",
+    "haid": "haid:akshat.akshats-macbook-air-2-755c",
+    "handle": "akshat",
     "online": true,
-    "project": "github.com/superrally/beyound",
-    "state": "idle",
-    "ts": 1786716852.2555666,
+    "project": "github.com/mewt-app/beyound",
+    "state": "active",
+    "ts": 1788334759.0219054,
     "verdict": "watching"
   }
 ]
